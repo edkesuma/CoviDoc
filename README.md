@@ -1,4 +1,4 @@
 # CoviDoc
 AI generated reports from Chest X-Rays + Consultations management
 
-tiff test
+i think this works already
