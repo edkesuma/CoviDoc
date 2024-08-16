@@ -2,7 +2,7 @@
 The project aims to assist doctors and medical professionals in COVID-19 detection by X-ray image classifications. Our product also provides consultation management.
 
 ## DEVELOPMENT TOOLS:
-- Frontend: React, Tailwind CSS, Flowbite
+- Frontend: React with ViteJS, Tailwind CSS, Flowbite
 - Backend: Flask
 - Database: SQLlite, SQLAlchemy
 
@@ -12,6 +12,7 @@ The project aims to assist doctors and medical professionals in COVID-19 detecti
 ```
 cd client
 npm install
+npm run dev
 ```
 
 2. Node.js
