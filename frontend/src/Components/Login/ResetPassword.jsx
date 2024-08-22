@@ -1,6 +1,6 @@
 "use client";
 import {Button, Card, Label, TextInput} from "flowbite-react";
-import {useNavigate} from 'react-router-dom';
+import {useNavigate, Link} from 'react-router-dom';
 import {useEmail} from './EmailContext.jsx';
 import React, {useState} from "react";
 
@@ -46,7 +46,7 @@ function ResetPassword() {
                         </div>
                         <div className="text-left mb-8 text-red-400 text-xl">{massage}</div>
                         <Button onClick={handleClick} className='bg-cyan-500 mb-4'>Reset Password</Button>
-                        <a href="#" className="text-red-400">Cancel</a>
+                        <Link to="/login" className="text-red-400">Cancel</Link>
                     </div>
             </Card>
         </div>
