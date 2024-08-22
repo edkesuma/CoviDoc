@@ -72,8 +72,8 @@ function LoginFrom() {
                     <p className="ml-auto text-red-500">{message}</p>
                 </div>
                 <Button type="submit" className='bg-cyan-500'>Login</Button>
-                <div>Don’t have a account?
-                    <a href="#" className="text-cyan-400"> Sign Up here</a>
+                <div className="text-center">Don’t have a account?
+                    <Link to="/signUp" className="text-cyan-400"> Sign Up here</Link>
                 </div>
             </form>
         </div>

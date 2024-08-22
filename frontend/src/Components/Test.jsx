@@ -1,4 +1,4 @@
-import SignUp2 from "./Patient/SignUp2.jsx";
+import SignUp2 from "./SignUp/SignUp2.jsx";
 
 
 function Test() {

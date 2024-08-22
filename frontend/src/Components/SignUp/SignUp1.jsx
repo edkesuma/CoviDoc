@@ -1,7 +1,10 @@
 "use client";
 import {Button, Label, TextInput} from "flowbite-react";
+import {useNavigate} from 'react-router-dom';
 import loginImage from '../../assets/login.jpg'
+import {Link} from 'react-router-dom';
 import React, {useState} from 'react';
+import {useSignUp} from "./SignUpContext.jsx";
 
 
 function SignUpFrom() {
@@ -9,11 +12,16 @@ function SignUpFrom() {
     const [password, setPassword] = useState('');
     const [rePassword, setRePassword] = useState('');
     const [message, setMessage] = useState('\u00A0');
+    const navigate = useNavigate();
+    const {setInputEmail,setInputPassword} = useSignUp();
+
 
     const handleSubmit = (event) => {
         event.preventDefault();
         if(password==rePassword){
-            setMessage('\u00A0')
+            setInputEmail(email);
+            setInputPassword(password);
+            navigate('/signUp/next');
         }else
             setMessage('The confirmation password does not match. Try again.')
     };
@@ -50,8 +58,8 @@ function SignUpFrom() {
                     <p className="text-red-500">{message}</p>
                 </div>
                 <Button type="submit" className='bg-cyan-500'>Next</Button>
-                <div>Already have a account?
-                    <a href="#" className="text-cyan-400"> Login here</a>
+                <div className="text-center">Already have a account?
+                    <Link to="/login" className="text-cyan-400"> Login here</Link>
                 </div>
             </form>
         </div>

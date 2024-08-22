@@ -2,16 +2,20 @@
 import { Button, Label, TextInput, Select, Datepicker } from "flowbite-react";
 import loginImage from '../../assets/login.jpg';
 import React, { useState } from 'react';
+import {useNavigate, Link} from 'react-router-dom';
+import {useSignUp} from "./SignUpContext.jsx";
 
 function SignUpFrom() {
     const [fullName, setFullName] = useState('');
     const [gender, setGender] = useState('');
     const [birth, setBirth] = useState(null); 
     const [phone, setPhone] = useState('');
+    const navigate = useNavigate();
+    const {inputEmail,inputPassword} = useSignUp()
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        // Your form submission logic here
+        navigate('/signUp/signSucc');
     };
 
     return (
@@ -66,7 +70,7 @@ function SignUpFrom() {
                 </div>
                 <Button type="submit" className='bg-cyan-500'>Create Account</Button>
                 <div className="flex justify-center">
-                    <a href="#" className="text-cyan-400"> &lt; back</a>
+                    <Link to="/signUp" className="text-cyan-400"> &lt; back</Link>
                 </div>
             </form>
         </div>

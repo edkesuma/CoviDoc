@@ -1,10 +1,12 @@
 "use client";
 import {Button, Card} from "flowbite-react";
 import SignUpSuccImage from '../../assets/signUp.jpg';
+import {useNavigate} from "react-router-dom";
 
 function SignUpSucc() {
+    const navigate = useNavigate();
     const handleClick = () => {
-
+        navigate('/login')
     };
 
     return (
