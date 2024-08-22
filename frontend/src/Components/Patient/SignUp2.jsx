@@ -6,7 +6,7 @@ import React, { useState } from 'react';
 function SignUpFrom() {
     const [fullName, setFullName] = useState('');
     const [gender, setGender] = useState('');
-    const [birth, setBirth] = useState(null); // Default to null to indicate no date selected
+    const [birth, setBirth] = useState(null); 
     const [phone, setPhone] = useState('');
 
     const handleSubmit = (event) => {
@@ -73,16 +73,20 @@ function SignUpFrom() {
     );
 }
 
-function SignUpCard2() {
+function SignUp2() {
     return (
         <div
-            className="flex flex-row items-center rounded-lg shadow bg-gray-100 w-1/2 h-1/2">
-            <img className="object-cover w-1/3 h-full rounded-s-lg" src={loginImage} alt="Login Image" />
-            <div className="flex-1 w-2/3 h-full">
-                <SignUpFrom />
+            className="flex flex-row items-center rounded-lg shadow bg-gray-100"
+            style={{width: '1000px', height: '600px'}}
+        >
+            <img className="object-cover w-1/3 h-full rounded-s-lg" src={loginImage} alt="Login Image"/>
+            <div className="flex flex-col justify-center items-center w-2/3 h-full ">
+                <div className="w-3/4">
+                    <SignUpFrom/>
+                </div>
             </div>
         </div>
     );
 }
 
-export default SignUpCard2;
+export default SignUp2;

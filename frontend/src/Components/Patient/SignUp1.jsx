@@ -24,7 +24,7 @@ function SignUpFrom() {
                 <span className="absolute top-4 left-0 opacity-50 w-8 h-8 bg-cyan-500 rounded-full transform -translate-x-1/2 -translate-y-1/2"></span>
                 Sign Up
             </div>
-            <form className="flex max-w-md flex-col gap-4 w-full" onSubmit={handleSubmit}>
+            <form className="flex flex-col gap-4 w-full" onSubmit={handleSubmit}>
                 <div>
                     <div className="mb-2 block">
                         <Label htmlFor="email" value="Email"/>
@@ -58,17 +58,21 @@ function SignUpFrom() {
     );
 }
 
-function SignUpCard1() {
+function SignUp1() {
     return (
         <div
-            className="flex flex-row items-center rounded-lg shadow bg-gray-100 w-1/2 h-1/2">
+            className="flex flex-row items-center rounded-lg shadow bg-gray-100"
+            style={{width: '1000px', height: '600px'}}
+        >
             <img className="object-cover w-1/3 h-full rounded-s-lg" src={loginImage} alt="Login Image"/>
-            <div className="flex-1 w-2/3 h-full">
-                <SignUpFrom/>
+            <div className="flex flex-col justify-center items-center w-2/3 h-full ">
+                <div className="w-3/4">
+                    <SignUpFrom/>
+                </div>
             </div>
         </div>
     );
 }
 
-export default SignUpCard1;
+export default SignUp1;
 
