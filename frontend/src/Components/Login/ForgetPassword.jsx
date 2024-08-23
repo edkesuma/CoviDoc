@@ -1,18 +1,15 @@
 "use client";
 import {Button, Card, Label, TextInput,} from "flowbite-react";
 import {useNavigate} from 'react-router-dom';
-import {useEmail} from './EmailContext.jsx';
 import {Link} from 'react-router-dom';
 import React, {useState} from "react";
 
 function ForgetPassword() {
     const [email, setEmail] = useState('');
     const navigate = useNavigate();
-    const {setInputEmail} = useEmail();
 
     const handleClick = () => {
         if (email) {
-            setInputEmail(email);
             navigate('/login/reset');
         }
     };

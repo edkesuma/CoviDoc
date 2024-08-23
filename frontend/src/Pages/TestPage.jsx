@@ -1,11 +1,10 @@
-import Test from "../Components/Test";
+import Test from "../Components/Test.jsx";
 
 function TestPage() {
   return (
     <div>
       <Test/>
     </div>
-    
   );
 }
 

@@ -1,13 +1,11 @@
 "use client";
 import {Button, Card, Label, TextInput} from "flowbite-react";
 import {useNavigate, Link} from 'react-router-dom';
-import {useEmail} from './EmailContext.jsx';
 import React, {useState} from "react";
 
 function ResetPassword() {
     const [password, setPassword] = useState('');
     const [rePassword, setRePassword] = useState('');
-    const { inputEmail } = useEmail();
     const navigate = useNavigate();
     const [massage,setMassage] = useState('\u00A0')
 
