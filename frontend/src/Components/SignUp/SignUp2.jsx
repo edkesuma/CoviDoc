@@ -20,7 +20,7 @@ function SignUpFrom() {
 
     return (
         <div className="flex flex-col items-center">
-            <div className="relative text-5xl pb-8">
+            <div className="relative font-bold text-5xl pb-8">
                 <span className="absolute top-4 left-0 opacity-50 w-8 h-8 bg-cyan-500 rounded-full transform -translate-x-1/2 -translate-y-1/2"></span>
                 Sign Up
             </div>
