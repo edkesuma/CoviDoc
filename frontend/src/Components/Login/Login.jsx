@@ -1,8 +1,11 @@
 "use client";
 import {Button, Label, TextInput, Select} from "flowbite-react";
-import {Link} from 'react-router-dom';
+import {useNavigate, Link} from 'react-router-dom';
 import loginImage from '../../assets/login.jpg';
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
+import { AuthContext } from "../Authentication/AuthContext";
+import axios from "axios";
+import { jwtDecode } from "jwt-decode";
 
 //the function return userList
 function getUsers() {
@@ -17,22 +20,41 @@ function Login() {
     const [userType, setUserType] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    // error massage
-    const [message, setMessage] = useState('');
+    // error message
+    const [errorMessage, setErrorMessage] = useState('');
+    const { login } = useContext(AuthContext);
+    const navigate = useNavigate();
 
-    const handleSubmit = (event) => {
+    const redirectToUserHome = (token) => {
+        const user = jwtDecode(token);
+        console.log("Decoded user: ", user);
+        if (user.role === 'System Admin') {
+            return navigate('/systemAdmin/doctorManagement');
+        } else if (user.role === 'Doctor') {
+            return navigate('/doctor');
+        } else if (user.role === 'Patient') {
+            return navigate('/patient');
+        }
+    }
+
+    const handleSubmit = async (event) => {
         event.preventDefault();
-        const users = getUsers();
-
-        const matchedUser = users.find(user =>
-            user.userType === userType &&
-            user.email === email &&
-            user.password === password
-        );
-
-        if (!matchedUser) {
-            setMessage('Email or password error. Try again.');
-        } else setMessage('')
+        const response = await axios
+            .post("/api/authentication/login", {
+                userType: userType,
+                email: email,
+                password: password
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+        if (response.data.token) {
+            login(response.data.token);
+            redirectToUserHome(response.data.token);
+            // console.log("token", response.data.token);
+        } else {
+            setErrorMessage('Invalid credentials');
+        }
     };
 
     return (
@@ -55,9 +77,9 @@ function Login() {
                             </div>
                             <Select id="userType" required value={userType}
                                     onChange={(e) => setUserType(e.target.value)}
-                                    className="-mt-4">
+                                    className="mt-4">
                                 <option value="">Select User Type</option>
-                                <option value="Admin">Admin</option>
+                                <option value="System Admin">System Admin</option>
                                 <option value="Doctor">Doctor</option>
                                 <option value="Patient">Patient</option>
                             </Select>
@@ -65,20 +87,32 @@ function Login() {
                                 <div className="block">
                                     <Label htmlFor="email" value="Email"/>
                                 </div>
-                                <TextInput id="email" type="email" placeholder="name@flowbite.com" required
-                                           value={email}
-                                           onChange={(e) => setEmail(e.target.value)}/>
+                                <TextInput 
+                                    id="email" 
+                                    type="email" 
+                                    placeholder="user@mail.com"
+                                    required={true}
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    color={errorMessage === "" ? "gray" : "failure"}
+                                />
                             </div>
                             <div>
                                 <div className="block">
                                     <Label htmlFor="password" value="Password"/>
                                 </div>
-                                <TextInput id="password" type="password" required value={password}
-                                           onChange={(e) => setPassword(e.target.value)}/>
+                                <TextInput 
+                                    id="password"
+                                    type="password"
+                                    required
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    color={errorMessage === "" ? "gray" : "failure"}
+                                />
                             </div>
                             <div className="flex w-full">
                                 <Link to="/login/forget" className='text-cyan-400'>Forget password?</Link>
-                                <p className="ml-auto text-red-500">{message}</p>
+                                <p className="ml-auto text-red-500">{errorMessage}</p>
                             </div>
                             <Button type="submit" className='bg-cyan-500'>Login</Button>
                             <div className="text-center">Don’t have a account?

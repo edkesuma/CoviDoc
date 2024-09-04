@@ -167,4 +167,4 @@ cython_debug/
 .vscode/
 
 # Assets
-/controller/property_images
+/server/profilePicture
