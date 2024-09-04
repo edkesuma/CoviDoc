@@ -1,9 +1,9 @@
-import AboutUs from "./Landing/About/AboutUs.jsx";
+import ContactPage from "../Pages/Landing/ContactPage.jsx";
 
 function Test() {
     return (
         <div>
-            <AboutUs/>
+            <ContactPage/>
         </div>)
 }
 

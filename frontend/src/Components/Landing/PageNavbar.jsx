@@ -1,9 +1,9 @@
 "use client";
-import Logo from '../../../assets/logo.jpg'
+import Logo from '../../assets/logo.jpg'
 import {Button, Navbar} from "flowbite-react";
 import {useNavigate} from "react-router-dom";
 
-function ContactNavber() {
+function PageNavbar() {
     const navigate = useNavigate();
     const handleLogin = () => {
         navigate('/login');
@@ -13,7 +13,7 @@ function ContactNavber() {
     }
 
     return (
-        <Navbar fluid rounded className='h-24'>
+        <Navbar fluid rounded className='w-screen h-24'>
             <Navbar.Brand href="/" className='ml-20'>
                 <img src={Logo} className="h-16" alt="Logo"/>
             </Navbar.Brand>
@@ -25,11 +25,11 @@ function ContactNavber() {
             </div>
             <Navbar.Collapse>
                 <Navbar.Link href="/home" className="text-2xl"> Home </Navbar.Link>
-                <Navbar.Link href="/about" className="text-2xl">About</Navbar.Link>
-                <Navbar.Link href="/contact" active className="text-2xl text-cyan-400">Contact</Navbar.Link>
+                <Navbar.Link href="/about" className="text-2xl"> About </Navbar.Link>
+                <Navbar.Link href="/contact" className="text-2xl"> Contact </Navbar.Link>
             </Navbar.Collapse>
         </Navbar>
     );
 }
 
-export default ContactNavber
+export default PageNavbar
