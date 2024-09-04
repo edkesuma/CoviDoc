@@ -6,12 +6,19 @@ import React, {useState} from "react";
 
 function ForgetPassword() {
     const [email, setEmail] = useState('');
+    const [error, setError] = useState('');
     const navigate = useNavigate();
 
     const handleClick = () => {
-        if (email) {
-            navigate('/login/reset');
+        // Custom email validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            setError('Please enter a valid email address.');
+            return;
         }
+        setError('');
+        // Navigate to reset password page with email
+        navigate('/login/reset', { state: { email } });
     };
 
     return (
@@ -28,8 +35,9 @@ function ForgetPassword() {
                             <div className="block text-left">
                                 <Label htmlFor="email" value="Email" className="text-xl"/>
                             </div>
-                            <TextInput id="email" type="email" placeholder="name@flowbite.com" required value={email}
+                            <TextInput id="email" type="email" placeholder="user@mail.com" required={true} value={email}
                                        onChange={(e) => setEmail(e.target.value)}/>
+                            {error && <p className="text-red-500">{error}</p>}
                         </div>
                         <p className="mb-4">We will send you an email that will allow you to reset your password.</p>
                         <Button onClick={handleClick} className='bg-cyan-500 mb-4'>Request Password Reset</Button>
