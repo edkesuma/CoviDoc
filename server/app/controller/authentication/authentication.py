@@ -48,4 +48,4 @@ def verifyToken():
     """Verify token"""
     verify_jwt_in_request()
     claims = get_jwt()
-    return {"message": "Valid token", "role": claims["role"]}
+    return {"message": "Valid token", "role": claims["role"], "success": True}

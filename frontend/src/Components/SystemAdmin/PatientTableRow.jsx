@@ -4,7 +4,7 @@ import React, { useState } from "react";
 
 // Imported icons
 import { FaRegTrashAlt } from "react-icons/fa";
-import DeletePatientModal from "../Modal/DeletePatientModal";
+import DeletePatientModal from "./DeletePatientModal";
 
 function PatientTableRow(props) {
 	const [deleteShow, setDeleteShow] = useState(false);

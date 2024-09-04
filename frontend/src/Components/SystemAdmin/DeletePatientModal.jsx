@@ -17,11 +17,6 @@ function DeletePatientModal(props) {
               <Button
                 color="failure"
                 onClick={() =>
-                //   props.deletePromo(
-                //     props.data.promoCode,
-                //     props.data.startDate,
-                //     token
-                //   )
                 console.log("PATIENT DELETED")
                 }
               >

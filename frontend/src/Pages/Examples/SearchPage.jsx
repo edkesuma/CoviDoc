@@ -1,7 +1,7 @@
 import { Button, Label, TextInput } from "flowbite-react";
 import { useState, useEffect } from "react";
 import { FaSearch } from "react-icons/fa";
-import PatientTable from "../Components/SystemAdmin/PatientTable";
+import PatientTable from "../../Components/SystemAdmin/PatientTable";
 
 function SearchPage() {
     const [search, setSearch] = useState("");

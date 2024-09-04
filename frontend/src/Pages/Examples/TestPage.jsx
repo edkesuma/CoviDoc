@@ -1,4 +1,4 @@
-import Test from "../Components/Test.jsx";
+import Test from "../../Components/Test.jsx";
 
 function TestPage() {
   return (

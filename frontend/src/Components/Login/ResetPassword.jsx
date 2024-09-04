@@ -1,22 +1,24 @@
 "use client";
 import {Button, Card, Label, TextInput} from "flowbite-react";
-import {useNavigate, Link} from 'react-router-dom';
+import {useNavigate, Link, useLocation} from 'react-router-dom';
 import React, {useState} from "react";
 
 function ResetPassword() {
+    const location = useLocation();
+    const {email} = location.state;
     const [password, setPassword] = useState('');
     const [rePassword, setRePassword] = useState('');
     const navigate = useNavigate();
-    const [massage,setMassage] = useState('\u00A0')
+    const [message,setMessage] = useState('\u00A0');
 
     const handleClick = () => {
         if (!password) {
-            setMassage('\u00A0')
+            setMessage('\u00A0')
         }
         else if (password == rePassword){
             navigate('/login/setSucc');
         }else {
-            setMassage('The confirmation password does not match.')
+            setMessage('The confirmation password does not match.')
         }
     };
 
