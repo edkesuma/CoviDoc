@@ -16,8 +16,6 @@ from .utils import hashPassword, allowed_file, extractExtension
 router = Blueprint("patient", __name__)
 
 @router.route("/registerPatient", methods=["PUT"])
-@jwt_required()
-@role_required(["Patient"])
 def registerPatient() -> Dict[str, Union[str, int]]:
     """Patient registers new patient account"""
     patientId = f"P{str(uuid.uuid4().hex)}"
