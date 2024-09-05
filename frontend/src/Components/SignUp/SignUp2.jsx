@@ -4,17 +4,32 @@ import loginImage from '../../assets/login.jpg';
 import React, {useState} from 'react';
 import {useNavigate, Link} from 'react-router-dom';
 
-function SignUp2() {
-    const [fullName, setFullName] = useState('');
-    const [gender, setGender] = useState('');
-    const [birth, setBirth] = useState(null);
-    const [phone, setPhone] = useState('');
-    const navigate = useNavigate();
+function SignUp2({onCreateAccount, formData}) {
+    const [name, setName] = useState(formData.name);
+    const [gender, setGender] = useState(formData.gender);
+    const [dob, setDob] = useState(formData.dob);
+    const [phone, setPhone] = useState(formData.phone);
+    const [message, setMessage] = useState('\u00A0');
+
+    const validatePhone = (phone) => {
+        const re = /^[0-9]{8,15}$/;
+        return re.test(String(phone));
+    };
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        navigate('/signUp/signSucc');
+        if (!name || !gender || !dob || !phone) {
+            setMessage('All fields are required.');
+            return;
+        }
+        if (!validatePhone(phone)) {
+            setMessage('Invalid phone number format. It should be 8-15 digits.');
+            return;
+        }
+        setMessage('\u00A0'); // Clear the message
+        onCreateAccount({name, gender, dob, phone});
     };
+
     return (
         <div
             className="flex flex-row items-center rounded-lg shadow bg-gray-100"
@@ -32,10 +47,10 @@ function SignUp2() {
                         <form className="flex max-w-md flex-col gap-4 w-full" onSubmit={handleSubmit}>
                             <div>
                                 <div className="mb-2 block">
-                                    <Label htmlFor="fullName" value="Full Name"/>
+                                    <Label htmlFor="name" value="Full Name"/>
                                 </div>
-                                <TextInput id="fullName" placeholder="John Dow" required value={fullName}
-                                           onChange={(e) => setFullName(e.target.value)}/>
+                                <TextInput id="name" placeholder="John Doe" required value={name}
+                                           onChange={(e) => setName(e.target.value)}/>
                             </div>
                             <div>
                                 <div className="mb-2 block">
@@ -49,12 +64,12 @@ function SignUp2() {
                             </div>
                             <div>
                                 <div className="mb-2 block">
-                                    <Label htmlFor="birth" value="Date of Birth"/>
+                                    <Label htmlFor="dob" value="Date of Birth"/>
                                 </div>
                                 <Datepicker
-                                    id="birth"
-                                    selected={birth}
-                                    onSelectedDateChanged={(date) => setBirth(date)}
+                                    id="dob"
+                                    selected={dob}
+                                    onSelectedDateChanged={(date) => setDob(date)}
                                     defaultDate={new Date()}
                                     minDate={new Date(1900, 0, 1)}
                                     maxDate={new Date()}
@@ -62,7 +77,7 @@ function SignUp2() {
                                     showClearButton={false}
                                     showTodayButton={false}
                                     weekStart={7}
-                                    placeholderText="Select your birth date"
+                                    placeholdertext="Select your date of birth"
                                     required
                                 />
                             </div>
@@ -70,8 +85,11 @@ function SignUp2() {
                                 <div className="mb-2 block">
                                     <Label htmlFor="phone" value="Phone number"/>
                                 </div>
-                                <TextInput id="phone" required value={phone}
+                                <TextInput id="phone" required value={phone} placeholder="12345678"
                                            onChange={(e) => setPhone(e.target.value)}/>
+                            </div>
+                            <div className="flex w-full">
+                                <p className="text-red-500">{message}</p>
                             </div>
                             <Button type="submit" className='bg-cyan-500'>Create Account</Button>
                             <div className="flex justify-center">

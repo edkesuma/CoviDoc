@@ -44,7 +44,7 @@ function ResetPassword() {
                             <TextInput id="rePasswrod" type="password" required value={rePassword}
                                        onChange={(e) => setRePassword(e.target.value)}/>
                         </div>
-                        <div className="text-left mb-8 text-red-400 text-xl">{massage}</div>
+                        <div className="text-left mb-8 text-red-400 text-xl">{message}</div>
                         <Button onClick={handleClick} className='bg-cyan-500 mb-4'>Reset Password</Button>
                         <Link to="/login" className="text-red-400">Cancel</Link>
                     </div>

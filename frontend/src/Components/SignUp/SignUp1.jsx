@@ -6,20 +6,38 @@ import {Link} from 'react-router-dom';
 import React, {useState} from 'react';
 
 
-function SignUp1() {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+function SignUp1({onNext, formData}) {
+    const [email, setEmail] = useState(formData.email);
+    const [password, setPassword] = useState(formData.password);
     const [rePassword, setRePassword] = useState('');
     const [message, setMessage] = useState('\u00A0');
-    const navigate = useNavigate();
 
+    const validateEmail = (email) => {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(String(email).toLowerCase());
+    };
+
+    const validatePassword = (password) => {
+        // Password must be at least 8 characters long and contain at least one number and one special character
+        const re = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,}$/;
+        return re.test(String(password));
+    };
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        if (password == rePassword) {
-            navigate('/signUp/next');
-        } else
-            setMessage('The confirmation password does not match. Try again.')
+        if (!validateEmail(email)) {
+            setMessage('Invalid email format.');
+            return;
+        }
+        if (!validatePassword(password)) {
+            setMessage('Password must be at least 8 characters long and contain at least one number and one special character.');
+            return;
+        }
+        if (password !== rePassword) {
+            setMessage('The confirmation password does not match. Try again.');
+            return;
+        }
+        onNext({email, password});
     };
 
     return (

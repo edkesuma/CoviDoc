@@ -54,11 +54,11 @@ class Doctor(db.Model):
             phone = cls.query.filter_by(phone=details["phone"]).one_or_none()
             # Phone exist
             if phone:
-                return (False, "Phone number already exist")
+                return (False, f"Account with phone number {details['phone']} already exists.")
             # Email already exist
             email = cls.query.filter_by(email=details["email"]).one_or_none()
             if email:
-                return (False, "Email already exist")
+                return (False, f"Account with email {details['email']} already exists.")
             
             newDoctor = cls(**details)
             with current_app.app_context():
@@ -81,12 +81,12 @@ class Doctor(db.Model):
                     if "phone" in newDetails and newDetails["phone"] != doctor.phone:
                         phone = cls.query.filter_by(phone=newDetails["phone"]).one_or_none()
                         if phone:
-                            return (False, "Phone number already exist")
+                            return (False, f"Account with phone number {newDetails['phone']} already exists.")
                     # Check if email exists and belongs to another doctor
                     if "email" in newDetails and newDetails["email"] != doctor.email:
                         email = cls.query.filter_by(email=newDetails["email"]).one_or_none()
                         if email:
-                            return (False, "Email already exist")
+                            return (False, f"Account with email {newDetails['phone']} already exists.")
                     
                     # Update doctor account
                     for key, value in newDetails.items():
