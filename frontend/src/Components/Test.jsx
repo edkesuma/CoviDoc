@@ -1,9 +1,9 @@
-import ContactPage from "../Pages/Landing/ContactPage.jsx";
-
+import Suggested from "./Doctor/Consultation/View/Suggested.jsx";
 function Test() {
+
     return (
         <div>
-            <ContactPage/>
+            <Suggested/>
         </div>)
 }
 
