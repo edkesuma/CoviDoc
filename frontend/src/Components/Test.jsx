@@ -1,9 +1,9 @@
-import Suggested from "./Doctor/Consultation/View/Suggested.jsx";
+import ViewPDF from "./Doctor/Consultation/View/ViewPDF.jsx";
 function Test() {
 
     return (
         <div>
-            <Suggested/>
+            <ViewPDF/>
         </div>)
 }
 
