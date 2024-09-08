@@ -24,9 +24,9 @@ function PageFooter() {
                   <div>
                     <Footer.Title title="Quick Links" className="text-white text-2xl"/>
                     <Footer.LinkGroup col>
-                      <Footer.Link href="/home" className="text-white">•&nbsp;&nbsp;Home</Footer.Link>
-                      <Footer.Link href="/about" className="text-white">•&nbsp;&nbsp;About</Footer.Link>
-                      <Footer.Link href="contact" className="text-white">•&nbsp;&nbsp;Contact</Footer.Link>
+                      <Footer.Link href="/landing/home" className="text-white">•&nbsp;&nbsp;Home</Footer.Link>
+                      <Footer.Link href="/landing/about" className="text-white">•&nbsp;&nbsp;About</Footer.Link>
+                      <Footer.Link href="/landing/contact" className="text-white">•&nbsp;&nbsp;Contact</Footer.Link>
                     </Footer.LinkGroup>
                   </div>
                 </div>

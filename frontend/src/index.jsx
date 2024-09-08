@@ -34,6 +34,9 @@ import VisualizationsPage from "./Pages/Doctor/VisualizationsPage.jsx";
 import ConsultationHistoryPage from "./Pages/Patient/ConsultationHistoryPage.jsx";
 import PatientAccountPage from "./Pages/Patient/PatientAccountPage.jsx";
 import ConsultationDetailsPage from "./Pages/Patient/ConsultationDetailsPage.jsx";
+import AboutPage from "./Pages/Landing/AboutPage.jsx";
+import ContactPage from "./Pages/Landing/ContactPage.jsx";
+import HomePage from "./Pages/Landing/HomePage.jsx";
 
 // App entry point
 ReactDOM.createRoot(document.getElementById("root")).render(
@@ -45,10 +48,20 @@ ReactDOM.createRoot(document.getElementById("root")).render(
                 <Route path="/search" element={<SearchPage />} />
 
                 {/* Public routes */}
-                <Route 
-                    path="/" 
-                    element={<div>Landing page</div>} 
+                {/* Landing pages */}
+                <Route
+                    path="/landing/home"
+                    element={<HomePage />}
                 />
+                <Route 
+                    path="/landing/about" 
+                    element={<AboutPage />} 
+                />
+                <Route 
+                    path="/landing/contact" 
+                    element={<ContactPage />}
+                />
+                
                 <Route 
                     path="/login" 
                     element={
