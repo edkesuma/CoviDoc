@@ -1,15 +1,22 @@
 "use client";
 import Logo from '../../assets/logo.jpg'
 import {Button, Navbar} from "flowbite-react";
-import {useNavigate} from "react-router-dom";
+import {useNavigate, useLocation} from "react-router-dom";
 
 function PageNavbar() {
     const navigate = useNavigate();
+    const { pathname } = useLocation();
     const handleLogin = () => {
         navigate('/login');
     }
     const handleSignUp = () => {
         navigate('/signUp');
+    }
+
+    const landingPageNavigationLinks = {
+        "Home": "/landing/home",
+        "About": "/landing/about",
+        "Contact": "/landing/contact"
     }
 
     return (
@@ -24,9 +31,14 @@ function PageNavbar() {
                 <Navbar.Toggle/>
             </div>
             <Navbar.Collapse>
-                <Navbar.Link href="/home" className="text-2xl"> Home </Navbar.Link>
-                <Navbar.Link href="/about" className="text-2xl"> About </Navbar.Link>
-                <Navbar.Link href="/contact" className="text-2xl"> Contact </Navbar.Link>
+            {Object.keys(landingPageNavigationLinks).map((key, value) => {
+
+                    const link = landingPageNavigationLinks[key]
+                    if (link === pathname) {
+                        return (<Navbar.Link href={landingPageNavigationLinks[key]} key={value} active className="text-lg font-bold"> {key} </Navbar.Link>)
+                    }
+                    return <Navbar.Link href={landingPageNavigationLinks[key]} key={value} className="text-lg"> {key} </Navbar.Link>
+                })}
             </Navbar.Collapse>
         </Navbar>
     );
