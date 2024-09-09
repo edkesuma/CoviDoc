@@ -1,9 +1,10 @@
-import Test from "../Components/Test.jsx";
+// import Test from "../Components/Modal/.jsx";
+import ProfilePage from "../Pages/Login/ProfilePage.jsx";
 
 function TestPage() {
   return (
     <div>
-      <Test/>
+      <ProfilePage/>
     </div>
   );
 }

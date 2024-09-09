@@ -16,6 +16,7 @@ import SignUpPage1 from "./Pages/SignUp/SignUpPage1.jsx";
 import SignUpPage2 from "./Pages/SignUp/SignUpPage2.jsx";
 import SignSuccPage from "./Pages/SignUp/SignSuccPage.jsx";
 import SearchPage from "./Pages/SearchPage.jsx";
+// import ProfilePage from "./Pages/Login/ProfilePage.jsx";
 
 const router = createBrowserRouter(
     createRoutesFromElements(
@@ -30,6 +31,7 @@ const router = createBrowserRouter(
             <Route path="/signUp" element={<SignUpPage1 />} />
             <Route path="/signUp/next" element={<SignUpPage2 />} />
             <Route path="/signUp/signSucc" element={<SignSuccPage />} />
+            {/* <Route path="/login/ProfilePage" element={<ProfilePage />} /> */}
         </>
     )
 );
