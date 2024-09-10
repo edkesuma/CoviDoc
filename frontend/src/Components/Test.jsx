@@ -1,9 +1,10 @@
-import ViewPDF from "./Doctor/Consultation/View/ViewPDF.jsx";
-function Test() {
+"use client";
+import React from "react";
 
+
+function Test() {
     return (
         <div>
-            <ViewPDF/>
         </div>)
 }
 
