@@ -59,7 +59,7 @@ function SignUp1({onNext, formData}) {
                                 <div className="mb-2 block">
                                     <Label htmlFor="email" value="Email"/>
                                 </div>
-                                <TextInput id="email" type="email" placeholder="name@flowbite.com" required
+                                <TextInput id="email" type="email" placeholder="user@mail.com" required
                                            value={email}
                                            onChange={(e) => setEmail(e.target.value)}/>
                             </div>

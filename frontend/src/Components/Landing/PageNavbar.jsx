@@ -1,6 +1,7 @@
 "use client";
 import Logo from '../../assets/logo.jpg'
 import {Button, Navbar} from "flowbite-react";
+import { FaUser } from 'react-icons/fa';
 import {useNavigate, useLocation} from "react-router-dom";
 
 function PageNavbar() {
@@ -21,8 +22,8 @@ function PageNavbar() {
 
     return (
         <Navbar fluid rounded className='w-screen h-24'>
-            <Navbar.Brand href="/" className='ml-20'>
-                <img src={Logo} className="h-16" alt="Logo"/>
+            <Navbar.Brand href="/" className='ml-14'>
+                <img src={Logo} className="h-12" alt="Logo"/>
             </Navbar.Brand>
             <div className="flex md:order-2">
                 <Button pill size="lg" onClick={handleLogin} className="px-3 mr-8 bg-cyan-500">Login</Button>

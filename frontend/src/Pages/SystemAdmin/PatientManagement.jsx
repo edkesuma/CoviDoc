@@ -1,5 +1,7 @@
 import { useContext, useEffect } from "react";
 import { AuthContext } from "../../Components/Authentication/AuthContext";
+import ActorNavbar from "../../Components/ActorNavbar";
+import { Button } from "flowbite-react";
 
 function PatientManagement({}) {
     const { token } = useContext(AuthContext);
@@ -8,6 +10,7 @@ function PatientManagement({}) {
     }, []);
     return (
         <div>
+            <ActorNavbar />
             Patient Management
             <Button onClick={() => logout()}>LOGOUT</Button>
         </div>
