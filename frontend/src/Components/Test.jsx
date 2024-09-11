@@ -1,9 +1,10 @@
-import ContactPage from "../Pages/Landing/ContactPage.jsx";
+"use client";
+import React from "react";
+
 
 function Test() {
     return (
         <div>
-            <ContactPage/>
         </div>)
 }
 
