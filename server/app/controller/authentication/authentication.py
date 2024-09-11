@@ -36,6 +36,10 @@ def login() -> Dict[str, Union[str, int]]:
     access_token = create_access_token(
         identity=user.id, 
         additional_claims={
+            "email": user.email,
+            "name": user.name,
+            "id": user.id,
+            "profilePicture": user.profilePicture,
             "role": userType,
         })
     

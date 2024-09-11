@@ -59,7 +59,7 @@ function PrivateRoute({ systemAdmin = false, doctor = false, patient = false, ch
             return children;
         } else {
             // If user is not authorized, redirect to home page
-            return <Navigate to="/" />;
+            return <Navigate to="/landing/home" />;
         }
     }
 }
