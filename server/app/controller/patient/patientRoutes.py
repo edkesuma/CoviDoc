@@ -11,7 +11,7 @@ import os
 from app.model import Patient
 from flask import current_app
 from app.controller.authentication import role_required
-from .utils import hashPassword, allowed_file, extractExtension
+from .utils import hashPassword, allowed_file, extractExtension, uploadToGoogleCloud
 
 router = Blueprint("patient", __name__)
 
@@ -64,9 +64,9 @@ def updatePatient() -> Dict[str, Union[str, int]]:
         if profilePicture and allowed_file(profilePicture.filename): # type: ignore
             patientId = get_jwt_identity()
             extension = extractExtension(profilePicture.filename) # type: ignore
-            filename = secure_filename(f"PP-{patientId}.{extension}") # type: ignore
-            profilePictureUrl = os.path.join(current_app.config["PROFILE_PICTURE_UPLOAD_FOLDER"], filename)
-            profilePicture.save(profilePictureUrl)
+            filename = secure_filename(f"{patientId}.{extension}") # type: ignore
+            destinationBlobName = f"profilePictures/{filename}"
+            profilePictureUrl = uploadToGoogleCloud(current_app.config['BUCKET_NAME'], destinationBlobName, profilePicture)
             fieldsToUpdate["profilePictureUrl"] = profilePictureUrl
         else:
             return {"status code": 400, "message": "Invalid file type"}

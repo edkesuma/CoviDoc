@@ -11,7 +11,7 @@ import os
 from app.model import Doctor, Patient
 from flask import current_app
 from app.controller.authentication import role_required
-from .utils import hashPassword, allowed_file, extractExtension
+from .utils import hashPassword, allowed_file, extractExtension, uploadToGoogleCloud
 
 router = Blueprint("systemAdmin", __name__)
 
@@ -28,9 +28,9 @@ def createDoctor() -> Dict[str, Union[str, int]]:
         # Check that extension is image type
         if profilePicture and allowed_file(profilePicture.filename): # type: ignore
             extension = extractExtension(profilePicture.filename) # type: ignore
-            filename = secure_filename(f"PP-{doctorId}.{extension}") # type: ignore
-            profilePictureUrl = os.path.join(current_app.config["PROFILE_PICTURE_UPLOAD_FOLDER"], filename)
-            profilePicture.save(profilePictureUrl)
+            filename = secure_filename(f"{doctorId}.{extension}") # type: ignore
+            destinationBlobName = f"profilePictures/{filename}"
+            profilePictureUrl = uploadToGoogleCloud(current_app.config['BUCKET_NAME'], destinationBlobName, profilePicture)
         else:
             return {"status code": 400, "message": "Invalid file type"}
     else:
@@ -81,9 +81,9 @@ def updateDoctor() -> Dict[str, Union[str, int]]:
         profilePicture = request.files["profilePicture"]
         if profilePicture and allowed_file(profilePicture.filename): # type: ignore
             extension = extractExtension(profilePicture.filename) # type: ignore
-            filename = secure_filename(f"PP-{request.form.get('doctorId')}.{extension}") # type: ignore
-            profilePictureUrl = os.path.join(current_app.config["PROFILE_PICTURE_UPLOAD_FOLDER"], filename)
-            profilePicture.save(profilePictureUrl)
+            filename = secure_filename(f"{request.form.get('doctorId')}.{extension}") # type: ignore
+            destinationBlobName = f"profilePictures/{filename}"
+            profilePictureUrl = uploadToGoogleCloud(current_app.config['BUCKET_NAME'], destinationBlobName, profilePicture)
             fieldsToUpdate["profilePictureUrl"] = profilePictureUrl
         else:
             return {"status code": 400, "message": "Invalid file type"}
@@ -148,9 +148,9 @@ def createPatient() -> Dict[str, Union[str, int]]:
         # Check that extension is image type
         if profilePicture and allowed_file(profilePicture.filename):  # type: ignore
             extension = extractExtension(profilePicture.filename)  # type: ignore
-            filename = secure_filename(f"PP-{patientId}.{extension}")  # type: ignore
-            profilePictureUrl = os.path.join(current_app.config["PROFILE_PICTURE_UPLOAD_FOLDER"], filename)
-            profilePicture.save(profilePictureUrl)
+            filename = secure_filename(f"{patientId}.{extension}")  # type: ignore
+            destinationBlobName = f"profilePictures/{filename}"
+            profilePictureUrl = uploadToGoogleCloud(current_app.config['BUCKET_NAME'], destinationBlobName, profilePicture)
         else:
             return {"status code": 400, "message": "Invalid file type"}
     
@@ -201,9 +201,9 @@ def updatePatient() -> Dict[str, Union[str, int]]:
         profilePicture = request.files["profilePicture"]
         if profilePicture and allowed_file(profilePicture.filename): # type: ignore
             extension = extractExtension(profilePicture.filename) # type: ignore
-            filename = secure_filename(f"PP-{request.form.get('patientId')}.{extension}") # type: ignore
-            profilePictureUrl = os.path.join(current_app.config["PROFILE_PICTURE_UPLOAD_FOLDER"], filename)
-            profilePicture.save(profilePictureUrl)
+            filename = secure_filename(f"{request.form.get('patientId')}.{extension}") # type: ignore
+            destinationBlobName = f"profilePictures/{filename}"
+            profilePictureUrl = uploadToGoogleCloud(current_app.config['BUCKET_NAME'], destinationBlobName, profilePicture)
             fieldsToUpdate["profilePictureUrl"] = profilePictureUrl
         else:
             return {"status code": 400, "message": "Invalid file type"}
