@@ -3,9 +3,9 @@ import { IoPerson } from 'react-icons/io5';
 import { FaTransgender, FaBirthdayCake, FaPhoneAlt } from 'react-icons/fa';
 import { LuStethoscope } from 'react-icons/lu';
 import { IoIosMail, IoIosClose } from 'react-icons/io';
+import DropImageInput from '../OverallActorModal/DropImageInput'; // Make sure the path is correct
 
 function DoctorEditAccountModal() {
-  // Define constants for the input fields
   const [name, setName] = useState('John Doe');
   const [gender, setGender] = useState('Male');
   const [profession, setProfession] = useState('Radiologist');
@@ -14,18 +14,8 @@ function DoctorEditAccountModal() {
   const [phone, setPhone] = useState('1234 5678');
   const [profileImage, setProfileImage] = useState(null);
 
-  // Handle image upload separately
-  const handleImageUpload = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      setProfileImage(URL.createObjectURL(file));
-    }
-  };
-
-  // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Collecting all form data into one object
     const formData = {
       name,
       gender,
@@ -37,7 +27,6 @@ function DoctorEditAccountModal() {
     console.log(formData);
   };
 
-  // Handle modal close functionality
   const handleClose = () => {
     console.log('Modal closed!');
   };
@@ -56,21 +45,13 @@ function DoctorEditAccountModal() {
           <h2 className="text-2xl font-bold text-cyan-500 text-left">Editing Your Account</h2>
         </div>
 
-        {/* Left Side: Image */}
+        {/* Left Side: Image Upload using DropImageInput */}
         <div className="flex flex-col items-center relative w-64 h-70">
-          <img
-            src={profileImage ? profileImage : 'default_profile_image_url'}
-            alt="Profile"
-            className="w-60 h-70 object-cover mb-4 border rounded"
+          <DropImageInput
+            file={profileImage}
+            setFile={setProfileImage}
+            show={true}
           />
-          <label className="absolute bottom-4 left-2 right-2 bg-cyan-400 text-white text-center py-2 cursor-pointer opacity-70">
-            Change Image
-            <input
-              type="file"
-              className="hidden"
-              onChange={handleImageUpload}
-            />
-          </label>
         </div>
 
         {/* Right Side: Form Inputs */}
@@ -154,7 +135,7 @@ function DoctorEditAccountModal() {
             type="submit"
             className="w-full py-2 border border-cyan-400 text-cyan-400 rounded hover:bg-cyan-400 hover:text-white transition duration-300"
           >
-            Save Changes
+            Save
           </button>
         </div>
       </form>

@@ -1,119 +1,90 @@
-"use client";
+import React, { useState } from 'react';
+import Box from '@mui/material/Box';
+import Slider from '@mui/material/Slider';
 
-import React, { useState } from "react";
-import { Button, Label, TextInput } from "flowbite-react";
+// Helper function for slider value text
+function valuetext(value) {
+  return `${value}°C`;
+}
 
-function ChangePasswordForm() {
-  // State for individual inputs
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+const FilterForm = () => {
+  const [gender, setGender] = useState('');
+  const [status, setStatus] = useState('');
+  const [ageRange, setAgeRange] = useState([20, 37]);
 
-  // Function to handle input changes for currentPassword
-  const handleCurrentPasswordChange = (e) => {
-    setCurrentPassword(e.target.value);
-  };
+  // Function to handle gender selection
+  const handleGenderChange = (selectedGender) => setGender(selectedGender);
 
-  // Function to handle input changes for newPassword
-  const handleNewPasswordChange = (e) => {
-    setNewPassword(e.target.value);
-  };
+  // Function to handle status selection
+  const handleStatusChange = (selectedStatus) => setStatus(selectedStatus);
 
-  // Function to handle input changes for confirmPassword
-  const handleConfirmPasswordChange = (e) => {
-    setConfirmPassword(e.target.value);
-  };
-
-  // Function to handle form submission
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (newPassword === confirmPassword) {
-      console.log("Password changed successfully:", {
-        currentPassword,
-        newPassword,
-        confirmPassword,
-      });
-    } else {
-      console.log("Passwords do not match");
-    }
-  };
-
-  // Function to handle the Cancel button
-  const handleCancel = () => {
-    // Clear all input fields
-    setCurrentPassword("");
-    setNewPassword("");
-    setConfirmPassword("");
-    console.log("Password change canceled");
-  };
+  // Function to handle age range change
+  const handleAgeRangeChange = (event, newValue) => setAgeRange(newValue);
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-50">
-      <form
-        onSubmit={handleSubmit}
-        className="max-w-lg p-8 border-2 border-cyan-400 rounded-lg bg-white shadow-lg space-y-6"
-      >
+      <div className="max-w-sm p-6 border-2 border-cyan-400 rounded-lg bg-white shadow-lg text-center">
         {/* Title */}
-        <h2 className="text-2xl font-bold text-center text-cyan-500">Change Your Password</h2>
+        <h2 className="text-xl font-bold mb-6">Filter Options</h2>
 
-        {/* Current Password */}
-        <div className="w-full">
-          <Label htmlFor="currentPassword" value="Enter current password" />
-          <TextInput
-            id="currentPassword"
-            name="currentPassword"
-            type="password"
-            value={currentPassword}
-            onChange={handleCurrentPasswordChange}
-            required
-          />
+        {/* Gender Section */}
+        <div className="mb-6">
+          <label className="block font-bold mb-2">Gender</label>
+          <div className="flex justify-between">
+            <button
+              onClick={() => handleGenderChange('Male')}
+              className={`w-full py-2 mr-2 rounded ${gender === 'Male' ? 'bg-cyan-400 text-white' : 'bg-gray-100'}`}
+            >
+              Male
+            </button>
+            <button
+              onClick={() => handleGenderChange('Female')}
+              className={`w-full py-2 ml-2 rounded ${gender === 'Female' ? 'bg-cyan-400 text-white' : 'bg-gray-100'}`}
+            >
+              Female
+            </button>
+          </div>
         </div>
 
-        {/* New Password */}
-        <div className="w-full">
-          <Label htmlFor="newPassword" value="Enter new password" />
-          <TextInput
-            id="newPassword"
-            name="newPassword"
-            type="password"
-            value={newPassword}
-            onChange={handleNewPasswordChange}
-            required
-          />
+        {/* Age Range Section */}
+        <div className="mb-6">
+          <label className="block font-bold mb-2">Age</label>
+          <Box sx={{ width: 250 }}>
+            <Slider
+              value={ageRange}
+              onChange={handleAgeRangeChange}
+              valueLabelDisplay="auto"
+              getAriaValueText={valuetext}
+              min={0}
+              max={100}
+            />
+          </Box>
+          <div className="text-cyan-500 font-medium mt-2">
+            <span>{ageRange[0]}</span> - <span>{ageRange[1]}</span>
+          </div>
         </div>
 
-        {/* Confirm New Password */}
-        <div className="w-full">
-          <Label htmlFor="confirmPassword" value="Confirm new password" />
-          <TextInput
-            id="confirmPassword"
-            name="confirmPassword"
-            type="password"
-            value={confirmPassword}
-            onChange={handleConfirmPasswordChange}
-            required
-          />
+        {/* Status Section */}
+        <div className="mb-6">
+          <label className="block font-bold mb-2">Status</label>
+          <div className="flex justify-between">
+            <button
+              onClick={() => handleStatusChange('Open')}
+              className={`w-full py-2 mr-2 rounded ${status === 'Open' ? 'bg-cyan-400 text-white' : 'bg-gray-100'}`}
+            >
+              Open
+            </button>
+            <button
+              onClick={() => handleStatusChange('Closed')}
+              className={`w-full py-2 ml-2 rounded ${status === 'Closed' ? 'bg-cyan-400 text-white' : 'bg-gray-100'}`}
+            >
+              Closed
+            </button>
+          </div>
         </div>
-
-        {/* Buttons */}
-        <div className="flex justify-between">
-          <Button
-            type="button"
-            className="w-1/2 mr-2 border-red-500 text-red-500 hover:bg-red-500 hover:text-white"
-            onClick={handleCancel}
-          >
-            Cancel
-          </Button>
-          <Button
-            type="submit"
-            className="w-1/2 ml-2 border-cyan-400 text-cyan-500 hover:bg-cyan-400 hover:text-white"
-          >
-            Done
-          </Button>
-        </div>
-      </form>
+      </div>
     </div>
   );
-}
+};
 
-export default ChangePasswordForm;
+export default FilterForm;

@@ -5,6 +5,7 @@ import { IoPerson } from "react-icons/io5";
 import { FaTransgender, FaBirthdayCake, FaPhoneAlt } from "react-icons/fa";
 import { IoIosMail, IoIosClose } from "react-icons/io";
 import React, { useState } from "react";
+import DropImageInput from '../OverallActorModal/DropImageInput'; // Ensure the path to DropImageInput is correct
 
 function EditAccountForm() {
   const [name, setName] = useState("Laura Hamilton");
@@ -13,17 +14,8 @@ function EditAccountForm() {
   const [email, setEmail] = useState("laurah@gmail.com");
   const [phone, setPhone] = useState("8346 5123");
   const [allergies, setAllergies] = useState("Has peanut allergy.");
-  const [medicalHistory, setMedicalHistory] = useState(
-    "No known medical history."
-  );
+  const [medicalHistory, setMedicalHistory] = useState("No known medical history.");
   const [profileImage, setProfileImage] = useState(null);
-
-  const handleImageUpload = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      setProfileImage(URL.createObjectURL(file));
-    }
-  };
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -48,25 +40,12 @@ function EditAccountForm() {
 
         {/* Left Side: Image and Basic Details */}
         <div className="relative flex flex-col items-center px-5 space-y-3">
-            <div className="relative w-60 h-60">
-                <img
-                src={profileImage ? profileImage : "https://via.placeholder.com/200"}
-                alt="Profile"
-                className="w-60 h-60 object-cover mb-1"
-            />
-            <label className="absolute bottom-0 left-0 right-0 bg-cyan-400 text-white text-center py-2 cursor-pointer opacity-80">
-
-                Change Image
-                <input
-                type="file"
-                className="hidden"
-                accept="image/*"
-                onChange={handleImageUpload}
-                />
-            </label>
-            </div>
-
-      
+          {/* Replace with DropImageInput */}
+          <DropImageInput
+            file={profileImage}
+            setFile={setProfileImage}
+            show={true} // Ensure it allows file upload
+          />
 
           <div className="w-full flex items-center space-x-2">
             <IoPerson className="text-cyan-500 text-2xl" />
