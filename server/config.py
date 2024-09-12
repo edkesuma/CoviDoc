@@ -13,4 +13,5 @@ class Config(object):
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=1)
-    PROFILE_PICTURE_UPLOAD_FOLDER = os.path.join(basedir, 'profilePicture')
+    BUCKET_NAME = os.environ.get('BUCKET_NAME')
+    GOOGLE_APPLICATION_CREDENTIALS = os.environ.get('GOOGLE_APPLICATION_CREDENTIALS')

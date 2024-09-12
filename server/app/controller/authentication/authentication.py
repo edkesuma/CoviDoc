@@ -39,7 +39,7 @@ def login() -> Dict[str, Union[str, int]]:
             "email": user.email,
             "name": user.name,
             "id": user.id,
-            "profilePicture": user.profilePicture,
+            "profilePicture": user.profilePictureUrl,
             "role": userType,
         })
     

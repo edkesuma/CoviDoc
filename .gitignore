@@ -165,6 +165,7 @@ cython_debug/
 .DS_Store
 *.ipynb
 .vscode/
+servicekey*
 
 # Assets
 /server/profilePicture
