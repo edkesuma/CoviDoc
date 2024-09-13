@@ -9,15 +9,14 @@ The project aims to assist doctors and medical professionals in COVID-19 detecti
 ## SETUP
 ### What to Install
 FRONTEND
-1. ReactJS
+1. Node.js
+Download here: https://nodejs.org/en/download/prebuilt-installer
+2. ReactJS
 ```
 cd client
 npm install
 npm run dev
 ```
-
-2. Node.js
-Download here: https://nodejs.org/en/download/prebuilt-installer
 
 BACKEND
 1. Install Miniconda
