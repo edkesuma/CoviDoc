@@ -20,4 +20,4 @@ def uploadToGoogleCloud(bucketName, destinationBlobName, sourceFile, contentType
 
     blob.upload_from_file(sourceFile, content_type=contentType)
 
-    return f"https://storage.googleapis.com/{bucketName}/{destinationBlobName}"
+    return blob.public_url

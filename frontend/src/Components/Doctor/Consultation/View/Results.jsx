@@ -3,31 +3,39 @@ import React, {useState} from "react";
 import PatientModal from "../Modal/PatientModal.jsx";
 import Xray from '../../../../assets/xray.jpg'
 
-function Results() {
+function Results({ findings, consultationInfo, patientDetails }) {
     const [openModal, setOpenModal] = useState(false);
 
     function onCloseModal() {
         setOpenModal(false);
     }
 
-    const text1 =
-        'COVID-19 classification: Positive\n' +
-        'Confidence: 96%\n' +
-        'Severity: Mild\n' +
-        'Observations:\n' +
-        'The X-ray shows areas of increased opacity in the lungs, which could indicate several conditions, including pneumonia, fluid accumulation, or other infections.\n' +
-        'COVID-19 pneumonia typically shows bilateral (both sides) ground-glass opacities, often peripheral and lower lung zones, but can also appear as consolidation or other patterns.'
-    const text2 =
-        'Consulted on: 01/02/2025\n' +
-        'O2 saturation: 95\n' +
-        'Leukocyte count: 10\n' +
-        'Neutrophil count: 10\n' +
-        'Lymphocyte count: 10\n' +
-        'Recently been in ICU: True\n' +
-        'Recently in need of supplemental O2: False\n' +
-        'Intubation present: True\n' +
-        'Consultation notes: Previously had mild ground glass opacities.'
-    const patient = 'John Smith'
+    // const text1 =
+    //     'COVID-19 classification: Positive\n' +
+    //     'Confidence: 96%\n' +
+    //     'Severity: Mild\n' +
+    //     'Observations:\n' +
+    //     'The X-ray shows areas of increased opacity in the lungs, which could indicate several conditions, including pneumonia, fluid accumulation, or other infections.\n' +
+    //     'COVID-19 pneumonia typically shows bilateral (both sides) ground-glass opacities, often peripheral and lower lung zones, but can also appear as consolidation or other patterns.'
+    const findingsText =
+        'COVID-19 classification: ' + findings.classification + '\n' +
+        'Confidence: ' + findings.confidence + '\n' +
+        'Severity: ' + findings.severity + '\n' +
+        'Observations: ' + findings.observations
+
+    
+    const consultationInfoText =
+        'Consulted on: ' + consultationInfo.consultationDate + '\n' +
+        'O2 saturation: ' + consultationInfo.o2Saturation + '\n' +
+        'Leukocyte count: ' + consultationInfo.leukocyteCount + '\n' +
+        'Neutrophil count: ' + consultationInfo.neutrophilCount + '\n' +
+        'Lymphocyte count: ' + consultationInfo.lymphocyteCount + '\n' +
+        'Recently been in ICU: ' + consultationInfo.recentlyInICU + '\n' +
+        'Recently needed supplemental O2: ' + consultationInfo.recentlyNeededSupplementalO2 + '\n' +
+        'Intubation present: ' + consultationInfo.intubationPresent + '\n' +
+        'Consultation notes: ' + consultationInfo.consultationNotes
+    
+    const patient = patientDetails.name;
 
 
     return (
@@ -38,14 +46,14 @@ function Results() {
                     <p className='text-xl text-cyan-400'>X-RAY IMAGE</p>
                     <div className='bg-gray-100 flex justify-center items-center'
                          style={{height: '800px'}}>
-                        <img src={Xray}></img>
+                        <img src={consultationInfo.xrayImageUrl}></img>
                     </div>
                 </div>
                 <div className='w-1/3 pr-16'>
                     <p className='text-xl text-cyan-400'>FINDINGS</p>
                     <div className='border-2 border-cyan-400 rounded-lg px-8 py-8 mb-8'
                          style={{height: '350px', whiteSpace: 'pre-wrap'}}>
-                        {text1.split('\n').map((line, index) => (
+                        {findingsText.split('\n').map((line, index) => (
                             <p key={index}>{line}</p>
                         ))}
                     </div>
@@ -58,8 +66,8 @@ function Results() {
                             className="text-cyan-400 bg-transparent border-none cursor-pointer">
                             {patient}
                         </button>
-                        <PatientModal isShow={openModal} onClose={onCloseModal}/>
-                        {text2.split('\n').map((line, index) => (
+                        <PatientModal isShow={openModal} onClose={onCloseModal} patient={patient}/>
+                        {consultationInfoText.split('\n').map((line, index) => (
                             <p key={index}>{line}</p>
                         ))}
                     </div>

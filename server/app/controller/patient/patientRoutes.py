@@ -8,12 +8,23 @@ from werkzeug.utils import secure_filename
 import os
 
 # Local dependencies
-from app.model import Patient
+from app.model import Patient, Consultation
 from flask import current_app
 from app.controller.authentication import role_required
 from .utils import hashPassword, allowed_file, extractExtension, uploadToGoogleCloud
 
 router = Blueprint("patient", __name__)
+
+@router.route("/getPatientProfile", methods=["GET"])
+@jwt_required()
+@role_required(["Patient"])
+def getPatientProfile() -> Dict[str, Union[str, int]]:
+    """Get patient profile"""
+    patient = Patient.queryPatient(get_jwt_identity())
+    if patient:
+        return {"status code": 200, "patient": patient.serialize()} # type: ignore
+    else:
+        return {"status code": 400, "message": "Patient not found"}
 
 @router.route("/registerPatient", methods=["PUT"])
 def registerPatient() -> Dict[str, Union[str, int]]:
@@ -102,3 +113,15 @@ def deleteOwnPatientAccount() -> Dict[str, Union[str, int]]:
         return {"status code": 200, "success": returnedBool, "message": message}
     else:
         return {"status code": 400, "success": returnedBool, "message": message}
+    
+@router.route("/queryConsultationsUnderPatient", methods=["GET"])
+@jwt_required()
+@role_required(["Patient"])
+def queryConsultationsUnderPatient() -> Dict[str, Union[str, int]]:
+    """Query consultations under a patient"""
+    patientId = get_jwt_identity()
+    consultations = Consultation.queryAllPatientConsultations(patientId)
+    if consultations:
+        return {"status code": 200, "consultations": [consultation.serialize() for consultation in consultations]} # type: ignore
+    else:
+        return {"status code": 400, "message": "No consultations found"}

@@ -15,3 +15,5 @@ class Config(object):
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=1)
     BUCKET_NAME = os.environ.get('BUCKET_NAME')
     GOOGLE_APPLICATION_CREDENTIALS = os.environ.get('GOOGLE_APPLICATION_CREDENTIALS')
+    GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY')
+    WKHTML_PATH = os.environ.get('WKHTML_PATH')

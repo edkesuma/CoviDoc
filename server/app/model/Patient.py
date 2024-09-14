@@ -33,12 +33,22 @@ class Patient(db.Model):
             "name": self.name,
             "email": self.email,
             "phone": self.phone,
-            "dob": self.dob.strftime("%Y-%m-%d") if self.dob else None,
+            "dob": self.dob.strftime("%d/%m/%Y") if self.dob else None,
             "gender": self.gender,
             "medicalHistory": self.medicalHistory,
             "allergies": self.allergies,
             "currentState": self.currentState,
-            "profilePictureUrl": self.profilePictureUrl
+            "profilePictureUrl": self.profilePictureUrl,
+            "age": (date.today() - self.dob).days // 365 if self.dob else None
+        }
+
+    def getMedicalData(self) -> dict:
+        """Get specific medical patient data"""
+        return {
+            "gender": self.gender,
+            "medicalHistory": self.medicalHistory,
+            "allergies": self.allergies,
+            "age": (date.today() - self.dob).days // 365 if self.dob else None
         }
     
     @classmethod
