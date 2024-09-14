@@ -37,6 +37,10 @@ import ConsultationDetailsPage from "./Pages/Patient/ConsultationDetailsPage.jsx
 import AboutPage from "./Pages/Landing/AboutPage.jsx";
 import ContactPage from "./Pages/Landing/ContactPage.jsx";
 import HomePage from "./Pages/Landing/HomePage.jsx";
+import ViewFindingPage from "./Pages/Doctor/ViewFindingPage.jsx";
+import ViewPDFPage from "./Pages/Doctor/ViewPDFPage.jsx";
+import DoctorViewPatientPage from "./Pages/Doctor/DoctorViewPatientPage.jsx";
+import DoctorEditAccountModal from "./Components/Doctor/DoctorEditAccountModal.jsx";
 
 // App entry point
 ReactDOM.createRoot(document.getElementById("root")).render(
@@ -116,7 +120,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
                     path="/doctor/patient/:patientId"
                     element={
                         <PrivateRoute doctor>
-                            <PatientDetailsPage />
+                            <DoctorViewPatientPage />
                         </PrivateRoute>
                     }
                 />
@@ -124,7 +128,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
                     path="/doctor/patient/:patientId/:consultationId"
                     element={
                         <PrivateRoute doctor>
-                            <ViewConsultationDetailsPage />
+                            <ViewFindingPage />
                         </PrivateRoute>
                     }
                 />
@@ -166,6 +170,17 @@ ReactDOM.createRoot(document.getElementById("root")).render(
                 <Route path="/login/forget" element={<ForgetPage />} />
                 <Route path="/login/reset" element={<ResetPage />} />
                 <Route path="/login/setSucc" element={<ResetSuccPage />} /> 
+                
+                {/* <Route path="/test/doc/viewfinding" element={} /> */}
+                <Route path="/test/doc/viewpdf" element={<ViewPDFPage />} />
+                <Route path="/test/doc/consultationPage" element={<DoctorViewPatientPage />} />
+                <Route path="/test/doc/editAccountModal" element={<DoctorEditAccountModal />} />
+
+                <Route path="/test/doc/account" element={<DoctorAccountPage />} />
+                <Route path="/test/doc/patientdetails" element={<PatientDetailsPage />} />
+                <Route path="/test/doc/patientlist" element={<PatientListPage />} />
+                <Route path="/test/doc/consultationdetails" element={<ViewConsultationDetailsPage />} />
+                <Route path="/test/doc/visualizations" element={<VisualizationsPage />} />
             </Routes>
         </BrowserRouter>
     </AuthProvider>

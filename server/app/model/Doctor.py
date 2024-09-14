@@ -31,7 +31,7 @@ class Doctor(db.Model):
             "name": self.name,
             "email": self.email,
             "phone": self.phone,
-            "dob": self.dob.strftime("%Y-%m-%d") if self.dob else None,
+            "dob": self.dob.strftime("%d/%m/%Y") if self.dob else None,
             "gender": self.gender,
             "specialization": self.specialization,
             "profilePictureUrl": self.profilePictureUrl
