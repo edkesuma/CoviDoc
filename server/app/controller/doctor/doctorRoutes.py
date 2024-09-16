@@ -230,3 +230,16 @@ def updateViewableToPatient() -> Dict[str, Union[str, int]]:
         return {"status code": 200, "success": returnedBool, "message": message}
     else:
         return {"status code": 400, "success": returnedBool, "message": message}
+    
+@router.route("/updatePatientState", methods=["PATCH"])
+@jwt_required()
+@role_required(["Doctor"])
+def updatePatientState() -> Dict[str, Union[str, int]]:
+    """Update patient state"""
+    patientId = request.json.get("patientId")
+    currentState = request.json.get("currentState")
+    returnedBool, message = Patient.updatePatientState(patientId, currentState)
+    if returnedBool:
+        return {"status code": 200, "success": returnedBool, "message": message}
+    else:
+        return {"status code": 400, "success": returnedBool, "message": message}
