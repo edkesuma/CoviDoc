@@ -31,17 +31,22 @@ def login() -> Dict[str, Union[str, int]]:
     # Check if user exists and password is correct
     if not user or not bcrypt.check_password_hash(user.password, password):
         return {"status code": 401, "message": "Invalid credentials"}
+    
+    # Additional claims
+    additionalClaims = {
+        "email": user.email,
+        "name": user.name,
+        "id": user.id,
+        "role": userType,
+    }
+
+    if userType != "System Admin":
+        additionalClaims["profilePicture"] = user.profilePictureUrl
 
     # Generate access token
     access_token = create_access_token(
         identity=user.id, 
-        additional_claims={
-            "email": user.email,
-            "name": user.name,
-            "id": user.id,
-            "profilePicture": user.profilePictureUrl,
-            "role": userType,
-        })
+        additional_claims=additionalClaims)
     
     return {"token": access_token}
 
