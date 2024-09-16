@@ -114,6 +114,25 @@ class Patient(db.Model):
             return (False, "Failed to update patient")
         
     @classmethod
+    def updatePatientState(cls, id: str, newState: str) -> Tuple[bool, str]:
+        """Update a patient's state"""
+        try:
+            with current_app.app_context():
+                # Query patient account
+                patient = cls.queryPatient(id)
+                if patient:
+                    # Update patient state
+                    if newState not in ["Open", "Closed"]:
+                        return (False, "Invalid state. Must be either Open or Closed")
+                    patient.currentState = newState
+                    db.session.commit()
+                    return (True, "Updated patient state successfully")
+                return (False, "Patient not found")
+        except Exception as e:
+            print(e)
+            return (False, "Failed to update patient state")
+        
+    @classmethod
     def deletePatient(cls, id: str) -> Tuple[bool, str]:
         """Delete a patient account"""
         try:
