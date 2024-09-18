@@ -42,7 +42,7 @@ def registerPatient() -> Dict[str, Union[str, int]]:
         "email": request.form.get("email"),
         "password": hashPassword(request.form.get("password")), # type: ignore
         "phone": request.form.get("phone"),
-        "dob": datetime.strptime(request.form.get("dob"), "%Y-%m-%d"),  # type: ignore
+        "dob": datetime.strptime(request.form.get("dob"), "%d/%m/%Y"),  # type: ignore
         "gender": request.form.get("gender")
     }
     returnedBool, message = Patient.createPatient(patientJson)
@@ -84,7 +84,7 @@ def updatePatient() -> Dict[str, Union[str, int]]:
 
     # Convert dob to datetime if it exists
     if "dob" in fieldsToUpdate:
-        fieldsToUpdate["dob"] = datetime.strptime(fieldsToUpdate["dob"], "%Y-%m-%d") # type: ignore
+        fieldsToUpdate["dob"] = datetime.strptime(fieldsToUpdate["dob"], "%d/%m/%Y") # type: ignore
 
     returnedBool, message = Patient.updatePatient(get_jwt_identity(), fieldsToUpdate) # type: ignore
     if returnedBool:

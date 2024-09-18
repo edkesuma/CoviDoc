@@ -58,7 +58,7 @@ def updateDoctor() -> Dict[str, Union[str, int]]:
 
     # Convert dob to datetime if it exists
     if "dob" in fieldsToUpdate:
-        fieldsToUpdate["dob"] = datetime.strptime(fieldsToUpdate["dob"], "%Y-%m-%d") # type: ignore
+        fieldsToUpdate["dob"] = datetime.strptime(fieldsToUpdate["dob"], "%d/%m/%Y") # type: ignore
 
     returnedBool, message = Doctor.updateDoctor(get_jwt_identity(), fieldsToUpdate) # type: ignore
     if returnedBool:

@@ -46,7 +46,7 @@ def createDoctor() -> Dict[str, Union[str, int]]:
         "email": request.form.get("email"),
         "password": hashPassword(request.form.get("password")), # type: ignore
         "phone": request.form.get("phone"),
-        "dob": datetime.strptime(request.form.get("dob"), "%Y-%m-%d"), # type: ignore
+        "dob": datetime.strptime(request.form.get("dob"), "%d/%m/%Y"), # type: ignore
         "gender": request.form.get("gender"),
         "specialization": request.form.get("specialization"),
         "profilePictureUrl": profilePictureUrl
@@ -90,7 +90,7 @@ def updateDoctor() -> Dict[str, Union[str, int]]:
 
     # Convert dob to datetime if it exists
     if "dob" in fieldsToUpdate:
-        fieldsToUpdate["dob"] = datetime.strptime(fieldsToUpdate["dob"], "%Y-%m-%d") # type: ignore
+        fieldsToUpdate["dob"] = datetime.strptime(fieldsToUpdate["dob"], "%d/%m/%Y") # type: ignore
     if "password" in fieldsToUpdate:
         fieldsToUpdate["password"] = hashPassword(request.form.get("password")) # type: ignore
 
@@ -165,7 +165,7 @@ def createPatient() -> Dict[str, Union[str, int]]:
         "email": request.form.get("email"),
         "password": hashPassword(request.form.get("password")),  # type: ignore
         "phone": request.form.get("phone"),
-        "dob": datetime.strptime(request.form.get("dob"), "%Y-%m-%d"),  # type: ignore
+        "dob": datetime.strptime(request.form.get("dob"), "%d/%m/%Y"),  # type: ignore
         "gender": request.form.get("gender"),
         "allergies": request.form.get("allergies"),
         "medicalHistory": request.form.get("medicalHistory"),
@@ -210,7 +210,7 @@ def updatePatient() -> Dict[str, Union[str, int]]:
 
     # Convert dob to datetime if it exists
     if "dob" in fieldsToUpdate:
-        fieldsToUpdate["dob"] = datetime.strptime(fieldsToUpdate["dob"], "%Y-%m-%d") # type: ignore
+        fieldsToUpdate["dob"] = datetime.strptime(fieldsToUpdate["dob"], "%d/%m/%Y") # type: ignore
     if "password" in fieldsToUpdate:
         fieldsToUpdate["password"] = hashPassword(request.form.get("password")) # type: ignore
 
