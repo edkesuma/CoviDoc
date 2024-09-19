@@ -1,20 +1,63 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../Components/Authentication/AuthContext";
-import { Button } from "flowbite-react";
+import { Button, Spinner } from "flowbite-react";
 import ActorNavbar from "../../Components/ActorNavbar";
+import DocMainModal from "../../Components/Doctor/DocMainModal";
+import axios from "axios";
 
-function DoctorAccountPage({}) {
-    const { token, logout } = useContext(AuthContext);
-    useEffect(() => {
-        console.log("token", token);
-    }, []);
+function DoctorAccountPage() {
+  const { token, logout } = useContext(AuthContext);
+  const [doctorProfile, setDoctorProfile] = useState(null); // Store doctor's profile
+  const [isLoading, setIsLoading] = useState(true); // Loading state for API
+
+  // Fetch doctor's profile when the component mounts
+  useEffect(() => {
+    const fetchDoctorProfile = async () => {
+      try {
+        const response = await axios.get("/api/doctor/getDoctorProfile", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setDoctorProfile(response.data.doctor); // Set the doctor object correctly
+        setIsLoading(false);
+      } catch (error) {
+        console.log("Error fetching doctor profile:", error);
+        setIsLoading(false);
+      }
+    };
+
+    if (token) {
+      fetchDoctorProfile();
+    }
+  }, [token]);
+
+  // If the page is still loading, show a spinner
+  if (isLoading) {
     return (
-        <div>
-            <ActorNavbar />
-            Doctor Account Page
-            <Button onClick={() => logout()}>LOGOUT</Button>
-        </div>
+      <div className="text-center text-8xl">
+        <Spinner aria-label="Extra large spinner example" size="xl" />
+      </div>
     );
+  }
+
+  return (
+    <div>
+      <ActorNavbar />
+      <div className="container mx-auto px-4 py-10 bg-gray-100">
+        <h1 className="text-3xl font-bold mb-8">Your Account</h1>
+        
+        {/* Profile Section */}
+        {doctorProfile && <DocMainModal doctorProfile={doctorProfile} />} {/* Pass the profile data to the modal */}
+  
+        {/* Password Section */}
+        <div className="mt-10">
+          <h2 className="text-2xl font-semibold mb-4">Password and Authentication</h2>
+          <Button className="bg-cyan-400 text-white px-4">Change Password</Button>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export default DoctorAccountPage;

@@ -108,6 +108,8 @@ ReactDOM.createRoot(document.getElementById("root")).render(
                         </PrivateRoute>
                     }
                 />
+                                {/* this ones to be done */}
+
                 <Route
                     path="/doctor/account"
                     element={
@@ -149,6 +151,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
                         </PrivateRoute>
                     }
                 />
+                {/* this one to be done */}
                 <Route
                     path="/patient/account"
                     element={

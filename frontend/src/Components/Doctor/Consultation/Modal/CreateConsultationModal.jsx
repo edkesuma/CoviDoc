@@ -55,6 +55,14 @@ function CreateConsultationModal({ patientId, modalOpen, setModalOpen }) {
         formData.append('consultationNotes', consulNotes);
 
         axios
+            .patch('/api/patient/updatePatient', formData, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'multipart/form-data'
+                    }
+                })
+
+        axios
             .put(`/api/doctor/createConsultation`, formData, {
                 headers: {
                     Authorization: `Bearer ${token}`,
