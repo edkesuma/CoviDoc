@@ -8,7 +8,7 @@ from werkzeug.utils import secure_filename
 import os
 
 # Local dependencies
-from app.model import Patient, Consultation
+from app.model import Patient, Consultation, Report, Doctor
 from flask import current_app
 from app.controller.authentication import role_required
 from .utils import hashPassword, allowed_file, extractExtension, uploadToGoogleCloud
@@ -117,11 +117,20 @@ def deleteOwnPatientAccount() -> Dict[str, Union[str, int]]:
 @router.route("/queryConsultationsUnderPatient", methods=["GET"])
 @jwt_required()
 @role_required(["Patient"])
-def queryConsultationsUnderPatient() -> Dict[str, Union[str, int]]:
+def queryConsultationsUnderPatient() -> Dict[str, Union[str, int, list]]:
     """Query consultations under a patient"""
     patientId = get_jwt_identity()
-    consultations = Consultation.queryAllPatientConsultations(patientId)
-    if consultations:
-        return {"status code": 200, "consultations": [consultation.serialize() for consultation in consultations]} # type: ignore
-    else:
-        return {"status code": 400, "message": "No consultations found"}
+    consultations = Consultation.queryAllPatientConsultations(patientId) # type: ignore
+    consultationHistory = []
+    for consultation in consultations:
+        if Report.queryReport(consultation.reportId).classification == "Healthy":
+            status = "Healthy"
+        else:
+            status = Report.queryReport(consultation.reportId).severity
+        consultationHistory.append({
+            "status": status,
+            "consultationId": consultation.id,
+            "doctorName": Doctor.queryDoctor(consultation.doctorId).name,
+            "consultationDate": consultation.consultationDate.strftime("%d/%m/%Y")
+        }) 
+    return {"status code": 200, "success": True, "consultationHistory": consultationHistory}

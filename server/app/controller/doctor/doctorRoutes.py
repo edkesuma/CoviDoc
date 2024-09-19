@@ -187,7 +187,7 @@ def getPatientConsultationHistory() -> Dict[str, Union[str, int, list]]:
             "consultationId": consultation.id,
             "doctorName": Doctor.queryDoctor(consultation.doctorId).name,
             "viewableToPatient": Report.queryReport(consultation.reportId).viewableToPatient,
-            "consultationDate": consultation.consultationDate.strftime("%Y-%m-%d %H:%M:%S")
+            "consultationDate": consultation.consultationDate.strftime("%d/%m/%Y")
         }) 
     return {"status code": 200, "success": True, "consultationHistory": consultationHistory}
 
@@ -200,7 +200,7 @@ def getSingleConsultation() -> Dict[str, Union[str, int, bool]]:
     consultation = Consultation.queryConsultation(consultationId) # type: ignore
     data = {
         "consultationId": consultation.id,
-        "consultationDate": consultation.consultationDate.strftime("%Y-%m-%d %H:%M:%S"),
+        "consultationDate": consultation.consultationDate.strftime("%d/%m/%Y"),
         "doctorName": Doctor.queryDoctor(consultation.doctorId).name,
         "classification": Report.queryReport(consultation.reportId).classification,
         "viewableToPatient": Report.queryReport(consultation.reportId).viewableToPatient,
