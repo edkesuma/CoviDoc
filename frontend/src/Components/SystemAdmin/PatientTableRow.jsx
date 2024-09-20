@@ -29,9 +29,9 @@ function PatientTableRow(props) {
 				</Button>
 			</Table.Cell>
 			<DeletePatientModal
-			show={deleteShow}
-			onClose={() => setDeleteShow(false)}
-			data={props.data}
+				show={deleteShow}
+				onClose={() => setDeleteShow(false)}
+				data={props.data}
 			/>
 		</Table.Row>
 	);
