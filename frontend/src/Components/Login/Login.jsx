@@ -73,11 +73,11 @@ function Login() {
                         </div>
                         <form className="flex flex-col gap-4 w-full" onSubmit={handleSubmit}>
                             <div className="block">
-                                <Label htmlFor="userType" value="Select User Type"/>
+                                <Label htmlFor="userType" value="User Type"/>
                             </div>
                             <Select id="userType" required value={userType}
                                     onChange={(e) => setUserType(e.target.value)}
-                                    className="mt-4">
+                                    >
                                 <option value="">Select User Type</option>
                                 <option value="System Admin">System Admin</option>
                                 <option value="Doctor">Doctor</option>
@@ -115,7 +115,7 @@ function Login() {
                                 <p className="ml-auto text-red-500">{errorMessage}</p>
                             </div>
                             <Button type="submit" className='bg-cyan-500'>Login</Button>
-                            <div className="text-center">Don’t have a account?
+                            <div className="text-center">Don’t have an account?
                                 <Link to="/signUp" className="text-cyan-400"> Sign Up here</Link>
                             </div>
                         </form>

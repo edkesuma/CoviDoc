@@ -81,7 +81,7 @@ function SignUp1({onNext, formData}) {
                                 <p className="text-red-500">{message}</p>
                             </div>
                             <Button type="submit" className='bg-cyan-500'>Next</Button>
-                            <div className="text-center">Already have a account?
+                            <div className="text-center">Already have an account?
                                 <Link to="/login" className="text-cyan-400"> Login here</Link>
                             </div>
                         </form>

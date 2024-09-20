@@ -11,6 +11,7 @@ import SeverityIllnessChart from "../../Components/Doctor/Analytics/SeverityIlln
 import SymptomPrevalenceHM from "../../Components/Doctor/Analytics/SymptomsPrevelanceHM.jsx";
 import { IoArrowBackCircleOutline } from "react-icons/io5";
 import { Button, Card } from "flowbite-react";
+import ActorNavbar from "../../Components/ActorNavbar.jsx";
 
 function VisualizationsPage() {
     const [selectedChart, setSelectedChart] = useState("Age Distribution");
@@ -23,7 +24,7 @@ function VisualizationsPage() {
     return (
         <div className='flex flex-col items-center'>
             {/* Navbar Section */}
-            <ConsultationNavbar />
+            <ActorNavbar />
 
             {/* Page Title */}
             <div className='ml-20 my-10 font-bold text-3xl'>{selectedChart}</div>

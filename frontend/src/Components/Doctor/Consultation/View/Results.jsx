@@ -10,13 +10,6 @@ function Results({ findings, consultationInfo, patientDetails }) {
         setOpenModal(false);
     }
 
-    // const text1 =
-    //     'COVID-19 classification: Positive\n' +
-    //     'Confidence: 96%\n' +
-    //     'Severity: Mild\n' +
-    //     'Observations:\n' +
-    //     'The X-ray shows areas of increased opacity in the lungs, which could indicate several conditions, including pneumonia, fluid accumulation, or other infections.\n' +
-    //     'COVID-19 pneumonia typically shows bilateral (both sides) ground-glass opacities, often peripheral and lower lung zones, but can also appear as consolidation or other patterns.'
     const findingsText =
         'COVID-19 classification: ' + findings.classification + '\n' +
         'Confidence: ' + findings.confidence + '\n' +
@@ -30,7 +23,7 @@ function Results({ findings, consultationInfo, patientDetails }) {
         'Leukocyte count: ' + consultationInfo.leukocyteCount + '\n' +
         'Neutrophil count: ' + consultationInfo.neutrophilCount + '\n' +
         'Lymphocyte count: ' + consultationInfo.lymphocyteCount + '\n' +
-        'Recently been in ICU: ' + consultationInfo.recentlyInICU + '\n' +
+        'Recently been in ICU: ' + consultationInfo.recentlyInIcu + '\n' +
         'Recently needed supplemental O2: ' + consultationInfo.recentlyNeededSupplementalO2 + '\n' +
         'Intubation present: ' + consultationInfo.intubationPresent + '\n' +
         'Consultation notes: ' + consultationInfo.consultationNotes

@@ -10,6 +10,7 @@ function PatientListPage() {
     const { token, logout } = useContext(AuthContext);
     const [isLoading, setIsLoading] = useState(true);
     const [patients, setPatients] = useState([]);
+    const [search, setSearch] = useState("");
 
     useEffect(() => {
         if (token) {
@@ -30,6 +31,10 @@ function PatientListPage() {
         }
     }, [token]);
 
+    const filteredPatients = patients.filter(patient =>
+        patient.name.toLowerCase().includes(search.toLowerCase())
+    );
+
     const handleUpdate = (patientId, newState) => {
         setPatients(prevPatients =>
             prevPatients.map(patient =>
@@ -47,17 +52,15 @@ function PatientListPage() {
                 className="mr w-1/4 mx-20 mb-10"
                 icon={FaSearch}
                 sizing="lg"
+                onChange={(e) => setSearch(e.target.value)}
             />
             {isLoading ? (
                 <div className="mt-20 text-center ">
                     <Spinner aria-label="Loading patients" size="xl" />
                 </div>
             ) : (
-                <ViewPatients patients={patients} token={token} onUpdate={handleUpdate} />
+                <ViewPatients patients={filteredPatients} token={token} onUpdate={handleUpdate} />
             )}
-            <div className="mt-10 flex justify-center">
-                <Button onClick={() => logout()}>LOGOUT</Button>
-            </div>
         </div>
     );
 }

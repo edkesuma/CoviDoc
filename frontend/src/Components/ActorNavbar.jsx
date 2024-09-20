@@ -14,6 +14,8 @@ function ActorNavbar() {
     const user = jwtDecode(token);
     const [imageError, setImageError] = useState(false);
 
+    console.log("User profile pic: ", user);
+
     const handleLogout = () => {
         logout();
         navigate('/login');
@@ -44,7 +46,7 @@ function ActorNavbar() {
 
     return (
         <Navbar fluid rounded className='w-screen h-24'>
-            <Navbar.Brand href="/landing/home" className='ml-14'>
+            <Navbar.Brand href="/" className='ml-14'>
                 <img src={Logo} className="h-12" alt="Logo"/>
             </Navbar.Brand>
 
