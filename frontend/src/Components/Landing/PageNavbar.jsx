@@ -15,9 +15,9 @@ function PageNavbar() {
     }
 
     const landingPageNavigationLinks = {
-        "Home": "/landing/home",
-        "About": "/landing/about",
-        "Contact": "/landing/contact"
+        "Home": "/",
+        "About": "/about",
+        "Contact": "/contact"
     }
 
     return (

@@ -17,3 +17,4 @@ class Config(object):
     GOOGLE_APPLICATION_CREDENTIALS = os.environ.get('GOOGLE_APPLICATION_CREDENTIALS')
     GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY')
     WKHTML_PATH = os.environ.get('WKHTML_PATH')
+    CLASSIFICATION_MODEL_PATH = os.environ.get('CLASSIFICATION_MODEL_PATH')
