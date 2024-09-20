@@ -81,8 +81,7 @@ function DoctorViewPatientPage() {
         <div className='flex flex-col items-center'>
             <div>
                 <ActorNavbar />
-                <CreateConsultationModal patientId={patientId} modalOpen={consultationModalOpen} setModalOpen={setConsultationModalOpen} />
-                <div className='flex flex-row ml-20 items-center my-10'>
+                 <div className='flex flex-row ml-20 items-center my-10'>
                     <IoArrowBackCircleOutline color='cyan' className='h-12 w-12'/>
                     <button className='text-4xl ml-2 text-cyan-300 bg-transparent border-none cursor-pointer'>Back
                     </button>

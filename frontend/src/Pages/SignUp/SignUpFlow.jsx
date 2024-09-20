@@ -23,13 +23,20 @@ function SignUpFlow() {
         navigate("/signUp/next");
     };
 
+    const formatDateToDDMMYYYY = (date) => {
+        const day = date.getDate();
+        const month = date.getMonth() + 1;
+        const year = date.getFullYear();
+        return `${day}/${month}/${year}`;
+    }
+
     const convertToFormDataFormat = (data) => {
         const formData = new FormData();
         for (const key in data) {
             if (key === "dob" && data["dob"]) {
                 // Convert dob to YYYY-MM-DD format
                 const date = data["dob"];
-                const formattedDate = date.toISOString().split("T")[0];
+                const formattedDate = formatDateToDDMMYYYY(date);
                 formData.append(key, formattedDate);
             } else {
                 formData.append(key, data[key]);
