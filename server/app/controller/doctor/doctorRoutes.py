@@ -95,6 +95,7 @@ def createConsultation() -> Dict[str, Union[str, int]]:
     """Doctor creates a consultation"""
     consultationId = f"C{str(uuid.uuid4().hex)}"
     consultationDetails = {
+        "consultationId": consultationId,
         "consultationDate": request.form.get("consultationDate"),
         "doctorId": get_jwt_identity(),
         "patientId": request.form.get("patientId"),
@@ -103,9 +104,9 @@ def createConsultation() -> Dict[str, Union[str, int]]:
         "leukocyteCount": int(request.form.get("leukocyteCount")), # type: ignore
         "neutrophilCount": int(request.form.get("neutrophilCount")), # type: ignore
         "lymphocyteCount": int(request.form.get("lymphocyteCount")), # type: ignore
-        "recentlyInIcu": bool(request.form.get("recentlyInIcu")),
-        "recentlyNeededSupplementalO2": bool(request.form.get("recentlyNeededSupplementalO2")),
-        "intubationPresent": bool(request.form.get("intubationPresent")),
+        "recentlyInIcu": request.form.get("recentlyInIcu") == 'true',
+        "recentlyNeededSupplementalO2": request.form.get("recentlyNeededSupplementalO2") == 'true',
+        "intubationPresent": request.form.get("intubationPresent") == 'true',
         "consultationNotes": request.form.get("consultationNotes")
     }
     # Upload xray image to Google Cloud
@@ -121,7 +122,7 @@ def createConsultation() -> Dict[str, Union[str, int]]:
 
     returnedBool, message = Consultation.createConsultation(consultationDetails)
     if returnedBool:
-        return {"status code": 200, "success": returnedBool, "message": message}
+        return {"status code": 200, "success": returnedBool, "message": message, "consultationId": consultationId}
     else:
         return {"status code": 400, "success": returnedBool, "message": message}
     
@@ -148,6 +149,62 @@ def getAIResults() -> Dict[str, Union[str, int]]:
         return {"status code": 200, "success": returnedBool, "message": message, "collectedData": collectedData} # type: ignore
     else:
         return {"status code": 400, "success": returnedBool, "message": message}
+    
+@router.route("/updatePrescriptionsLifestyleChanges", methods=["PATCH"])
+@jwt_required()
+@role_required(["Doctor"])
+def updatePrescriptionsLifestyleChanges() -> Dict[str, Union[str, int]]:
+    """Doctor updates prescriptions and lifestyle changes"""
+    consultationId = request.json.get("consultationId")
+    prescriptions = request.json.get("prescriptions")
+    lifestyleChanges = request.json.get("lifestyleChanges")
+    reportId = Consultation.queryConsultation(consultationId).reportId
+    # print(f"Prescriptions: {prescriptions}, Lifestyle Changes: {lifestyleChanges}, Consultation ID: {consultationId}")
+    returnedBool, message = Report.updatePrescriptionsLifestyleChanges(reportId, prescriptions, lifestyleChanges)
+    if returnedBool:
+        return {"status code": 200, "success": returnedBool, "message": message}
+    else:
+        return {"status code": 400, "success": returnedBool, "message": message}
+
+@router.route("/generateReport", methods=["PUT"])
+@jwt_required()
+@role_required(["Doctor"])
+def generateReport() -> Dict[str, Union[str, int]]:
+    """Doctor generates a report"""
+    consultationId = request.json.get("consultationId")
+    consultation = Consultation.queryConsultation(consultationId)
+    reportId = consultation.reportId
+    xrayImageUrl = consultation.xrayImageUrl
+    returnedBool, message = Report.generateReport(reportId, xrayImageUrl, consultationId)
+    if returnedBool:
+        return {"status code": 200, "success": returnedBool, "message": message}
+    else:
+        return {"status code": 400, "success": returnedBool, "message": message}
+
+@router.route("/viewReportPage", methods=["GET"])
+@jwt_required()
+@role_required(["Doctor"])
+def viewReportPage() -> Dict[str, Union[str, int, list]]:
+    """Doctor views a report page"""
+    consultationId = request.args.get("consultationId")
+    if not consultationId:
+        return {"status code": 400, "success": False, "message": "Consultation ID not provided"}
+    consultation = Consultation.queryConsultation(consultationId)
+    report = Report.queryReport(consultation.reportId)
+    if report.classification == "Healthy":
+        status = "Healthy"
+    else:
+        status = report.severity
+    data = {
+        "consultationId": consultation.id,
+        "consultationDate": consultation.consultationDate.strftime("%d/%m/%Y"),
+        "doctorName": Doctor.queryDoctor(consultation.doctorId).name,
+        "patientView": report.viewableToPatient,
+        "classification": report.classification,
+        "status": status,
+        "reportUrl": report.covidReportUrl
+    }
+    return {"status code": 200, "success": True, "data": data} # type: ignore
     
 @router.route("/getPatientDetails", methods=["GET"])
 @jwt_required()
@@ -176,6 +233,9 @@ def getPatientConsultationHistory() -> Dict[str, Union[str, int, list]]:
     """Get consultation history of patient"""
     patientId = request.args.get("patientId")
     consultations = Consultation.queryAllPatientConsultations(patientId) # type: ignore
+    print(f"Consultations: {consultations}")
+    if consultations == []:
+        return {"status code": 200, "success": True, "message": "Patient has no consultations", "consultationHistory": []}
     consultationHistory = []
     for consultation in consultations:
         if Report.queryReport(consultation.reportId).classification == "Healthy":

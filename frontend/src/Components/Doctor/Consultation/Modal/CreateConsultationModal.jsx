@@ -1,11 +1,12 @@
 "use client";
 
 import {Button, Checkbox, Label, Modal, TextInput, Datepicker, Textarea} from "flowbite-react";
-import React, {useContext, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import DropImageInput from "../../../OverallActorModal/DropImageInput";
 import axios from "axios";
 import { AuthContext } from "../../../Authentication/AuthContext";
 import { format } from "date-fns";
+import { useNavigate } from "react-router-dom";
 
 function CreateConsultationModal({ patientId, modalOpen, setModalOpen }) {
     const { token } = useContext(AuthContext);
@@ -20,6 +21,7 @@ function CreateConsultationModal({ patientId, modalOpen, setModalOpen }) {
     const [intubation, setIntubation] = useState(false)
     const [xrayImage, setXrayImage] = useState(null)
     const [consulNotes, setConsulNotes] = useState('')
+    const navigate = useNavigate();
 
     const handleCheckboxChange = (event) => {
         const { id, checked } = event.target;
@@ -31,13 +33,6 @@ function CreateConsultationModal({ patientId, modalOpen, setModalOpen }) {
             setIntubation(checked);
         }
     };
-
-    const formatDateToDDMMYYYY = (date) => {
-        const day = date.getDate();
-        const month = date.getMonth() + 1;
-        const year = date.getFullYear();
-        return `${day}/${month}/${year}`;
-    }
 
     const createConsultation = () => {
         var formData = new FormData();
@@ -55,14 +50,6 @@ function CreateConsultationModal({ patientId, modalOpen, setModalOpen }) {
         formData.append('consultationNotes', consulNotes);
 
         axios
-            .patch('/api/patient/updatePatient', formData, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    'Content-Type': 'multipart/form-data'
-                    }
-                })
-
-        axios
             .put(`/api/doctor/createConsultation`, formData, {
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -72,22 +59,11 @@ function CreateConsultationModal({ patientId, modalOpen, setModalOpen }) {
             .then((response) => {
                 console.log("Consultation created successfully: ", response.data);
                 setModalOpen(false);
+                navigate(`/doctor/patient/${patientId}/${response.data.consultationId}`);
             })
             .catch((error) => {
                 console.log("Error creating consultation: ", error);
             });
-            
-        // console.log("Date: ", date);
-        // console.log("Temperature: ", temperature);
-        // console.log("O2: ", o2);
-        // console.log("Leukocyte: ", leukocyte);
-        // console.log("Neutrophil: ", neutrophil);
-        // console.log("Lymphocyte: ", lymphocyte);
-        // console.log("ICU: ", icu);
-        // console.log("Supplemental: ", supplemental);
-        // console.log("Intubation: ", intubation);
-        // console.log("Xray Image: ", xrayImage);
-        // console.log("Consultation Notes: ", consulNotes);
     }
 
 

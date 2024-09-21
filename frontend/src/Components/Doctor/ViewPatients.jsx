@@ -2,8 +2,10 @@ import {FaUser} from "react-icons/fa";
 import {Card, Dropdown} from "flowbite-react";
 import React from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 function ViewPatients({patients, token, onUpdate}) {
+    const navigate = useNavigate();
     const updatePatientState = (patientId, newState) => {
         console.log(newState);
         axios
@@ -35,7 +37,7 @@ function ViewPatients({patients, token, onUpdate}) {
                 <div className="w-1/4">Current State</div>
             </div>
             {patients.map((patient) => (
-                <Card key={patient.patientId} className="p-4">
+                <Card key={patient.patientId} onClick={() => navigate(`/doctor/patient/${patient.patientId}`)} className="p-4 cursor-pointer hover:bg-gray-200 transition-colors duration-200">
                     <div className="flex flex-row items-center">
                         <div className="w-1/6">
                             {patient.profilePictureUrl ? (
@@ -50,7 +52,7 @@ function ViewPatients({patients, token, onUpdate}) {
                         </div>
                         <div className="w-1/4">{patient.name}</div>
                         <div className="w-1/4">{patient.email}</div>
-                        <div className="w-1/4">
+                        <div className="w-1/4" onClick={(e) => e.stopPropagation()}>
                             <Dropdown label={patient.currentState} dismissOnClick={false} color='cyan'>
                                 <Dropdown.Item onClick={() => updatePatientState(patient.patientId, "Open")}>
                                     Open

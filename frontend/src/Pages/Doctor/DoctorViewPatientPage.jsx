@@ -6,7 +6,7 @@ import {Button, Card, Spinner} from "flowbite-react";
 import ActorNavbar from "../../Components/ActorNavbar.jsx";
 import { useContext, useState, useEffect } from "react";
 import { AuthContext } from "../../Components/Authentication/AuthContext.jsx";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import CreateConsultationModal from "../../Components/Doctor/Consultation/Modal/CreateConsultationModal.jsx";
 
@@ -17,6 +17,7 @@ function DoctorViewPatientPage() {
     const [consultations, setConsultations] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [consultationModalOpen, setConsultationModalOpen] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (token && patientId) {
@@ -82,6 +83,8 @@ function DoctorViewPatientPage() {
             <div>
                 <ActorNavbar />
                  <div className='flex flex-row ml-20 items-center my-10'>
+                <CreateConsultationModal patientId={patientId} modalOpen={consultationModalOpen} setModalOpen={setConsultationModalOpen} />
+                <div onClick={() => navigate("/doctor")} className='flex flex-row ml-20 items-center my-10 cursor-pointer'>
                     <IoArrowBackCircleOutline color='cyan' className='h-12 w-12'/>
                     <button className='text-4xl ml-2 text-cyan-300 bg-transparent border-none cursor-pointer'>Back
                     </button>

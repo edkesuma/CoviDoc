@@ -9,9 +9,18 @@ import json
 import jinja2
 from google.cloud import storage
 import os
-
-import google.generativeai as genai # type: ignore
 import pdfkit # type: ignore
+
+# ML Libraries
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+from PIL import Image
+from torchvision import models, transforms
+import requests
+from io import BytesIO
+import google.generativeai as genai # type: ignore
+import numpy as np
 
 # Local dependencies
 from .sqlalchemy import db
@@ -96,13 +105,71 @@ class Report(db.Model):
         return (True, "Report updated successfully.")
     
     @classmethod
+    def updatePrescriptionsLifestyleChanges(cls, reportId: str, prescriptions: str, lifestyleChanges: str) -> Tuple[bool, str]:
+        """Update the prescriptions and lifestyle changes of a report"""
+        report = cls.queryReport(reportId)
+        report.prescriptions = prescriptions
+        report.lifestyleChanges = lifestyleChanges
+        db.session.commit()
+        return (True, "Prescriptions and lifestyle changes updated successfully.")
+    
+    @classmethod
     def classifyXray(cls, reportId: str, xrayImageUrl: str) -> Tuple[bool, str]:
         """Classify an x-ray image"""
-        # TODO: Predict with model here
-        classification, confidence = "COVID-19", 0.95
+        # Class labels
+        class_names = ['Covid', 'Healthy', 'Other']
+        # Load model architecture
+        model = models.resnet50()
+        # Modify the final fully connected layer to match the number of classes (3 classes: Healthy, COVID, Other)
+        # and replicate the structure used during training (including Dropout)
+        model.fc = nn.Sequential( # type: ignore
+            nn.Dropout(0.5),  # Assuming Dropout was used during training
+            nn.Linear(model.fc.in_features, 3)
+        )
+        # Load the trained weights from your saved model
+        model_path = current_app.config["CLASSIFCATION_MODEL_PATH"]
+
+        # Load the trained weights
+        model.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')))
+
+        # Set the model to evaluation mode
+        model.eval()
+
+        # Move the model to GPU if available
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        model = model.to(device)
+
+        # Define image preprocessing (same as used during training)
+        transform = transforms.Compose([
+            transforms.Resize((224, 224)),
+            transforms.ToTensor(),
+            transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+        ])
+
+        # Get image from URL
+        response = requests.get(xrayImageUrl)
+        image = Image.open(BytesIO(response.content)).convert("RGB")
+        
+        # Preprocess the image
+        image = transform(image).unsqueeze(0)  # type: ignore # Add batch dimension
+
+        # Move the image to the same device as the model
+        image = image.to(device)
+        
+        # Forward pass to get predictions
+        with torch.no_grad():
+            output = model(image)
+            confidence = F.softmax(output, dim=1)  # Get confidence (softmax probabilities)
+            _, predicted_class = torch.max(output, 1)  # Get the predicted class
+        
+        predicted_class = class_names[predicted_class.item()] # type: ignore
+        confidence = round(np.max(confidence.cpu().numpy()[0])*100, 2)
+
+        if predicted_class == "Other": predicted_class = "Other lung infection"
+
         # Update the report
         report = cls.queryReport(reportId)
-        report.classification = classification
+        report.classification = predicted_class
         report.confidence = confidence
         db.session.commit()
         return (True, "X-ray classified successfully.")

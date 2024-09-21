@@ -54,15 +54,15 @@ ReactDOM.createRoot(document.getElementById("root")).render(
                 {/* Public routes */}
                 {/* Landing pages */}
                 <Route
-                    path="/landing/home"
+                    path="/"
                     element={<HomePage />}
                 />
                 <Route 
-                    path="/landing/about" 
+                    path="/about" 
                     element={<AboutPage />} 
                 />
                 <Route 
-                    path="/landing/contact" 
+                    path="/contact" 
                     element={<ContactPage />}
                 />
                 
@@ -108,8 +108,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
                         </PrivateRoute>
                     }
                 />
-                                {/* this ones to be done */}
-
+                {/* this ones to be done */}
                 <Route
                     path="/doctor/account"
                     element={
@@ -131,6 +130,14 @@ ReactDOM.createRoot(document.getElementById("root")).render(
                     element={
                         <PrivateRoute doctor>
                             <ViewFindingPage />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path="/doctor/patient/:patientId/:consultationId/pdf"
+                    element={
+                        <PrivateRoute doctor>
+                            <ViewPDFPage />
                         </PrivateRoute>
                     }
                 />

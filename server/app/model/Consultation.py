@@ -83,6 +83,7 @@ class Consultation(db.Model):
     def createConsultation(cls, details: Dict[str, str]) -> Tuple[bool, str]:
         """Create a new consultation"""
         consultation = cls(
+            id = details["consultationId"],
             consultationDate=datetime.strptime(details["consultationDate"], "%d/%m/%Y"),
             doctorId=details["doctorId"],
             patientId=details["patientId"],
