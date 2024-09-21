@@ -1,11 +1,21 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { IoPerson } from 'react-icons/io5';
 import { FaTransgender, FaBirthdayCake, FaPhoneAlt } from 'react-icons/fa';
 import { LuStethoscope } from 'react-icons/lu';
 import { IoIosMail } from 'react-icons/io';
+import DoctorEditAccountModal from './DoctorEditAccountModal'; // Ensure the correct path to the modal
 
-// Updated DocMainModal to accept doctorProfile prop
 function DocMainModal({ doctorProfile }) {
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false); // State to control modal visibility
+
+  const handleEditClick = () => {
+    setIsEditModalOpen(true); // Open the modal when the button is clicked
+  };
+
+  const handleCloseModal = () => {
+    setIsEditModalOpen(false); // Close the modal
+  };
+
   return (
     <div className="flex justify-center mt-10">
       <div className="bg-white rounded-lg shadow-md p-4 w-3/4 max-w-screen-md flex justify-between items-center">
@@ -20,7 +30,9 @@ function DocMainModal({ doctorProfile }) {
 
         {/* Profile Information */}
         <div className="ml-6 space-y-2">
-          <h2 className="text-2xl font-semibold">{doctorProfile.name}</h2>
+          <p className="text-gray-600 flex items-center">
+            <IoPerson className="mr-2 text-cyan-400" /> {doctorProfile.name}
+          </p>
           <p className="text-gray-600 flex items-center">
             <LuStethoscope className="mr-2 text-cyan-400" /> {doctorProfile.specialization}
           </p>
@@ -40,11 +52,23 @@ function DocMainModal({ doctorProfile }) {
 
         {/* Edit Button */}
         <div>
-          <button className="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600">
+          <button 
+            className="bg-cyan-500 text-white px-6 py-2  rounded hover:bg-blue-600"
+            onClick={handleEditClick} // Open the modal when clicked
+          >
             Edit Account
           </button>
         </div>
       </div>
+
+      {/* DoctorEditAccountModal to be shown on clicking Edit Account */}
+      {isEditModalOpen && (
+        <DoctorEditAccountModal 
+          isOpen={isEditModalOpen}
+          onClose={handleCloseModal} // Close the modal
+          doctorProfile={doctorProfile} // Pass doctor profile to modal
+        />
+      )}
     </div>
   );
 }

@@ -82,6 +82,7 @@ function DoctorViewPatientPage() {
         <div className='flex flex-col items-center'>
             <div>
                 <ActorNavbar />
+                 <div className='flex flex-row ml-20 items-center my-10'>
                 <CreateConsultationModal patientId={patientId} modalOpen={consultationModalOpen} setModalOpen={setConsultationModalOpen} />
                 <div onClick={() => navigate("/doctor")} className='flex flex-row ml-20 items-center my-10 cursor-pointer'>
                     <IoArrowBackCircleOutline color='cyan' className='h-12 w-12'/>
