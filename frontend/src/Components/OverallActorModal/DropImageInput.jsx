@@ -17,11 +17,22 @@ function DropImageInput({ file, setFile, show }) {
       >
         {file ? (
           <div className="relative w-full flex flex-col items-center">
-            <img
-              src={URL.createObjectURL(file)}
-              alt="Uploaded Preview"
-              className="w-60 h-70 object-cover mb-2"
-            />
+            {/* if file is type File, make it to URL */}
+            {file instanceof File && (
+              <img
+                src={URL.createObjectURL(file)}
+                alt="Uploaded Preview"
+                className="w-60 h-70 object-cover mb-2"
+              />
+            )}
+            {/* if file is type string, no need to make it URL bcs it is already a link */}
+            {typeof file === 'string' && (
+              <img
+                src={file}
+                alt="Uploaded Preview"
+                className="w-60 h-70 object-cover mb-2"
+              />
+            )}
             <button
               className="absolute bottom-2 left-1 right-1 bg-cyan-400 text-white px-12 py-2 cursor-pointer opacity-80 hover:opacity-100 transition-opacity"
               onClick={() => setFile(null)}
