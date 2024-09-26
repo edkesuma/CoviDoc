@@ -73,34 +73,57 @@ function DoctorViewPatientPage() {
     useEffect(() => {
         console.log("Is loading", isLoading);
     }, [isLoading]);
+    
 
     return isLoading ? (
-            <div className="text-center text-8xl">
-                <Spinner aria-label="Extra large spinner example" size="xl" />
+        <div className="text-center text-8xl">
+          <Spinner aria-label="Extra large spinner example" size="xl" />
+        </div>
+    ) : (
+        <div className="flex flex-col items-center">
+            <ActorNavbar />
+            {/* Place the modal outside of other content */}
+            <CreateConsultationModal
+            patientId={patientId}
+            modalOpen={consultationModalOpen}
+            setModalOpen={setConsultationModalOpen}
+            />
+      
+            <div
+                onClick={() => navigate("/doctor")}
+                className="flex flex-row ml-20 items-center my-10 cursor-pointer"
+            >
+                <IoArrowBackCircleOutline color="cyan" className="h-12 w-12" />
+                <button className="text-4xl ml-2 text-cyan-300 bg-transparent border-none cursor-pointer">
+                    Back
+                </button>
             </div>
-        ) : (
-        <div className='flex flex-col items-center'>
-            <div>
-                <ActorNavbar />
-                <CreateConsultationModal patientId={patientId} modalOpen={consultationModalOpen} setModalOpen={setConsultationModalOpen} />
-                <div className='flex flex-row ml-20 items-center my-10'>
-                <div onClick={() => navigate("/doctor")} className='flex flex-row ml-20 items-center my-10 cursor-pointer'>
-                    <IoArrowBackCircleOutline color='cyan' className='h-12 w-12'/>
-                    <button className='text-4xl ml-2 text-cyan-300 bg-transparent border-none cursor-pointer'>Back
-                    </button>
-                </div>
-                <div className='ml-20 my-10 font-bold text-3xl'>{patient?.name || 'Patient'}'s Account</div>
-                <Card className='mx-20'>
-                    {patient ? <PatientDetail patientDetails={patient}/> : <p>No patient details available</p>}
-                </Card>
-                </div>
-                <div className='mb-24'/>
-                <div className='flex flex-row'>
-                    <div className='ml-20 my-10 font-bold text-3xl'>{patient?.name || 'Patient'}'s Consultation Records</div>
-                    <Button className='bg-cyan-400 my-10 ml-auto mr-20' onClick={() => setConsultationModalOpen(true)}>+ Create Consultation Record</Button>
-                </div>
-                <ViewConsultations consultations={consultations}/>
+      
+            <div className="ml-20 my-10 font-bold text-3xl">
+                {patient?.name || "Patient"}'s Account
             </div>
+            <Card className="mx-20">
+                {patient ? (
+                    <PatientDetail patientDetails={patient} />
+                ) : (
+                    <p>No patient details available</p>
+                )}
+            </Card>
+
+            <div className="mb-24" />
+            <div className="flex flex-row">
+                <div className="ml-20 my-10 font-bold text-3xl">
+                    {patient?.name || "Patient"}'s Consultation Records
+                </div>
+                <Button
+                    className="bg-cyan-400 my-10 ml-auto mr-20"
+                    onClick={() => setConsultationModalOpen(true)}
+                >
+                    Create Consultation Record
+                </Button>
+            </div>
+
+            <ViewConsultations consultations={consultations} />
         </div>
     );
 }
