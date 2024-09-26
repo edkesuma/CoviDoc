@@ -127,7 +127,7 @@ class Report(db.Model):
             nn.Linear(model.fc.in_features, 3)
         )
         # Load the trained weights from your saved model
-        model_path = current_app.config["CLASSIFCATION_MODEL_PATH"]
+        model_path = current_app.config["CLASSIFICATION_MODEL_PATH"]
 
         # Load the trained weights
         model.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')))
