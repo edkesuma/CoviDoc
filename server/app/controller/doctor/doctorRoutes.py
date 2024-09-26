@@ -11,7 +11,7 @@ import os
 from app.model import Doctor, Patient, Consultation, Report
 from flask import current_app
 from app.controller.authentication import role_required
-from .utils import allowed_file, extractExtension, uploadToGoogleCloud
+from .utils import allowed_file, extractExtension, uploadToGoogleCloud, deleteFromGoogleCloud
 
 router = Blueprint("doctor", __name__)
 
@@ -88,6 +88,7 @@ def changeDoctorPassword() -> Dict[str, Union[str, int]]:
 @role_required(["Doctor"])
 def deleteOwnDoctorAccount() -> Dict[str, Union[str, int]]:
     """Delete a doctor account (By the doctor themselves)"""
+    deleteFromGoogleCloud(current_app.config['BUCKET_NAME'], f"profilePictures/{get_jwt_identity()}")
     returnedBool, message = Doctor.deleteOwnDoctorAccount(get_jwt_identity(), request.json.get("password"))
     if returnedBool:
         return {"status code": 200, "success": returnedBool, "message": message}
@@ -107,9 +108,6 @@ def createConsultation() -> Dict[str, Union[str, int]]:
         "patientId": request.form.get("patientId"),
         "temperature": float(request.form.get("temperature")), # type: ignore
         "o2Saturation": int(request.form.get("o2Saturation")), # type: ignore
-        "leukocyteCount": int(request.form.get("leukocyteCount")), # type: ignore
-        "neutrophilCount": int(request.form.get("neutrophilCount")), # type: ignore
-        "lymphocyteCount": int(request.form.get("lymphocyteCount")), # type: ignore
         "recentlyInIcu": request.form.get("recentlyInIcu") == 'true',
         "recentlyNeededSupplementalO2": request.form.get("recentlyNeededSupplementalO2") == 'true',
         "intubationPresent": request.form.get("intubationPresent") == 'true',
@@ -208,7 +206,7 @@ def viewReportPage() -> Dict[str, Union[str, int, list]]:
         "patientView": report.viewableToPatient,
         "classification": report.classification,
         "status": status,
-        "reportUrl": report.covidReportUrl
+        "reportUrl": report.reportUrl
     }
     return {"status code": 200, "success": True, "data": data} # type: ignore
     
@@ -270,7 +268,7 @@ def getSingleConsultation() -> Dict[str, Union[str, int, bool]]:
         "doctorName": Doctor.queryDoctor(consultation.doctorId).name,
         "classification": Report.queryReport(consultation.reportId).classification,
         "viewableToPatient": Report.queryReport(consultation.reportId).viewableToPatient,
-        "reportUrl": Report.queryReport(consultation.reportId).covidReportUrl
+        "reportUrl": Report.queryReport(consultation.reportId).reportUrl
     }
 
     if Report.queryReport(consultation.reportId).classification == "Healthy":
@@ -309,3 +307,11 @@ def updatePatientState() -> Dict[str, Union[str, int]]:
         return {"status code": 200, "success": returnedBool, "message": message}
     else:
         return {"status code": 400, "success": returnedBool, "message": message}
+    
+@router.route("/getClassificationsOverTimeData", methods=["GET"])
+@jwt_required()
+@role_required(["Doctor"])
+def getClassificationsOverTimeData() -> Dict[str, Union[str, int, dict]]:
+    """Get classification data over time"""
+    data = Consultation.getClassificationsOverTimeData()
+    return {"status code": 200, "data": data}

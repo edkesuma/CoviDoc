@@ -13,19 +13,17 @@ class Consultation(db.Model):
     __tablename__ = "Consultation"
     # Attributes
     id = db.Column(db.String, primary_key=True, default=lambda: f"C{str(uuid.uuid4().hex)}")
-    consultationDate = db.Column(db.Date, nullable=False, default=lambda: func.now())
+    consultationDate = db.Column(db.Date, nullable=True, default=lambda: func.now())
     doctorId = db.Column(db.String, db.ForeignKey('Doctor.id'))
     patientId = db.Column(db.String, db.ForeignKey('Patient.id'))
-    temperature = db.Column(db.Float, nullable=False)
-    o2Saturation = db.Column(db.Integer, nullable=False)
-    leukocyteCount = db.Column(db.Integer, nullable=False)
-    neutrophilCount = db.Column(db.Integer, nullable=False)
-    lymphocyteCount = db.Column(db.Integer, nullable=False)
-    recentlyInIcu = db.Column(db.Boolean, nullable=False)
-    recentlyNeededSupplementalO2 = db.Column(db.Boolean, nullable=False)
-    intubationPresent = db.Column(db.Boolean, nullable=False)
-    consultationNotes = db.Column(db.String, nullable=False)
-    xrayImageUrl = db.Column(db.String, nullable=False)
+    temperature = db.Column(db.Float, nullable=True)
+    o2Saturation = db.Column(db.Integer, nullable=True)
+    recentlyInIcu = db.Column(db.Boolean, nullable=True)
+    recentlyNeededSupplementalO2 = db.Column(db.Boolean, nullable=True)
+    intubationPresent = db.Column(db.Boolean, nullable=True)
+    consultationNotes = db.Column(db.String, nullable=True)
+    xrayImageUrl = db.Column(db.String, nullable=True)
+    highlightedXrayImageUrl = db.Column(db.String, nullable=True)
     reportId = db.Column(db.String, db.ForeignKey('Report.id'), nullable=True)
 
     # @classmethod
@@ -44,14 +42,12 @@ class Consultation(db.Model):
             "patientId": self.patientId,
             "temperature": self.temperature,
             "o2Saturation": self.o2Saturation,
-            "leukocyteCount": self.leukocyteCount,
-            "neutrophilCount": self.neutrophilCount,
-            "lymphocyteCount": self.lymphocyteCount,
             "recentlyInIcu": self.recentlyInIcu,
             "recentlyNeededSupplementalO2": self.recentlyNeededSupplementalO2,
             "intubationPresent": self.intubationPresent,
             "consultationNotes": self.consultationNotes,
             "xrayImageUrl": self.xrayImageUrl,
+            "highlightedXrayImageUrl": self.highlightedXrayImageUrl,
             "reportId": self.reportId
         }
     
@@ -60,9 +56,6 @@ class Consultation(db.Model):
         return {
             "temperature": self.temperature,
             "o2Saturation": self.o2Saturation,
-            "leukocyteCount": self.leukocyteCount,
-            "neutrophilCount": self.neutrophilCount,
-            "lymphocyteCount": self.lymphocyteCount,
             "recentlyInIcu": self.recentlyInIcu,
             "recentlyNeededSupplementalO2": self.recentlyNeededSupplementalO2,
             "intubationPresent": self.intubationPresent,
@@ -80,6 +73,11 @@ class Consultation(db.Model):
         return cls.query.filter(cls.patientId == patientId).all()
     
     @classmethod
+    def queryAllConsultations(cls) -> Self:
+        """Query all consultations"""
+        return cls.query.all()
+    
+    @classmethod
     def createConsultation(cls, details: Dict[str, str]) -> Tuple[bool, str]:
         """Create a new consultation"""
         consultation = cls(
@@ -89,9 +87,6 @@ class Consultation(db.Model):
             patientId=details["patientId"],
             temperature=details["temperature"],
             o2Saturation=details["o2Saturation"],
-            leukocyteCount=details["leukocyteCount"],
-            neutrophilCount=details["neutrophilCount"],
-            lymphocyteCount=details["lymphocyteCount"],
             recentlyInIcu=details["recentlyInIcu"],
             recentlyNeededSupplementalO2=details["recentlyNeededSupplementalO2"],
             intubationPresent=details["intubationPresent"],
