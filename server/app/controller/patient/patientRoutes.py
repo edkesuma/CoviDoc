@@ -11,7 +11,7 @@ import os
 from app.model import Patient, Consultation, Report, Doctor
 from flask import current_app
 from app.controller.authentication import role_required
-from .utils import hashPassword, allowed_file, extractExtension, uploadToGoogleCloud
+from .utils import hashPassword, allowed_file, extractExtension, uploadToGoogleCloud, deleteFromGoogleCloud
 
 router = Blueprint("patient", __name__)
 
@@ -108,6 +108,7 @@ def changePatientPassword() -> Dict[str, Union[str, int]]:
 @role_required(["Patient"])
 def deleteOwnPatientAccount() -> Dict[str, Union[str, int]]:
     """Delete a patient account (By the patient themselves)"""
+    deleteFromGoogleCloud(current_app.config['BUCKET_NAME'], f"profilePictures/{get_jwt_identity()}")
     returnedBool, message = Patient.deleteOwnPatientAccount(get_jwt_identity(), request.json.get("password"))
     if returnedBool:
         return {"status code": 200, "success": returnedBool, "message": message}

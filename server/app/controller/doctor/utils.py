@@ -21,3 +21,13 @@ def uploadToGoogleCloud(bucketName, destinationBlobName, sourceFile, contentType
     blob.cache_control = "private, no-cache, max-age=0"
     blob.patch()
     return blob.public_url
+
+def deleteFromGoogleCloud(bucketName, destinationBlobName):
+    """Deletes a file from the bucket."""
+    extensions = ["heic", "png", "jpg", "jpeg", "gif"]
+    storageClient = storage.Client()
+    bucket = storageClient.bucket(bucketName)
+    for ext in extensions:
+        blob = bucket.blob(f"{destinationBlobName}.{ext}")
+        blob.delete()
+    return True
