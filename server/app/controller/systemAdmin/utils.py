@@ -17,7 +17,7 @@ def uploadToGoogleCloud(bucketName, destinationBlobName, sourceFile, contentType
     storageClient = storage.Client()
     bucket = storageClient.bucket(bucketName)
     blob = bucket.blob(destinationBlobName)
-
     blob.upload_from_file(sourceFile, content_type=contentType)
-
+    blob.cache_control = "private, no-cache, max-age=0"
+    blob.patch()
     return blob.public_url
