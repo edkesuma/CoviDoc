@@ -82,8 +82,8 @@ function DoctorViewPatientPage() {
         <div className='flex flex-col items-center'>
             <div>
                 <ActorNavbar />
-                 <div className='flex flex-row ml-20 items-center my-10'>
                 <CreateConsultationModal patientId={patientId} modalOpen={consultationModalOpen} setModalOpen={setConsultationModalOpen} />
+                <div className='flex flex-row ml-20 items-center my-10'>
                 <div onClick={() => navigate("/doctor")} className='flex flex-row ml-20 items-center my-10 cursor-pointer'>
                     <IoArrowBackCircleOutline color='cyan' className='h-12 w-12'/>
                     <button className='text-4xl ml-2 text-cyan-300 bg-transparent border-none cursor-pointer'>Back
@@ -93,6 +93,7 @@ function DoctorViewPatientPage() {
                 <Card className='mx-20'>
                     {patient ? <PatientDetail patientDetails={patient}/> : <p>No patient details available</p>}
                 </Card>
+                </div>
                 <div className='mb-24'/>
                 <div className='flex flex-row'>
                     <div className='ml-20 my-10 font-bold text-3xl'>{patient?.name || 'Patient'}'s Consultation Records</div>

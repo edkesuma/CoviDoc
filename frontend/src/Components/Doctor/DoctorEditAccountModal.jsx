@@ -4,38 +4,52 @@ import { FaTransgender, FaBirthdayCake, FaPhoneAlt } from 'react-icons/fa';
 import { LuStethoscope } from 'react-icons/lu';
 import { IoIosMail, IoIosClose } from 'react-icons/io';
 import DropImageInput from '../OverallActorModal/DropImageInput'; // Ensure the path is correct
-import { Modal } from 'flowbite-react'; // Assuming you are using Flowbite's Modal component
+import { Datepicker, Modal } from 'flowbite-react'; // Assuming you are using Flowbite's Modal component
 import axios from 'axios';
 import { AuthContext } from "../../Components/Authentication/AuthContext"; // Ensure the path to AuthContext is correct
+import { format } from 'date-fns';
 
 function DoctorEditAccountModal({ isOpen, onClose, doctorDetails }) {
   const { token } = useContext(AuthContext);
 
+  const parseDate = (dateString) => {
+    if (!dateString) return null;
+    const [day, month, year] = dateString.split('/');
+    return new Date(year, month - 1, day); // month is 0-indexed in JavaScript Date
+};
+
   // Initialize form states with doctorDetails
-  const [name, setName] = useState(doctorDetails?.name || '');
-  const [gender, setGender] = useState(doctorDetails?.gender || 'Male');
-  const [profession, setProfession] = useState(doctorDetails?.profession || '');
-  const [dob, setDob] = useState(doctorDetails?.dob || '');
-  const [email, setEmail] = useState(doctorDetails?.email || '');
-  const [phone, setPhone] = useState(doctorDetails?.phone || '');
+  const [name, setName] = useState(doctorDetails.name);
+  const [gender, setGender] = useState(doctorDetails.gender);
+  const [specialization, setSpecialization] = useState(doctorDetails.specialization);
+  const [dob, setDob] = useState(parseDate(doctorDetails.dob));
+  const [email, setEmail] = useState(doctorDetails.email);
+  const [phone, setPhone] = useState(doctorDetails.phone);
   const [profileImage, setProfileImage] = useState(null);
+
+  
+
+  console.log('Doctor Details:', doctorDetails);
+  console.log("Dob is: ", dob);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const formData = {
-      name,
-      gender,
-      profession,
-      dob,
-      email,
-      phone,
-      profilePicture: profileImage,
-    };
+    var formData = new FormData();
+    formData.append('name', name);
+    formData.append('gender', gender);
+    formData.append('specialization', specialization);
+    formData.append('dob', format(dob, 'dd/MM/yyyy'));
+    formData.append('email', email);
+    formData.append('phone', phone);
+    if (profileImage) {
+      formData.append('profilePicture', profileImage);
+    }
 
     try {
       const response = await axios.patch('/api/doctor/updateDoctor', formData, {
         headers: {
           Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data',
         },
       });
       console.log('Doctor information updated successfully:', response.data);
@@ -50,10 +64,9 @@ function DoctorEditAccountModal({ isOpen, onClose, doctorDetails }) {
   };
 
   return (
-    <Modal show={isOpen} size="lg" onClose={handleClose}>
+    <Modal show={isOpen} size="2xl" onClose={handleClose}>
       <Modal.Header>
-        <h2 className="text-2xl font-bold text-cyan-500">Editing Your Account</h2>
-        <IoIosClose className="text-cyan-500 text-2xl cursor-pointer" onClick={handleClose} />
+        <p className="text-2xl font-bold text-cyan-500">Editing Your Account</p>
       </Modal.Header>
       <Modal.Body>
         <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-10">
@@ -93,22 +106,27 @@ function DoctorEditAccountModal({ isOpen, onClose, doctorDetails }) {
               <LuStethoscope className="text-cyan-500 text-xl" />
               <input
                 type="text"
-                value={profession}
-                onChange={(e) => setProfession(e.target.value)}
+                value={specialization}
+                onChange={(e) => setSpecialization(e.target.value)}
                 className="py-2 border border-gray-300 rounded w-full"
-                placeholder="Profession"
+                placeholder="Specialization"
                 required
               />
             </div>
 
             <div className="flex items-center gap-2">
-              <FaBirthdayCake className="text-cyan-500 text-xl" />
-              <input
-                type="date"
-                value={dob}
-                onChange={(e) => setDob(e.target.value)}
-                className="py-2 border border-gray-300 rounded w-full"
-                required
+                <Datepicker
+                  id="birth"
+                  selected={dob}
+                  onSelectedDateChanged={(date) => setDob(date)}
+                  defaultDate={dob}
+                  minDate={new Date(1900, 0, 1)}
+                  maxDate={new Date()}
+                  autoHide={true}
+                  showClearButton={false}
+                  showTodayButton={false}
+                  weekStart={7}
+                  required
               />
             </div>
 
