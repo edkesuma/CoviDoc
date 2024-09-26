@@ -30,11 +30,11 @@ class Report(db.Model):
     __tablename__ = "Report"
     # Attributes
     id = db.Column(db.String, primary_key=True, default=lambda: f"R{str(uuid.uuid4().hex)}")
-    covidReportUrl = db.Column(db.String, nullable=True)
+    reportUrl = db.Column(db.String, nullable=True)
     classification = db.Column(db.String, nullable=True)
-    confidence = db.Column(db.Float, nullable=True)
+    classificationConfidence = db.Column(db.Float, nullable=True)
     severity = db.Column(db.String, nullable=True)
-    observations = db.Column(db.String, nullable=True)
+    severityConfidence = db.Column(db.Float, nullable=True)
     prescriptions = db.Column(db.String, nullable=True)
     lifestyleChanges = db.Column(db.String, nullable=True)
     viewableToPatient = db.Column(db.Boolean, nullable=False, default=False)
@@ -43,11 +43,11 @@ class Report(db.Model):
         """Serialize the report object to a dictionary"""
         return {
             "reportId": self.id,
-            "covidReportUrl": self.covidReportUrl,
+            "reportUrl": self.reportUrl,
             "classification": self.classification,
-            "confidence": self.confidence,
+            "classificationConfidence": self.classificationConfidence,
             "severity": self.severity,
-            "observations": self.observations,
+            "severityConfidence": self.severityConfidence,
             "prescriptions": self.prescriptions,
             "lifestyleChanges": self.lifestyleChanges,
             "viewableToPatient": self.viewableToPatient
@@ -57,9 +57,9 @@ class Report(db.Model):
         """Get the findings of the report"""
         return {
             "classification": self.classification,
-            "confidence": self.confidence,
+            "classificationConfidence": self.classificationConfidence,
             "severity": self.severity,
-            "observations": self.observations
+            "severityConfidence": self.severityConfidence
         }
     
     @classmethod
@@ -165,12 +165,17 @@ class Report(db.Model):
         predicted_class = class_names[predicted_class.item()] # type: ignore
         confidence = round(np.max(confidence.cpu().numpy()[0])*100, 2)
 
-        if predicted_class == "Other": predicted_class = "Other lung infection"
+        if predicted_class == "Other":
+            predicted_class = "Other lung infection"
 
         # Update the report
         report = cls.queryReport(reportId)
         report.classification = predicted_class
-        report.confidence = confidence
+        report.classificationConfidence = confidence
+        # TODO: EDRICK AFTER FIGURE OUT ML
+        report.severity = "Mild"
+        report.severityConfidence = 100
+
         db.session.commit()
         return (True, "X-ray classified successfully.")
     
@@ -196,6 +201,7 @@ class Report(db.Model):
     def stringifyJson(cls, jsonData):
         return ", ".join(f"{key}: {value}" for key, value in jsonData.items())
 
+    # TODO: EDRICK AFTER FIGURE OUT ML
     @classmethod
     def getLLMAdditionalInfo(cls, reportId: str, xrayImageUrl: str, patient: Patient, doctor: Doctor, consultation: Consultation) -> Tuple[bool, str]:
         """Get additional information from LLM"""
@@ -203,89 +209,81 @@ class Report(db.Model):
         # Get current report object
         report = cls.queryReport(reportId)
         
-        # Initialize gemini model
-        genai.configure(api_key=current_app.config["GEMINI_API_KEY"])
-        model = genai.GenerativeModel('gemini-1.5-flash', generation_config={"response_mime_type": "application/json"})
+        # # Initialize gemini model
+        # genai.configure(api_key=current_app.config["GEMINI_API_KEY"])
+        # model = genai.GenerativeModel('gemini-1.5-flash', generation_config={"response_mime_type": "application/json"})
 
-        # Get medical data from patient and consultation
-        patientData = patient.getMedicalData()
-        consultationData = consultation.getMedicalData()
+        # # Get medical data from patient and consultation
+        # patientData = patient.getMedicalData()
+        # consultationData = consultation.getMedicalData()
 
-        # Stringify medical data
-        patientString = cls.stringifyJson(patientData)
-        consultationString = cls.stringifyJson(consultationData)
+        # # Stringify medical data
+        # patientString = cls.stringifyJson(patientData)
+        # consultationString = cls.stringifyJson(consultationData)
 
-        # Setup prompt
-        prompt = f"""
-            You are an assistant to a doctor, analyzing patient data to provide recommendations for both the patient and the treating doctor.
-            The patient has been classified as having {report.classification} with a confidence level of {report.confidence} based on the X-ray image provided.
+        # # Setup prompt
+        # prompt = f"""
+        #     You are an assistant to a doctor, analyzing patient data to provide recommendations for both the patient and the treating doctor.
+        #     The patient has been classified as having {report.classification} with a confidence level of {report.confidence} based on the X-ray image provided.
 
-            Here is patient's metadata:
-            {patientString}
+        #     Here is patient's metadata:
+        #     {patientString}
 
-            Here is the consultation details:
-            {consultationString}
+        #     Here is the consultation details:
+        #     {consultationString}
 
-            Instructions:
-            Based on the image, patient metadata and consultation details, generate the following.
-            1. Based on the image only, what points to the existence of {report.classification} in the lungs.
-            2. Provide the severity level of the patient.
-            3. Offer prescriptions and lifestyle changes tailored to the patient's situation.
-            {{
-            'lifestyleChanges': "The following are health and lifestyle suggestions:\n- Rest and hydration are essential.\n- Breathing exercises: ...\n- Diet and nutrition: ..."
-            }}
-            4. **For the 'lifestyleChanges' section:**
-            - Provide health and lifestyle advice tailored to the patient’s situation.
-            - Include specific recommendations on rest, hydration, and over-the-counter relief options (such as pain relievers, decongestants).
-            - Clearly explain when the patient should seek further medical consultation.
-            - Add information on how to manage potential long COVID symptoms and offer recovery advice.
-            - Use a clear, concise, friendly and accessible tone.
-            - Provide 5 lifestyle change recommendations.
-            - Wrap every recommendation in a {{}}
-            5. **For the 'prescriptions' section:**
-            - Provide a concise medical note summarizing key considerations for the doctor.
-            - Suggest prescription medications that could be beneficial based on the patient's medical history.
-            - Use clear and concise medical language.
-            - Provide 5 prescription recommendations.
-            - Wrap every recommendation in a {{}}
+        #     Instructions:
+        #     Based on the image, patient metadata and consultation details, generate the following.
+        #     1. Based on the image only, what points to the existence of {report.classification} in the lungs.
+        #     2. Provide the severity level of the patient.
+        #     3. Offer prescriptions and lifestyle changes tailored to the patient's situation.
+        #     {{
+        #     'lifestyleChanges': "The following are health and lifestyle suggestions:\n- Rest and hydration are essential.\n- Breathing exercises: ...\n- Diet and nutrition: ..."
+        #     }}
+        #     4. **For the 'lifestyleChanges' section:**
+        #     - Provide health and lifestyle advice tailored to the patient’s situation.
+        #     - Include specific recommendations on rest, hydration, and over-the-counter relief options (such as pain relievers, decongestants).
+        #     - Clearly explain when the patient should seek further medical consultation.
+        #     - Add information on how to manage potential long COVID symptoms and offer recovery advice.
+        #     - Use a clear, concise, friendly and accessible tone.
+        #     - Provide 5 lifestyle change recommendations.
+        #     - Wrap every recommendation in a {{}}
+        #     5. **For the 'prescriptions' section:**
+        #     - Provide a concise medical note summarizing key considerations for the doctor.
+        #     - Suggest prescription medications that could be beneficial based on the patient's medical history.
+        #     - Use clear and concise medical language.
+        #     - Provide 5 prescription recommendations.
+        #     - Wrap every recommendation in a {{}}
             
-            Using this JSON schema:
-                Observation = {{"observation": str}}
-                Severity = {{"severity": enum("Mild", "Moderate", "Severe")}}
-                Prescription = List[{{"prescriptionName": List[dosage, reason]]}}]
-                LifestyleChange = List[{{"lifestyleChange": str}}]
-            Return a `Tuple(Observation, Severity, Prescription, LifestyleChange)` with your responses.
-            """
+        #     Using this JSON schema:
+        #         Observation = {{"observation": str}}
+        #         Severity = {{"severity": enum("Mild", "Moderate", "Severe")}}
+        #         Prescription = List[{{"prescriptionName": List[dosage, reason]]}}]
+        #         LifestyleChange = List[{{"lifestyleChange": str}}]
+        #     Return a `Tuple(Observation, Severity, Prescription, LifestyleChange)` with your responses.
+        #     """
 
-        # Call Gemini model
-        response = model.generate_content([prompt, xrayImageUrl], safety_settings={
-                'HATE': 'BLOCK_NONE',
-                'HARASSMENT': 'BLOCK_NONE',
-                'SEXUAL' : 'BLOCK_NONE',
-                'DANGEROUS' : 'BLOCK_NONE'
-            })
+        # # Call Gemini model
+        # response = model.generate_content([prompt, xrayImageUrl], safety_settings={
+        #         'HATE': 'BLOCK_NONE',
+        #         'HARASSMENT': 'BLOCK_NONE',
+        #         'SEXUAL' : 'BLOCK_NONE',
+        #         'DANGEROUS' : 'BLOCK_NONE'
+        #     })
         
-        # Parse response
-        responseJson = response.text
-        print(responseJson)
-        print(f"Observations: {cls.getValueOrFallback(json.loads(responseJson), 'observation')}")
-        print(f"Severity: {cls.getValueOrFallback(json.loads(responseJson), 'severity')}")
-        parsedJson = json.loads(responseJson)
-        observations = cls.getValueOrFallback(parsedJson, "observation")
-        severity = cls.getValueOrFallback(parsedJson, "severity")
-        prescriptions = cls.getValueFromRegexedKey(parsedJson, "prescription")
-        lifestyleChanges = cls.getValueFromRegexedKey(parsedJson, "lifestyleChange")
-
-        # Strip quotation marks
-        if observations.startswith('"') and observations.endswith('"'):
-            observations = observations[1:-1] # type: ignore
-        if severity.startswith('"') and severity.endswith('"'):
-            severity = severity[1:-1] # type: ignore
+        # # Parse response
+        # responseJson = response.text
+        # print(responseJson)
+        # print(f"Observations: {cls.getValueOrFallback(json.loads(responseJson), 'observation')}")
+        # print(f"Severity: {cls.getValueOrFallback(json.loads(responseJson), 'severity')}")
+        # parsedJson = json.loads(responseJson)
+        # prescriptions = cls.getValueFromRegexedKey(parsedJson, "prescription")
+        # lifestyleChanges = cls.getValueFromRegexedKey(parsedJson, "lifestyleChange")
         
-        report.severity = severity
-        report.observations = observations
-        report.prescriptions = json.dumps(prescriptions)
-        report.lifestyleChanges = json.dumps(lifestyleChanges)
+        # report.prescriptions = json.dumps(prescriptions)
+        # report.lifestyleChanges = json.dumps(lifestyleChanges)
+        report.prescriptions = """[{"prescriptionName":["Dexamethasone","To reduce inflammation and improve oxygenation"]},{"prescriptionName":["Remdesivir","Antiviral medication for COVID-19"]},{"prescriptionName":["Oxygen therapy","To improve oxygen levels"]},{"prescriptionName":["Albuterol inhaler","To manage asthma symptoms"]},{"prescriptionName":["Antihistamines","To manage allergies"]}]"""
+        report.lifestyleChanges = """[{"lifestyleChange":"Rest and hydration are essential. Get plenty of sleep and drink fluids to stay hydrated. This will help your body fight the infection and recover."},{"lifestyleChange":"Breathing exercises can help improve your lung capacity and reduce shortness of breath. Try deep breathing exercises or diaphragmatic breathing to help you breathe more easily."},{"lifestyleChange":"Maintain a nutritious diet. Focus on consuming fruits, vegetables, and protein-rich foods to support your immune system and overall health."},{"lifestyleChange":"Avoid smoking and limit exposure to smoke or pollutants. This will help reduce irritation and inflammation in your lungs."},{"lifestyleChange":"Monitor your symptoms closely. If you experience worsening symptoms, such as difficulty breathing, persistent fever, or chest pain, seek immediate medical attention."}]"""
         db.session.commit()
 
         return (True, "Additional information retrieved successfully.")
@@ -306,8 +304,6 @@ class Report(db.Model):
         patientData = patient.serialize()
 
         # Load the json from strings
-        severity = report.severity
-        observations = report.observations
         prescriptions = json.loads(report.prescriptions)
         lifestyleChanges = json.loads(report.lifestyleChanges)
         
@@ -331,18 +327,15 @@ class Report(db.Model):
         # Consultation details dictionary
             "temperature": consultation.temperature,
             "o2Saturation": consultation.o2Saturation,
-            "leukocyteCount": consultation.leukocyteCount,
-            "lymphocyteCount": consultation.lymphocyteCount,
-            "neutrophilCount": consultation.neutrophilCount,
             "recentlyInIcu": consultation.recentlyInIcu,
             "recentlyNeededSupplementalO2": consultation.recentlyNeededSupplementalO2,
             "intubationPresent": consultation.intubationPresent,
             "consultationNotes": consultation.consultationNotes,
 
             "classification": report.classification,
-            "confidence": report.confidence,
-            "severity": severity,
-            "observations": observations,
+            "classificationConfidence": report.classificationConfidence,
+            "severity": report.severity,
+            "severityConfidence": report.severityConfidence,
             "prescriptions": prescriptions,
             "lifestyleChanges": lifestyleChanges
         }
@@ -374,6 +367,23 @@ class Report(db.Model):
         os.remove("pdf_generated.pdf")
 
         # Update the report
-        report.covidReportUrl = blob.public_url
+        report.reportUrl = blob.public_url
         db.session.commit()
         return (True, "COVID-19 report generated successfully.")
+    
+    # TODO: FOR KARTHI VIZ
+    @classmethod
+    def getClassificationsOverTimeData(cls) -> dict:
+        """Get the classifications of a patient over time"""
+        # Get all consultations 
+        consultations = Consultation.queryAllConsultations()
+        # Get the classifications of each consultation
+        classifications = []
+        for consultation in consultations:
+            report = cls.queryReport(consultation.reportId)
+            clf = report.classification
+            classifications.append(clf)
+        # parse month from date (set this as the key)
+        # value is found out from number of classifications on that month
+        
+        return {"January": 5, "February": 4}

@@ -11,7 +11,7 @@ import os
 from app.model import Doctor, Patient
 from flask import current_app
 from app.controller.authentication import role_required
-from .utils import hashPassword, allowed_file, extractExtension, uploadToGoogleCloud
+from .utils import hashPassword, allowed_file, extractExtension, uploadToGoogleCloud, deleteFromGoogleCloud
 
 router = Blueprint("systemAdmin", __name__)
 
@@ -105,6 +105,7 @@ def updateDoctor() -> Dict[str, Union[str, int]]:
 @role_required(["System Admin"])
 def deleteDoctor() -> Dict[str, Union[str, int]]:
     """Delete a doctor account"""
+    deleteFromGoogleCloud(current_app.config['BUCKET_NAME'], f"profilePictures/{request.json.get('doctorId')}")
     returnedBool, message = Doctor.deleteDoctor(request.json.get("doctorId"))
     if returnedBool:
         return {"status code": 200, "success": returnedBool, "message": message}
@@ -225,6 +226,7 @@ def updatePatient() -> Dict[str, Union[str, int]]:
 @role_required(["System Admin"])
 def deletePatient() -> Dict[str, Union[str, int]]:
     """Delete a patient account (Only for System Admin)"""
+    deleteFromGoogleCloud(current_app.config['BUCKET_NAME'], f"profilePictures/{request.json.get('patientId')}")
     returnedBool, message = Patient.deletePatient(request.json.get("patientId"))
     if returnedBool:
         return {"status code": 200, "success": returnedBool, "message": message}
