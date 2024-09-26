@@ -169,3 +169,6 @@ servicekey*
 
 # Assets
 /server/profilePicture
+
+# ML Models
+/server/app/ml_models
