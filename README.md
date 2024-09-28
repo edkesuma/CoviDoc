@@ -13,7 +13,7 @@ FRONTEND
 Download here: https://nodejs.org/en/download/prebuilt-installer
 2. ReactJS
 ```
-cd client
+cd frontend
 npm install
 npm run dev
 ```
