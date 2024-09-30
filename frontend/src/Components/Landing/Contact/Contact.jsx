@@ -18,9 +18,9 @@ function Contact() {
                 <br/>
             </div>
             <div className='flex justify-center'>
-                <div className='w-11/12 flex flex-row justify-between'>
+                <div className='w-11/12 flex flex-col md:flex-row justify-between items-center'>
                     <div
-                        className='rounded-xl w-80 h-80 flex mx-3 flex-col justify-center items-center border-2 border-cyan-400'>
+                        className='rounded-xl w-80 h-80 flex mx-3 my-3 flex-col justify-center items-center border-2 border-cyan-400'>
                         <FaMapMarkerAlt color='cyan' size='80'/>
                         <br/>
                         <p className='text-2xl font-bold '>OUR MAIN OFFICE</p>
@@ -28,7 +28,7 @@ function Contact() {
                         <p className='text-2xl text-center '>461 Clementi Rd, Singapore 599491</p>
                     </div>
                     <div
-                        className='rounded-xl w-80 h-80 flex mx-3 flex-col justify-center items-center border-2 border-cyan-400'>
+                        className='rounded-xl w-80 h-80 flex mx-3 my-3 flex-col justify-center items-center border-2 border-cyan-400'>
                         <FaPhoneAlt color='cyan' size='80'/>
                         <br/>
                         <p className='text-2xl font-bold '>PHONE NUMBER</p>
@@ -36,7 +36,7 @@ function Contact() {
                         <p className='text-2xl text-center '>6248 9746</p>
                     </div>
                     <div
-                        className='rounded-xl w-80 h-80 flex mx-3 flex-col justify-center items-center border-2 border-cyan-400'>
+                        className='rounded-xl w-80 h-80 flex mx-3 my-3 flex-col justify-center items-center border-2 border-cyan-400'>
                         <IoIosMail color='cyan' size='96'/>
                         <br/>
                         <p className='text-2xl font-bold '>EMAIL</p>

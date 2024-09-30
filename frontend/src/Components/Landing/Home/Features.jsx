@@ -11,27 +11,25 @@ import Feature6 from '../../../assets/feature/feature6.jpg'
 function Features() {
     return (
         <div>
-            <div
-                 style={{height: '350px'}}>
-                <div className="w-2/3 ml-20">
+            <div>
+                <div className="md:w-2/3 ml-10 md:ml-20">
                     <p className='text-xl text-cyan-400'>FEATURES</p>
                     <br/>
-                    <div className='w-1/2'>
+                    <div className='md:w-1/2'>
                         <p className='text-5xl font-bold'>Transforming Healthcare with Innovation</p>
                     </div>
                     <br/>
-                    <div className='w-2/3'>
+                    <div className='md:w-2/3'>
                         <p className='text-2xl'>Explore the key tools driving accurate diagnostics and streamlined
                             patient care. See what CoviDoc is capable of.</p>
                     </div>
                 </div>
             </div>
             <br/>
-            <div className="flex justify-center"
-                 style={{height: '500px'}}>
-                <div className='flex flex-row w-full px-20 justify-between'>
+            <div className="flex justify-center">
+                <div className='flex flex-col md:flex-row w-full md:px-20 md:justify-between items-center'>
                     <Card
-                        className="max-w-sm"
+                        className="max-w-sm my-4"
                         imgAlt="Meaningful alt text for an image that is not purely decorative"
                         imgSrc={Feature1}
                     >
@@ -45,7 +43,7 @@ function Features() {
                     </Card>
 
                     <Card
-                        className="max-w-sm"
+                        className="max-w-sm my-4"
                         imgAlt="Meaningful alt text for an image that is not purely decorative"
                         imgSrc={Feature2}
                     >
@@ -60,7 +58,7 @@ function Features() {
                     </Card>
 
                     <Card
-                        className="max-w-sm"
+                        className="max-w-sm my-4"
                         imgAlt="Meaningful alt text for an image that is not purely decorative"
                         imgSrc={Feature3}
                     >
@@ -75,13 +73,10 @@ function Features() {
                     </Card>
                 </div>
             </div>
-            <br/>
-            <br/>
-            <div className="flex justify-center"
-                 style={{height: '500px'}}>
-                <div className='flex flex-row  w-full px-20 justify-between'>
+            <div className="flex justify-center">
+                <div className='flex flex-col md:flex-row w-full md:px-20 md:justify-between items-center'>
                     <Card
-                        className="max-w-sm"
+                        className="max-w-sm my-4"
                         imgAlt="Meaningful alt text for an image that is not purely decorative"
                         imgSrc={Feature4}
                     >
@@ -95,7 +90,7 @@ function Features() {
                     </Card>
 
                     <Card
-                        className="max-w-sm"
+                        className="max-w-sm my-4"
                         imgAlt="Meaningful alt text for an image that is not purely decorative"
                         imgSrc={Feature5}
                     >
@@ -110,7 +105,7 @@ function Features() {
                     </Card>
 
                     <Card
-                        className="max-w-sm"
+                        className="max-w-sm my-4"
                         imgAlt="Meaningful alt text for an image that is not purely decorative"
                         imgSrc={Feature6}
                     >

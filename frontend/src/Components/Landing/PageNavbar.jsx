@@ -1,7 +1,6 @@
 "use client";
 import Logo from '../../assets/logo.jpg'
 import {Button, Navbar} from "flowbite-react";
-import { FaUser } from 'react-icons/fa';
 import {useNavigate, useLocation} from "react-router-dom";
 
 function PageNavbar() {
