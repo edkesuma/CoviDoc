@@ -1,7 +1,6 @@
 "use client";
 import Logo from '../../assets/logo.jpg'
 import {Button, Navbar} from "flowbite-react";
-import { FaUser } from 'react-icons/fa';
 import {useNavigate, useLocation} from "react-router-dom";
 
 function PageNavbar() {
@@ -31,7 +30,7 @@ function PageNavbar() {
                     Up</Button>
                 <Navbar.Toggle/>
             </div>
-            <Navbar.Collapse>
+            <Navbar.Collapse className='z-50'>
             {Object.keys(landingPageNavigationLinks).map((key, value) => {
 
                     const link = landingPageNavigationLinks[key]

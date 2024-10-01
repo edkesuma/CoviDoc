@@ -53,7 +53,7 @@ function ViewPatients({patients, token, onUpdate}) {
                         <div className="w-1/4">{patient.name}</div>
                         <div className="w-1/4">{patient.email}</div>
                         <div className="w-1/4" onClick={(e) => e.stopPropagation()}>
-                            <Dropdown label={patient.currentState} dismissOnClick={false} color='cyan'>
+                            <Dropdown label={patient.currentState} color='cyan'>
                                 <Dropdown.Item onClick={() => updatePatientState(patient.patientId, "Open")}>
                                     Open
                                 </Dropdown.Item>

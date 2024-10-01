@@ -124,6 +124,9 @@ def queryConsultationsUnderPatient() -> Dict[str, Union[str, int, list]]:
     consultations = Consultation.queryAllPatientConsultations(patientId) # type: ignore
     consultationHistory = []
     for consultation in consultations:
+        report = Report.queryReport(consultation.reportId)
+        if not report.viewableToPatient:
+            continue
         if Report.queryReport(consultation.reportId).classification == "Healthy":
             status = "Healthy"
         else:

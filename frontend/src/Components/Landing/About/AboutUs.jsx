@@ -4,9 +4,8 @@ import React from "react";
 
 function AboutUs() {
     return (
-        <div className="flex flex-row"
-             style={{height: '500px'}}>
-            <div className='flex justify-center items-center w-3/5 h-full'>
+        <div className="flex flex-col md:flex-row">
+            <div className='flex justify-center items-center md:w-3/5 w-full h-full'>
                 <div className='w-4/5 h-4/5'>
                     <p className='text-xl text-cyan-400'>ABOUT US</p>
                     <br/>
@@ -24,8 +23,10 @@ function AboutUs() {
                         care. </p>
                 </div>
             </div>
-            <div className='flex w-2/5 h-full'>
-                <img src={About}></img>
+            <div className='hidden md:flex justify-center my-8'>
+                <div className='flex md:w-full h-full w-2/5 justify-center'>
+                    <img src={About}></img>
+                </div>
             </div>
         </div>
     );
