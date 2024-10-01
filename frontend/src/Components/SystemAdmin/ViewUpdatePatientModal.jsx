@@ -5,26 +5,26 @@ import { AuthContext } from "../Authentication/AuthContext";
 import { format } from "date-fns";
 import axios from "axios";
 // components
-import UpdateDoctorSuccess from './UpdateDoctorSuccess';
+import UpdatePatientSuccess from './UpdatePatientSuccess';
 import DropImageInput from '../OverallActorModal/DropImageInput';
 
-function ViewUpdateDoctorModal({ show, onClose, data }) {
+function ViewUpdatePatientModal({ show, onClose, data }) {
     const { token } = useContext(AuthContext);
 
     const [isEditable, setIsEditable] = useState(false); // update mode (editable)
     const [fullName, setFullName] = useState(data.name);
     const [gender, setGender] = useState(data.gender);
     const [birthDate, setBirthDate] = useState(new Date(data.dob));
-    const [specialization, setSpecialization] = useState(data.specialization);
     const [email, setEmail] = useState(data.email);
     const [phoneNumber, setPhoneNumber] = useState(data.phone);
+    const [allergies, setAllergies] = useState(data.allergies);
+    const [medicalHistory, setMedicalHistory] = useState(data.medicalHistory);
+    const [selectedImage, setSelectedImage] = useState(null);
     const [password, setPassword] = useState(data.password);
     const [reEnterPassword, setReEnterPassword] = useState(""); // appears only when updating
-    const [selectedImage, setSelectedImage] = useState(null);
 
-    const [updateDoctorSuccess, setUpdateDoctorSuccess] = useState(false);
+    const [updatePatientSuccess, setUpdatePatientSuccess] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
-
 
     useEffect(() => {
         setFullName(data.name);
@@ -35,26 +35,27 @@ function ViewUpdateDoctorModal({ show, onClose, data }) {
             ? new Date(data.dob.replace(/(\d{2})\/(\d{2})\/(\d{4})/, '$3-$2-$1')) 
             : new Date(data.dob);
         // check if the parsed date is valid using getTime() instead of isNaN(parsedDate)
-        if (!isNaN(parsedDate.getTime())) {
+        if (!isNaN(parsedDate)) {
             setBirthDate(parsedDate);
         } else {
             console.error("Invalid date format: ", data.dob);
         }
         
-        setSpecialization(data.specialization);
         setEmail(data.email);
         setPhoneNumber(data.phone);
+        setAllergies(data.allergies);
+        setMedicalHistory(data.medicalHistory);
         setPassword(data.password);
         setReEnterPassword("");
         setSelectedImage(data.profilePictureUrl);
     }, [data]);
 
-    // handle update doctor account information
-    function handleUpdateDoctor() {
+    // handle update patient account information
+    function handleUpdatePatient() {
         // validation
         setErrorMessage("");
         
-        if (!fullName || !gender || !specialization || !email || !phoneNumber || !password || !reEnterPassword) {
+        if (!fullName || !gender || !email || !phoneNumber || !allergies || !medicalHistory || !password || !reEnterPassword) {
             setErrorMessage("Please fill in all the fields.");
             return;
         }
@@ -69,77 +70,79 @@ function ViewUpdateDoctorModal({ show, onClose, data }) {
 
         // send data to back-end
         const formData = new FormData();
-        formData.append('doctorId', data.doctorId); // why does this make it work?
+        formData.append('patientId', data.patientId);
         formData.append('name', fullName);
         formData.append('email', email);
         formData.append('password', password);
         formData.append('phone', phoneNumber);
         formData.append('dob', format(birthDate, "dd/MM/yyyy"));
         formData.append('gender', gender);
-        formData.append('specialization', specialization);
+        formData.append('allergies', allergies);
+        formData.append('medicalHistory', medicalHistory);
         formData.append('profilePicture', selectedImage);
 
         // create api requests
         axios
-            .patch(`/api/systemAdmin/updateDoctor`, formData, {
+            .patch(`/api/systemAdmin/updatePatient`, formData, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     'Content-Type': 'multipart/form-data'
                 }
             })
             .then((response) => {
-                console.log("Doctor account updated successfully: ", response.data);
-                setUpdateDoctorSuccess(true);
+                console.log("Patient account updated successfully: ", response.data);
+                setUpdatePatientSuccess(true);
                 setIsEditable(false);
                 onClose();
             })
             .catch((error) => {
-                console.log("Error updating doctor account: ", error);
+                console.log("Error updating patient account: ", error);
             });
     };
 
-    // Function to reset fields and exit edit mode on modal close
     function resetFields() {
         setFullName(data.name);
         setGender(data.gender);
-        setBirthDate(new Date(data.dob));   // keep dob before changes
-        setSpecialization(data.specialization);
+        setBirthDate(new Date(data.dob));
         setEmail(data.email);
         setPhoneNumber(data.phone);
         setPassword(data.password);
-        setReEnterPassword(""); // Clear the re-enter password field
+        setAllergies(data.allergies);
+        setMedicalHistory(data.medicalHistory);
+        setReEnterPassword("");
         setSelectedImage(data.profilePictureUrl);
 
-        setIsEditable(false); // Exit edit mode
-        onClose(); // Close the modal
+        setIsEditable(false);
+        onClose();
     };
     
     function exitUpdate() {
         setFullName(data.name);
         setGender(data.gender);
         setBirthDate(new Date(data.dob));
-        setSpecialization(data.specialization);
         setEmail(data.email);
         setPhoneNumber(data.phone);
+        setAllergies(data.allergies);
+        setMedicalHistory(data.medicalHistory);
         setPassword(data.password);
-        setReEnterPassword(""); // Clear the re-enter password field
+        setReEnterPassword("");
         setSelectedImage(data.profilePictureUrl);
 
-        setIsEditable(false); // Exit edit mode
+        setIsEditable(false);
     };
 
-    function handleUpdateDoctorSuccess() {
+    function handleUpdatePatientSuccess() {
         setReEnterPassword("");
-        setUpdateDoctorSuccess(false);
+        setUpdatePatientSuccess(false);
         onClose();
     }
-    
+
 
     return (
         <div>
             <Modal show={show} size="4xl" popup={true} onClose={resetFields}>
                 <Modal.Header>
-                    <p className="text-2xl font-bold text-black px-10 pt-10 break-words">{data.name} <br/> ID: {data.doctorId}</p>
+                    <p className="text-2xl font-bold text-black px-10 pt-10 break-words">{data.name} <br/> ID: {data.patientId}</p>
                 </Modal.Header>
 
                 <Modal.Body className={isEditable ? 'pt-8' : 'pt-0'}>
@@ -159,16 +162,42 @@ function ViewUpdateDoctorModal({ show, onClose, data }) {
                             </div>
                         )}
 
-                        
                         <div className='flex flex-row'>
                             {/* first column */}
                             <div className='flex flex-col w-1/2 space-y-5'>
+                                {/* profile picture */}
+                                <div className='flex pl-6 items-start'>
+                                    <FaCamera
+                                        color="#6EE0FA"
+                                        size={30}
+                                    />
+                                    {/* drag n drop picture */}
+                                    {isEditable ? (
+                                        <div className="flex flex-col items-center h-56 ml-2 w-4/5">
+                                            <DropImageInput
+                                                name="image"
+                                                file={selectedImage}
+                                                setFile={setSelectedImage}
+                                                show={isEditable}
+                                            />
+                                        </div>
+                                    ) : (
+                                        <div className="ml-2 w-4/5">
+                                            <img
+                                                src={selectedImage}
+                                                alt="Patient Profile"
+                                                className="ml-2 w-72 h-72"
+                                            />
+                                        </div>
+                                    )}
+                                </div>
+
                                 {/* full name */}
-                                <div className="flex pl-6 items-center">
+                                <div className="flex pl-4 items-center">
                                     <FaUser 
                                         color="#6EE0FA"
-                                        size={33}
-                                        style={{ paddingRight: '5px' }}
+                                        size={31}
+                                        style={{ marginLeft: '12px' }}
                                     />
                                     {isEditable ? (
                                         <TextInput
@@ -189,37 +218,6 @@ function ViewUpdateDoctorModal({ show, onClose, data }) {
                                     )}
                                 </div>
 
-                                {/* profile picture */}
-                                <div className='flex pl-6 items-start'>
-                                    <FaCamera 
-                                        color="#6EE0FA"
-                                        size={30}
-                                    />
-                                    {/* drag n drop picture */}
-                                    {isEditable ? (
-                                        <div className="flex flex-col items-center h-56 ml-2 w-4/5">
-                                            <DropImageInput
-                                                name="image"
-                                                file={selectedImage}
-                                                setFile={setSelectedImage}
-                                                show={isEditable}
-                                            />
-                                        </div>
-                                    ) : (
-                                        <div className="ml-2 w-4/5">
-                                            <img
-                                                src={selectedImage}
-                                                alt="Doctor Profile"
-                                                className="ml-2 w-72 h-72"
-                                            />
-                                        </div>
-                                    )}
-
-                                </div>
-                            </div>
-
-                            {/* second column */}
-                            <div className='flex w-1/2 flex-col px-4 justify-center space-y-5'>
                                 {/* gender */}
                                 <div className="flex pl-4 items-center">
                                     <FaVenusMars 
@@ -241,32 +239,6 @@ function ViewUpdateDoctorModal({ show, onClose, data }) {
                                         <input
                                             type="text"
                                             value={gender}
-                                            readOnly
-                                            className="ml-2 w-4/5 border rounded-lg border-[#6EE0FA]"
-                                        />
-                                    )}
-                                </div>
-
-                                {/* specialization */}
-                                <div className="flex pl-4 items-center">
-                                    <FaStethoscope 
-                                        color="#6EE0FA"
-                                        size={31}
-                                        style={{ marginLeft: '12px' }}
-                                    />
-                                    {isEditable ? (
-                                        <TextInput
-                                            id="specialization"
-                                            value={specialization}
-                                            placeholder="Enter specialization"
-                                            onChange={(e) => setSpecialization(e.target.value)}
-                                            required
-                                            className="ml-2 w-4/5"
-                                        />
-                                    ) : (
-                                        <input
-                                            type="text"
-                                            value={specialization}
                                             readOnly
                                             className="ml-2 w-4/5 border rounded-lg border-[#6EE0FA]"
                                         />
@@ -356,13 +328,63 @@ function ViewUpdateDoctorModal({ show, onClose, data }) {
                                         />
                                     )}
                                 </div>
+                            </div>
+
+                            {/* second column */}
+                            <div className='flex w-1/2 flex-col px-4 space-y-5'>
+                                {/* allergies */}
+                                <div className="pl-6 items-center w-11/12">
+                                    <p className="text-[#6EE0FA]">ALLERGIES</p>
+                                    {isEditable ? (
+                                        <textarea
+                                            id="allergies"
+                                            value={allergies}
+                                            placeholder="Enter allergies"
+                                            onChange={(event) => setAllergies(event.target.value)}
+                                            required
+                                            className="text-sm w-full h-24 p-2 border border-gray-300 bg-gray-50 rounded-md resize-y"
+                                        />
+                                    ) : (
+                                        <input
+                                            type="text"
+                                            value={allergies}
+                                            readOnly
+                                            className="text-sm w-full h-24 p-2 border rounded-lg border-[#6EE0FA]"
+                                            style={{ paddingBottom: '70px' }}
+                                        />
+                                    )}
+                                </div>
+
+                                {/* medical history */}
+                                <div className="pl-6 items-center w-11/12">
+                                    <p className="text-[#6EE0FA]">MEDICAL HISTORY</p>
+                                    {isEditable ? (
+                                        <textarea
+                                            id="medicalHistory"
+                                            value={medicalHistory}
+                                            placeholder="Enter medical history"
+                                            onChange={(event) => setMedicalHistory(event.target.value)}
+                                            required
+                                            className="text-sm w-full h-24 p-2 border border-gray-300 bg-gray-50 rounded-md resize-y"
+                                        />
+                                    ) : (
+                                        <input
+                                            type="text"
+                                            value={medicalHistory}
+                                            readOnly
+                                            className="text-sm w-full h-24 p-2 border rounded-lg border-[#6EE0FA]"
+                                            style={{ paddingBottom: '70px' }}
+                                        />
+                                    )}
+                                </div>
+
+                                <div className='pt-2'></div>
 
                                 {/* password */}
                                 <div className="flex pl-4 items-center">
                                     <FaLock 
                                         color="#6EE0FA"
                                         size={31}
-                                        style={{ marginLeft: '12px' }}
                                     />
                                     {isEditable ? (
                                         <TextInput
@@ -377,7 +399,7 @@ function ViewUpdateDoctorModal({ show, onClose, data }) {
                                     ) : (
                                         <input
                                             type="password"
-                                            value="●●●●●●●●"
+                                            value={password}
                                             readOnly
                                             className="ml-2 w-4/5 border rounded-lg border-[#6EE0FA]"
                                         />
@@ -390,7 +412,6 @@ function ViewUpdateDoctorModal({ show, onClose, data }) {
                                         <FaLock 
                                             color="#6EE0FA"
                                             size={31}
-                                            style={{ marginLeft: '12px' }}
                                         />
                                         <TextInput
                                             id="reEnterPassword"
@@ -420,7 +441,7 @@ function ViewUpdateDoctorModal({ show, onClose, data }) {
                                     </button>
                                     <button
                                         type="submit"
-                                        onClick={handleUpdateDoctor}
+                                        onClick={handleUpdatePatient}
                                         className="w-5/12 py-2 border border-cyan-400 text-cyan-400 rounded hover:bg-cyan-400 hover:text-white transition duration-300"
                                     >
                                         Save Changes
@@ -436,10 +457,10 @@ function ViewUpdateDoctorModal({ show, onClose, data }) {
                 </Modal.Body>
             </Modal>
 
-            {/* update doctor success */}
-            <UpdateDoctorSuccess show={updateDoctorSuccess} onClose={handleUpdateDoctorSuccess} />
+            {/* update patient success */}
+            <UpdatePatientSuccess show={updatePatientSuccess} onClose={handleUpdatePatientSuccess} />
         </div>
     )
 }
 
-export default ViewUpdateDoctorModal
+export default ViewUpdatePatientModal

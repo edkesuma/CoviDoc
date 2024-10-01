@@ -4,19 +4,25 @@ import { FaSearch, FaFilter, FaStethoscope } from "react-icons/fa";
 import { AuthContext } from "../../Components/Authentication/AuthContext.jsx";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-
 // components
 import DoctorRowCard from '../../Components/SystemAdmin/DoctorRowCard';
 import ActorNavbar from "../../Components/ActorNavbar";
 import CreateDoctorModal from '../../Components/SystemAdmin/CreateDoctorModal';
-// import FilterDoctorModal from '../../Components/SystemAdmin/FilterDoctorModal';
+import FilterDoctorModal from '../../Components/SystemAdmin/FilterDoctorModal';
+
 
 function DoctorManagement() {
   const { token } = useContext(AuthContext);
+
   const [listOfDoctors, setListOfDoctors] = useState([]);
   const [search, setSearch] = useState("");
   const [createDoctorShow, setCreateDoctorShow] = useState(false)
   const [isLoading, setIsLoading] = useState(true);
+  // filtering
+  const [filterDoctorShow, setFilterDoctorShow] = useState(false)
+  const [filteredGender, setFilteredGender] = useState("");
+  const [filteredAge, setFilteredAge] = useState({ min: 0, max: 100 });
+  const [filteredSpecializations, setFilteredSpecializations] = useState("");
 
   const fetchDoctors = async () => {
     try {
@@ -26,7 +32,7 @@ function DoctorManagement() {
         },
       })
       .then((response) => {
-        setListOfDoctors(response.data.data); // Set doctor data from response
+        setListOfDoctors(response.data.data); // set doctor data from response
         setIsLoading(false);
       });   
     } catch (error) {
@@ -37,7 +43,6 @@ function DoctorManagement() {
   // useEffect
   useEffect(() => {
     fetchDoctors();
-    // setIsLoading(false);
   }, [token]);
 
   useEffect(() => {
@@ -49,11 +54,50 @@ function DoctorManagement() {
   }, [isLoading]);
 
 
-  // Filter the data based on searchQuery
-  const filteredData = listOfDoctors.filter(
-    (doctor) =>
-      doctor.name.toLowerCase().includes(search.toLowerCase())
-  );
+  // list of specializations
+  const specializations = [...new Set(listOfDoctors.map(doctor => doctor.specialization))];
+
+  // calculate age
+  const calculateAge = (dob) => {
+    // parse dob assuming it's in DD/MM/YYYY format
+    const [day, month, year] = dob.split("/").map(Number);
+    const birthDate = new Date(year, month - 1, day); // JS months are 0-based
+
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    
+    console.log("bday: ", dob);
+    console.log("age: ", age);
+    return age;
+  };
+  
+  // search and filter
+  const filteredData = listOfDoctors.filter((doctor) => {
+    // search
+    const matchesSearch = doctor.name.toLowerCase().includes(search.toLowerCase());
+    // gender
+    const matchesGender = filteredGender ? doctor.gender === filteredGender : true;
+    // age
+    const doctorAge = calculateAge(doctor.dob);
+    const matchesAgeRange = doctorAge >= filteredAge.min && doctorAge <= filteredAge.max;
+    // specialization
+    const matchesSpecializations = filteredSpecializations.length
+      ? filteredSpecializations.includes(doctor.specialization)
+      : true;
+
+    return matchesSearch && matchesGender && matchesAgeRange && matchesSpecializations;
+  });
+
+  function handleFilter({ gender, ageRange, specializations }) {
+    setFilteredGender(gender);
+    setFilteredAge(ageRange);
+    setFilteredSpecializations(specializations);
+  };
 
 
   return (
@@ -79,14 +123,14 @@ function DoctorManagement() {
             />
             
             {/* filter */}
-            <Button
-              size="lg"
-              color="gray"
-              className="flex items-center px-4 py-2"
+            <button
+              type="button"
+              className="flex items-center justify-center px-4 py-4 w-auto border border-gray-300 text-lg text-gray-500 rounded-lg hover:border-cyan-400 hover:text-cyan-400 transition duration-300"
+              onClick={() => setFilterDoctorShow(true)}
             >
               <FaFilter className="mr-2 w-5 h-5" />
               Filter
-            </Button>
+            </button>
           </div>
 
             {/* create new doctor account */}
@@ -118,6 +162,14 @@ function DoctorManagement() {
           <DoctorRowCard data={filteredData} />
         )}
       </div>
+
+      {/* handle filter doctor account */}
+      <FilterDoctorModal 
+        show={filterDoctorShow}
+        onClose={() => setFilterDoctorShow(false)}
+        onFilter={handleFilter}
+        specializations={specializations}
+      />
 
       {/* handle create doctor account */}
       <CreateDoctorModal 

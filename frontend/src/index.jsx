@@ -9,8 +9,8 @@ import {
 import AuthProvider from "./Components/Authentication/AuthContext.jsx";
 
 // Development/Example only
-import TestPage from "./Pages/Examples/TestPage";
-import SearchPage from "./Pages/Examples/SearchPage.jsx";
+// import TestPage from "./Pages/Examples/TestPage";
+// import SearchPage from "./Pages/Examples/SearchPage.jsx";
 
 // Login/Sign up pages
 import LoginPage from "./Pages/Login/LoginPage.jsx";
@@ -48,8 +48,8 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         <BrowserRouter> 
             <Routes>
                 {/* DEVELOPMENT/EXAMPLE ONLY routes */}
-                <Route path="/test" element={<TestPage />} />
-                <Route path="/search" element={<SearchPage />} />
+                {/* <Route path="/test" element={<TestPage />} />
+                <Route path="/search" element={<SearchPage />} /> */}
 
                 {/* Public routes */}
                 {/* Landing pages */}

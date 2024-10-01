@@ -1,7 +1,7 @@
 import React from 'react';
 import { Modal, Button } from "flowbite-react";
 
-function DeleteDoctorSuccess({ show, onClose }) {
+function DeletePatientSuccess({ show, onClose }) {
     function closeSuccess() {
         onClose();
         window.location.reload();
@@ -15,7 +15,7 @@ function DeleteDoctorSuccess({ show, onClose }) {
                 <div className="flex justify-center">
                     <div className="p-6 text-center">
                         {/* Message */}
-                        <p className="text-lg text-red-600 mb-4">Doctor account successfully deleted!</p>
+                        <p className="text-lg text-red-600 mb-4">Patient account successfully deleted!</p>
                         {/* Exit Button */}
                         <button
                             className="bg-cyan-400 text-white py-2 px-4 rounded cursor-pointer font-bold hover:bg-cyan-500"
@@ -30,4 +30,4 @@ function DeleteDoctorSuccess({ show, onClose }) {
     );
 }
 
-export default DeleteDoctorSuccess;
+export default DeletePatientSuccess;
