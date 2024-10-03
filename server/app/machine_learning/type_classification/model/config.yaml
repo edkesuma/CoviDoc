@@ -1,0 +1,8 @@
+{
+    "metadata_path": "/kaggle/input/covid-x-ray-dataset/balanced/metadata.csv",
+    "image_folder": "/kaggle/input/covid-x-ray-dataset/balanced",
+    "image_dimensions": [224,224],
+    "max_epochs": 30,
+    "run_name": "resnext50_224x224",
+    "patience": 5
+}
