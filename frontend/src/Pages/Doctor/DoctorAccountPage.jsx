@@ -7,50 +7,84 @@ import axios from "axios";
 import ChangeDoctorPasswordModal from "../../Components/Doctor/ChangeDoctorPasswordModal"; // Import the modal
 
 function DoctorAccountPage() {
-  const { token, logout } = useContext(AuthContext);
+  const { token } = useContext(AuthContext);
   const [doctorProfile, setDoctorProfile] = useState(null); // Store doctor's profile
   const [isLoading, setIsLoading] = useState(true); // Loading state for API
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false); // State for password modal
 
-  // Fetch doctor's profile when the component mounts
-  useEffect(() => {
-    const fetchDoctorProfile = async () => {
-      try {
-        const response = await axios.get("/api/doctor/getDoctorProfile", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        setDoctorProfile(response.data.doctor); // Set the doctor object correctly
+  const fetchDoctorProfile = async () => {
+    try {
+      const response = await axios.get('/api/doctor/getDoctorProfile', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        setDoctorProfile(response.data.doctor);
         setIsLoading(false);
-      } catch (error) {
-        console.log("Error fetching doctor profile:", error);
-        setIsLoading(false);
-      }
-    };
-
-    if (token) {
-      fetchDoctorProfile();
+      });
+    } catch (error) {
+      console.log("Error fetching doctor profile:", error);
+      setIsLoading(false);
     }
+  };
+
+  // useEffect
+  useEffect(() => {
+    fetchDoctorProfile();
   }, [token]);
 
-  // If the page is still loading, show a spinner
-  if (isLoading) {
-    return (
-      <div className="text-center text-8xl">
-        <Spinner aria-label="Extra large spinner example" size="xl" />
-      </div>
-    );
-  }
+  useEffect(() => {
+    console.log("Is loading", isLoading);
+  }, [isLoading]);
+
+
+  // // Fetch doctor's profile when the component mounts
+  // useEffect(() => {
+  //   const fetchDoctorProfile = async () => {
+  //     try {
+  //       const response = await axios.get("/api/doctor/getDoctorProfile", {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       });
+  //       setDoctorProfile(response.data.doctor); // Set the doctor object correctly
+  //       console.log("this is doctor data: ", response.data.doctor)
+  //       setIsLoading(false);
+  //     } catch (error) {
+  //       console.log("Error fetching doctor profile:", error);
+  //       setIsLoading(false);
+  //     }
+  //   };
+
+  //   if (token) {
+  //     fetchDoctorProfile();
+  //   }
+  // }, [token]);
+
+  // // If the page is still loading, show a spinner
+  // if (isLoading) {
+  //   return (
+  //     <div className="text-center text-8xl">
+  //       <Spinner aria-label="Extra large spinner example" size="xl" />
+  //     </div>
+  //   );
+  // }
 
   return (
     <div>
       <ActorNavbar />
-      <div className="container mx-auto px-4 py-10 bg-gray-100">
+      <div className="container mx-auto px-4 py-10">
         <h1 className="text-3xl font-bold mb-8">Your Account</h1>
 
-        {/* Profile Section */}
-        {doctorProfile && <DocMainModal doctorProfile={doctorProfile} />} {/* Pass the profile data to the modal */}
+        {/* spinner when loading */}
+        {isLoading ? (
+          <div className="flex justify-center">
+            <Spinner aria-label="Center-aligned spinner" size="xl" />
+          </div>
+        ) : (
+          doctorProfile && <DocMainModal doctorProfile={doctorProfile} />
+        )}
 
         {/* Password Section */}
         <div className="mt-10">
@@ -70,13 +104,6 @@ function DoctorAccountPage() {
             onClose={() => setIsPasswordModalOpen(false)} // Close the modal when necessary
           />
         )}
-
-        {/* Logout Button */}
-        <div className="mt-10">
-          <Button onClick={() => logout()} className="bg-red-500 text-white">
-            LOGOUT
-          </Button>
-        </div>
       </div>
     </div>
   );

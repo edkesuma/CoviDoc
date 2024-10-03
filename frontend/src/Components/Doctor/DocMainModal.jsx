@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { IoPerson } from 'react-icons/io5';
-import { FaTransgender, FaBirthdayCake, FaPhoneAlt } from 'react-icons/fa';
-import { LuStethoscope } from 'react-icons/lu';
-import { IoIosMail } from 'react-icons/io';
+import { FaUser, FaStethoscope, FaVenusMars, FaBirthdayCake, FaEnvelope, FaPhoneAlt } from 'react-icons/fa';
 import DoctorEditAccountModal from './DoctorEditAccountModal'; // Ensure the correct path to the modal
 
 function DocMainModal({ doctorProfile }) {
@@ -31,19 +29,19 @@ function DocMainModal({ doctorProfile }) {
         {/* Profile Information */}
         <div className="ml-6 space-y-2">
           <p className="text-gray-600 flex items-center">
-            <IoPerson className="mr-2 text-cyan-400" /> {doctorProfile.name}
+            <FaUser className="mr-2 text-cyan-400" /> {doctorProfile.name}
           </p>
           <p className="text-gray-600 flex items-center">
-            <LuStethoscope className="mr-2 text-cyan-400" /> {doctorProfile.specialization}
+            <FaStethoscope className="mr-2 text-cyan-400" /> {doctorProfile.specialization}
           </p>
           <p className="text-gray-600 flex items-center">
-            <FaTransgender className="mr-2 text-cyan-400" /> {doctorProfile.gender}
+            <FaVenusMars className="mr-2 text-cyan-400" /> {doctorProfile.gender}
           </p>
           <p className="text-gray-600 flex items-center">
             <FaBirthdayCake className="mr-2 text-cyan-400" /> {doctorProfile.dob}
           </p>
           <p className="text-gray-600 flex items-center">
-            <IoIosMail className="mr-2 text-cyan-400" /> {doctorProfile.email}
+            <FaEnvelope className="mr-2 text-cyan-400" /> {doctorProfile.email}
           </p>
           <p className="text-gray-600 flex items-center">
             <FaPhoneAlt className="mr-2 text-cyan-400" /> {doctorProfile.phone}
@@ -66,7 +64,7 @@ function DocMainModal({ doctorProfile }) {
         <DoctorEditAccountModal 
           isOpen={isEditModalOpen}
           onClose={handleCloseModal} // Close the modal
-          doctorProfile={doctorProfile} // Pass doctor profile to modal
+          doctorDetails={doctorProfile} // Pass doctor profile to modal
         />
       )}
     </div>
