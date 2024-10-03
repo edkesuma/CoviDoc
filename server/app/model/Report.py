@@ -10,6 +10,7 @@ import jinja2
 from google.cloud import storage
 import os
 import pdfkit # type: ignore
+from google.cloud import storage
 
 # ML Libraries
 import torch
@@ -25,6 +26,8 @@ import numpy as np
 # Local dependencies
 from .sqlalchemy import db
 from . import Patient, Doctor, Consultation
+from app.model_loader import load_model
+from app.machine_learning.type_classification.data import val_transforms
 
 class Report(db.Model):
     __tablename__ = "Report"
@@ -63,7 +66,7 @@ class Report(db.Model):
         }
     
     @classmethod
-    def queryReport(cls, id: str) -> Self:
+    def queryReport(cls, id: str) -> Self | None:
         """Query a report by id"""
         return cls.query.filter(cls.id == id).one_or_none()
     
@@ -83,7 +86,7 @@ class Report(db.Model):
         xrayImageUrl = consultation.xrayImageUrl
 
         # Prediction pipeline
-        classificationSuccess, classificationMessage = cls.classifyXray(report.id, xrayImageUrl)
+        classificationSuccess, classificationMessage = cls.classifyXray(report.id, xrayImageUrl, consultation)
         llmSuccess, llmMessage = cls.getLLMAdditionalInfo(report.id, xrayImageUrl, patient, doctor, consultation)
 
         # Update consultation with new report id
@@ -114,64 +117,54 @@ class Report(db.Model):
         return (True, "Prescriptions and lifestyle changes updated successfully.")
     
     @classmethod
-    def classifyXray(cls, reportId: str, xrayImageUrl: str) -> Tuple[bool, str]:
+    def classifyXray(cls, reportId: str, xrayImageUrl: str, consultation: Consultation) -> Tuple[bool, str]:
         """Classify an x-ray image"""
-        # Class labels
-        class_names = ['Covid', 'Healthy', 'Other']
-        # Load model architecture
-        model = models.resnet50()
-        # Modify the final fully connected layer to match the number of classes (3 classes: Healthy, COVID, Other)
-        # and replicate the structure used during training (including Dropout)
-        model.fc = nn.Sequential( # type: ignore
-            nn.Dropout(0.5),  # Assuming Dropout was used during training
-            nn.Linear(model.fc.in_features, 3)
-        )
-        # Load the trained weights from your saved model
-        model_path = current_app.config["CLASSIFICATION_MODEL_PATH"]
-
-        # Load the trained weights
-        model.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')))
-
-        # Set the model to evaluation mode
-        model.eval()
-
-        # Move the model to GPU if available
-        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        model = model.to(device)
-
-        # Define image preprocessing (same as used during training)
-        transform = transforms.Compose([
-            transforms.Resize((224, 224)),
-            transforms.ToTensor(),
-            transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
-        ])
+        covidnext_model = load_model(current_app.config["COVIDNEXT50_MODEL_PATH"], current_app.config["DEVICE"])
 
         # Get image from URL
         response = requests.get(xrayImageUrl)
         image = Image.open(BytesIO(response.content)).convert("RGB")
         
         # Preprocess the image
-        image = transform(image).unsqueeze(0)  # type: ignore # Add batch dimension
-
+        transform = val_transforms(224, 224)
+        image = transform(image)
+        
         # Move the image to the same device as the model
-        image = image.to(device)
+        image = image.to(current_app.config["DEVICE"]) # type: ignore
         
-        # Forward pass to get predictions
-        with torch.no_grad():
-            output = model(image)
-            confidence = F.softmax(output, dim=1)  # Get confidence (softmax probabilities)
-            _, predicted_class = torch.max(output, 1)  # Get the predicted class
-        
-        predicted_class = class_names[predicted_class.item()] # type: ignore
-        confidence = round(np.max(confidence.cpu().numpy()[0])*100, 2)
+        # Classify the image
+        predicted_class_idx, classificationConfidence = covidnext_model.classify_image(covidnext_model, image)
+        predicted_class_idx = int(predicted_class_idx)
 
-        if predicted_class == "Other":
-            predicted_class = "Other lung infection"
+        # Generate gradcam image
+        gradcam_image = covidnext_model.generate_gradcam(image, target_class=predicted_class_idx)
+
+        # Convert the PIL.Image to a BytesIO object
+        gradcam_image_io = BytesIO()
+        gradcam_image.save(gradcam_image_io, format='JPEG')
+        gradcam_image_io.seek(0)  # Reset the stream position to the beginning
+
+        # Upload gradcam image to gcloud
+        gradcam_image_filename = f"{consultation.id}_highlighted.png"
+        storageClient = storage.Client()
+        bucket = storageClient.bucket(current_app.config["BUCKET_NAME"])
+        blob = bucket.blob(f"xrayImages/{gradcam_image_filename}")
+        blob.upload_from_file(gradcam_image_io, content_type="image/jpeg")
+        blob.cache_control = "private, no-cache, max-age=0"
+        blob.patch()
+        gradcam_image_url = blob.public_url
+
+        # Map the class index to the classification
+        idx_to_classification_mapping = {0: "Healthy", 1: "Covid-19", 2: "Other Lung Infection"}
+        predicted_class = idx_to_classification_mapping[predicted_class_idx]
 
         # Update the report
         report = cls.queryReport(reportId)
         report.classification = predicted_class
-        report.classificationConfidence = confidence
+        report.classificationConfidence = classificationConfidence
+        # Update the consultation with gradcam image
+        consultation.highlightedXrayImageUrl = gradcam_image_url
+
         # TODO: EDRICK AFTER FIGURE OUT ML
         report.severity = "Mild"
         report.severityConfidence = 100

@@ -9,7 +9,7 @@ from flask_jwt_extended import verify_jwt_in_request, get_jwt, JWTManager
 
 
 # Local dependencies
-from .model import db, SystemAdmin, Doctor, Patient, Consultation, Report
+from app.model import db, SystemAdmin, Doctor, Patient, Consultation, Report
 from app.routes import router as mainRouter
 from app.controller.systemAdmin import router as systemAdminRouter
 from app.controller.authentication import router as authenticationRouter
@@ -17,6 +17,7 @@ from app.controller.patient import router as patientRouter
 from app.controller.doctor import router as doctorRouter
 from .extensions import bcrypt, jwt, mail
 # from app.controller.authentication.utils import mail
+from app.model_loader import init_models
 
 # Initialize Flask App
 flask_app = Flask(__name__)
@@ -26,6 +27,9 @@ flask_app.config.from_object(Config)
 bcrypt.init_app(flask_app)
 jwt.init_app(flask_app)
 mail.init_app(flask_app)
+
+# Initialize ml models
+init_models(flask_app)
 
 # SQLAlchemy
 db.init_app(flask_app)

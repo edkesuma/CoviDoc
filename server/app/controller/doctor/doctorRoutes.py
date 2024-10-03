@@ -43,21 +43,15 @@ def updateDoctor() -> Dict[str, Union[str, int]]:
     # Remove fields that are None
     fieldsToUpdate = {k: v for k, v in fieldsToUpdate.items() if v is not None}
 
-    print(f"Request files {request.files}")
-
     # Update profile picture if included in the request
     if "profilePicture" in request.files:
         profilePicture = request.files["profilePicture"]
-        print(f"Profile Picture: {profilePicture}")
         if profilePicture and allowed_file(profilePicture.filename): # type: ignore
-            print(f"Profile Picture 2: {profilePicture.filename}")
             doctorId = get_jwt_identity()
             extension = extractExtension(profilePicture.filename) # type: ignore
             filename = secure_filename(f"{doctorId}.{extension}") # type: ignore
-            print(f"Filename: {filename}")
             destinationBlobName = f"profilePictures/{filename}"
             profilePictureUrl = uploadToGoogleCloud(current_app.config['BUCKET_NAME'], destinationBlobName, profilePicture)
-            print(f"Profile Picture URL: {profilePictureUrl}")
             fieldsToUpdate["profilePictureUrl"] = profilePictureUrl
         else:
             return {"status code": 400, "message": "Invalid file type"}
