@@ -14,15 +14,14 @@ function OverView() {
         const fetchData = async () => {
             try {
                 const response = await axios.get("https://disease.sh/v3/covid-19/all");
-                setToday(response.data.cases); // 设置今天的病例数
-                setCountries(response.data.affectedCountries); // 设置受影响的国家数
-                setDeath(response.data.deaths); // 设置今天的死亡人数
+                setToday(response.data.cases);
+                setCountries(response.data.affectedCountries);
+                setDeath(response.data.deaths);
             } catch (error) {
                 console.log("Error fetching data:", error);
             }
         };
-
-        fetchData(); // 调用请求函数
+        fetchData();
     }, []);
 
     return (
