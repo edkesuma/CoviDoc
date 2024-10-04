@@ -23,8 +23,7 @@ function ForgetPassword() {
 
     return (
         <div>
-            <Card className='flex justify-center items-center'
-                  style={{width: '1000px', height: '600px'}}>
+            <Card className='flex flex-row items-center rounded-lg shadow bg-gray-100 md:py-20'>
                 <div className="flex w-full h-full items-center justify-center">
                     <div className='flex flex-col justify-center text-center w-3/4'>
                         <p className="text-4xl font-bold mb-8">Forgot Your Password?</p>

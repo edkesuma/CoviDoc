@@ -3,18 +3,10 @@ import {Button, Label, TextInput, Select} from "flowbite-react";
 import {useNavigate, Link} from 'react-router-dom';
 import loginImage from '../../assets/login.jpg';
 import React, {useState, useContext} from 'react';
-import { AuthContext } from "../Authentication/AuthContext";
+import {AuthContext} from "../Authentication/AuthContext";
 import axios from "axios";
-import { jwtDecode } from "jwt-decode";
+import {jwtDecode} from "jwt-decode";
 
-//the function return userList
-function getUsers() {
-    const userList = [
-        {userType: 'Admin', email: 'admin@gmail.com', password: '123'},
-        {userType: 'Doctor', email: 'doctor@gmail.com', password: '123'}
-    ];
-    return userList;
-}
 
 function Login() {
     const [userType, setUserType] = useState('');
@@ -22,7 +14,7 @@ function Login() {
     const [password, setPassword] = useState('');
     // error message
     const [errorMessage, setErrorMessage] = useState('');
-    const { login } = useContext(AuthContext);
+    const {login} = useContext(AuthContext);
     const navigate = useNavigate();
 
     const redirectToUserHome = (token) => {
@@ -62,11 +54,12 @@ function Login() {
             className="flex flex-row items-center rounded-lg shadow bg-gray-100"
             style={{width: '1000px', height: '600px'}}
         >
-            <img className="object-cover w-1/3 h-full rounded-s-lg" src={loginImage} alt="Login Image"/>
-            <div className="flex flex-col justify-center items-center w-2/3 h-full ">
+            <img className="hidden md:block object-cover :w-1/3 h-full rounded-s-lg" src={loginImage}
+                 alt="Login Image"/>
+            <div className="flex flex-col justify-center items-center w-full md:w-2/3 h-full">
                 <div className="w-3/4">
                     <div className="flex flex-col items-center justify-center">
-                        <div className="relative font-bold text-5xl pb-8">
+                        <div className="relative font-bold text-5xl pb-8 ">
                 <span
                     className="absolute top-4 left-0 opacity-50 w-8 h-8 bg-cyan-500 rounded-full transform -translate-x-1/2 -translate-y-1/2"></span>
                             Login
@@ -77,7 +70,7 @@ function Login() {
                             </div>
                             <Select id="userType" required value={userType}
                                     onChange={(e) => setUserType(e.target.value)}
-                                    >
+                            >
                                 <option value="">Select User Type</option>
                                 <option value="System Admin">System Admin</option>
                                 <option value="Doctor">Doctor</option>
@@ -87,9 +80,9 @@ function Login() {
                                 <div className="block">
                                     <Label htmlFor="email" value="Email"/>
                                 </div>
-                                <TextInput 
-                                    id="email" 
-                                    type="email" 
+                                <TextInput
+                                    id="email"
+                                    type="email"
                                     placeholder="user@mail.com"
                                     required={true}
                                     value={email}
@@ -101,7 +94,7 @@ function Login() {
                                 <div className="block">
                                     <Label htmlFor="password" value="Password"/>
                                 </div>
-                                <TextInput 
+                                <TextInput
                                     id="password"
                                     type="password"
                                     required

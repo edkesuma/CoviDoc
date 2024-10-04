@@ -80,7 +80,7 @@ function SignUpFlow() {
             <Route
                 path="/"
                 element = {
-                    <div className='flex w-screen h-screen justify-center items-center bg-[#27a2ba]'>
+                    <div className='flex w-screen h-screen justify-center items-center md:bg-gradient-to-l bg-gradient-to-br from-cyan-500 to-cyan-100'>
                         <SignUp1 onNext={handleNext} formData={formData} />
                     </div>
                 }
@@ -88,7 +88,7 @@ function SignUpFlow() {
             <Route
                 path="/next"
                 element = {
-                    <div className='flex w-screen h-screen justify-center items-center bg-[#27a2ba]'>
+                    <div className='flex w-screen h-screen justify-center items-center md:bg-gradient-to-l bg-gradient-to-br from-cyan-500 to-cyan-100'>
                         <SignUp2 onCreateAccount={createAccount} formData={formData} />
                     </div>
                 }

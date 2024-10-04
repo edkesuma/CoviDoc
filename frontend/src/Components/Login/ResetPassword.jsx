@@ -24,12 +24,13 @@ function ResetPassword() {
 
     return (
         <div>
-            <Card className='flex justify-center items-center'
-                  style={{width: '1000px', height: '600px'}}>
-                    <div className='flex flex-col justify-center text-center'>
+            <Card className='flex flex-row items-center justify-center rounded-lg shadow bg-gray-100'>
+                <div className='flex justify-center items-center'>
+                    <div className='flex flex-col justify-center text-center w-3/4 md:py-8 md:px-12'>
                         <p className="text-4xl font-bold mb-8"
-                           style={{width: '750px'}}
                         >Reset Your Password</p>
+                        <p className="text-2xl mb-4">Please set up the new password and confirm the password for your
+                            account.</p>
                         <div className="mb-4">
                             <div className="block text-left">
                                 <Label htmlFor="password" value="Enter new password" className="text-xl"/>
@@ -48,6 +49,7 @@ function ResetPassword() {
                         <Button onClick={handleClick} className='bg-cyan-500 mb-4'>Reset Password</Button>
                         <Link to="/login" className="text-red-400">Cancel</Link>
                     </div>
+                </div>
             </Card>
         </div>
     )
