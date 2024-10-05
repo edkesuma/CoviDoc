@@ -45,8 +45,8 @@ function SignUp1({onNext, formData}) {
             className="flex flex-row items-center rounded-lg shadow bg-gray-100"
             style={{width: '1000px', height: '600px'}}
         >
-            <img className="object-cover w-1/3 h-full rounded-s-lg" src={loginImage} alt="Login Image"/>
-            <div className="flex flex-col justify-center items-center w-2/3 h-full ">
+            <img className="hidden md:block object-cover w-1/3 h-full rounded-s-lg" src={loginImage} alt="Login Image"/>
+            <div className="flex flex-col justify-center items-center w-full md:w-2/3 h-full ">
                 <div className="w-3/4">
                     <div className="flex flex-col items-center">
                         <div className="relative font-bold text-5xl pb-8">

@@ -12,8 +12,7 @@ function ResetPassSucc() {
 
     return (
         <div>
-            <Card className='flex flex-col items-center'
-                  style={{width: '1000px', height: '600px'}}>
+            <Card className='flex flex-col items-center md:py-16 md:px-72'>
                 <div className='flex justify-center mb-4'>
                     <MdOutlineLockReset color='cyan' className='w-64 h-64' alt="Success"/>
                 </div>
