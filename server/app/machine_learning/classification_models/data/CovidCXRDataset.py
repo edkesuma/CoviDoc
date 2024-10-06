@@ -5,12 +5,15 @@ from torchvision.transforms import functional as F
 from torch.utils.data import Dataset
 
 class CovidCXRDataset(Dataset):
-    def __init__(self, image_folder, metadata_df, transform=None, set_type="train"):
+    def __init__(self, image_folder, metadata_df, severity, transform=None, set_type="train"):
         self.image_folder = image_folder
         self.metadata_df = metadata_df[metadata_df["set"] == set_type]
         self.transform = transform
 
-        self.label_mappings = {"healthy": 0, "covid": 1, "other-lung-infection": 2}
+        if severity:
+            self.label_mappings = {"level1": 0, "level2": 1}
+        else:
+            self.label_mappings = {"healthy": 0, "covid": 1, "other-lung-infection": 2}
     
     def __len__(self):
         return len(self.metadata_df)

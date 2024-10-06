@@ -18,4 +18,5 @@ class Config(object):
     GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY')
     WKHTML_PATH = os.environ.get('WKHTML_PATH')
     COVIDNEXT50_MODEL_PATH = os.environ.get('COVIDNEXT50_MODEL_PATH')
+    COVIDNEXT50SEV_MODEL_PATH = os.environ.get('COVIDNEXT50SEV_MODEL_PATH')
     DEVICE = "cpu"

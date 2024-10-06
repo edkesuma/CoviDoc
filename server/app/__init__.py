@@ -38,10 +38,10 @@ with flask_app.app_context():
     # Create System Admin account
     if SystemAdmin.queryAllAdminAccounts() == []:
         systemAdmin = SystemAdmin(
-            name = "Admin",
-            email = "admin@admin.com",
-            password = bcrypt.generate_password_hash("admin"),
-            phone = "1234567890"
+            name = "Admin", # type: ignore
+            email = "admin@admin.com", # type: ignore
+            password = bcrypt.generate_password_hash("admin"), # type: ignore
+            phone = "1234567890" # type: ignore
         )
         db.session.add(systemAdmin)
         db.session.commit()

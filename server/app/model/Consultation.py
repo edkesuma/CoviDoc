@@ -4,7 +4,7 @@ from typing_extensions import Self # type: ignore
 from typing import Dict, Tuple
 from sqlalchemy.sql import func
 import uuid
-from datetime import datetime, timezone, timedelta
+from datetime import date, datetime, timezone, timedelta
 
 # Local dependencies
 from .sqlalchemy import db
@@ -65,34 +65,47 @@ class Consultation(db.Model):
     @classmethod
     def queryConsultation(cls, id: str) -> Self:
         """Query a consultation by id"""
-        return cls.query.filter(cls.id == id).one_or_none()
+        return cls.query.filter(cls.id == id).one_or_none() # type: ignore
     
     @classmethod
     def queryAllPatientConsultations(cls, patientId: str) -> Self:
         """Query all consultations for a patient"""
-        return cls.query.filter(cls.patientId == patientId).all()
+        return cls.query.filter(cls.patientId == patientId).all() # type: ignore
     
     @classmethod
     def queryAllConsultations(cls) -> Self:
         """Query all consultations"""
-        return cls.query.all()
+        return cls.query.all() # type: ignore
     
     @classmethod
-    def createConsultation(cls, details: Dict[str, str]) -> Tuple[bool, str]:
+    def createConsultation(cls, details: Dict[str, str]) -> Tuple[bool, str, str]:
         """Create a new consultation"""
-        consultation = cls(
-            id = details["consultationId"],
-            consultationDate=datetime.strptime(details["consultationDate"], "%d/%m/%Y"),
-            doctorId=details["doctorId"],
-            patientId=details["patientId"],
-            temperature=details["temperature"],
-            o2Saturation=details["o2Saturation"],
-            recentlyInIcu=details["recentlyInIcu"],
-            recentlyNeededSupplementalO2=details["recentlyNeededSupplementalO2"],
-            intubationPresent=details["intubationPresent"],
-            consultationNotes=details["consultationNotes"],
-            xrayImageUrl=details["xrayImageUrl"]
-        )
+        consultation = cls()
+        # Update consultation class details
+        consultation.id = details["consultationId"]
+        consultation.doctorId=details["doctorId"]
+        consultation.patientId=details["patientId"]
+        consultation.xrayImageUrl=details["xrayImageUrl"] 
+
+        # Set default date to today
+        consultation.consultationDate = date.today()
+
         db.session.add(consultation)
         db.session.commit()
-        return (True, "Consultation created successfully")
+        return (True, "Consultation created successfully", consultation.id)
+    
+    @classmethod
+    def updateConsultation(cls, consultationId: str, details: Dict[str, str]) -> Tuple[bool, str]:
+        """Update a consultation"""
+        consultation = cls.queryConsultation(consultationId)
+        if consultation:
+            consultation.consultationDate = details["consultationDate"]
+            consultation.temperature = details["temperature"]
+            consultation.o2Saturation = details["o2Saturation"]
+            consultation.recentlyInIcu = details["recentlyInIcu"]
+            consultation.recentlyNeededSupplementalO2 = details["recentlyNeededSupplementalO2"]
+            consultation.intubationPresent = details["intubationPresent"]
+            consultation.consultationNotes = details["consultationNotes"]
+            db.session.commit()
+            return (True, "Consultation updated successfully")
+        return (False, "Consultation not found")

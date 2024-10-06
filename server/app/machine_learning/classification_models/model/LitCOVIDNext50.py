@@ -3,7 +3,6 @@ from torch import nn
 import lightning as L
 import numpy as np
 from torchmetrics import Accuracy
-from torchvision import transforms
 import cv2
 from PIL import Image
 
@@ -17,9 +16,14 @@ class LitCOVIDNext50(L.LightningModule):
     def __init__(self, n_classes):
         super().__init__()
         self.model = COVIDNext50(n_classes)
-        self.train_accuracy = Accuracy(task="multiclass", num_classes=n_classes)
-        self.val_accuracy = Accuracy(task="multiclass", num_classes=n_classes)
-        self.test_accuracy = Accuracy(task="multiclass", num_classes=n_classes)
+        if n_classes == 2:
+            self.train_accuracy = Accuracy(task="binary")
+            self.val_accuracy = Accuracy(task="binary")
+            self.test_accuracy = Accuracy(task="binary")
+        else:
+            self.train_accuracy = Accuracy(task="multiclass", num_classes=n_classes)
+            self.val_accuracy = Accuracy(task="multiclass", num_classes=n_classes)
+            self.test_accuracy = Accuracy(task="multiclass", num_classes=n_classes)
 
     def forward(self, input):
         return self.model(input)
@@ -75,7 +79,7 @@ class LitCOVIDNext50(L.LightningModule):
             'optimizer': optimizer,
             'lr_scheduler': {
                 'scheduler': scheduler,
-                'monitor': 'val_acc',
+                'monitor': 'val_accuracy',
                 'interval': 'epoch',
                 'frequency': 1
             }
