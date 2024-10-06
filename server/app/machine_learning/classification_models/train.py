@@ -6,8 +6,8 @@ from lightning.pytorch.callbacks import EarlyStopping, ModelCheckpoint
 import torch
 
 # Local dependencies
-from ..data.CovidCXRDataModule import CovidCXRDataModule
-from .LitCOVIDNext50 import LitCOVIDNext50
+from .data.CovidCXRDataModule import CovidCXRDataModule
+from .model.LitCOVIDNext50 import LitCOVIDNext50
 
 
 def main(config: dict):
@@ -31,13 +31,13 @@ def main(config: dict):
     )
 
     # Setup logger
-    wandb_logger = WandbLogger(project="fyp-covidnext50", name="run_name")
+    wandb_logger = WandbLogger(project=config["project_name"], name=config["run_name"])
 
     # Read in metadata
     metadata_df = pd.read_csv(config["metadata_path"])
 
     # Data module
-    data_module = CovidCXRDataModule(image_folder=config["image_folder"], metadata_df=metadata_df, image_dimensions=config["image_dimensions"], batch_size=32)
+    data_module = CovidCXRDataModule(image_folder=config["image_folder"], metadata_df=metadata_df, image_dimensions=config["image_dimensions"], batch_size=32, severity=config["severity"])
     data_module.setup(stage="fit")
 
     # Data loaders
@@ -45,7 +45,8 @@ def main(config: dict):
     val_dl = data_module.val_dataloader()
 
     # Model
-    model = LitCOVIDNext50(n_classes=3)
+    n_classes = 2 if config["train_severity"] else 3
+    model = LitCOVIDNext50(n_classes=n_classes)
 
     # Trainer
     device = "gpu" if torch.cuda.is_available() else "cpu"
@@ -56,7 +57,7 @@ def main(config: dict):
     wandb_logger.experiment.log_artifact(checkpoint_callback.best_model_path)
 
 if __name__ == "__main__":
-    with open("config.yaml") as f:
+    with open("config_type_clf.yaml") as f:
         config = yaml.load(f, Loader=yaml.FullLoader)
 
     main(config)

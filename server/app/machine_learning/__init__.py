@@ -1,3 +1,3 @@
-from .type_classification import CovidCXRDataModule, LitCOVIDNext50
+from .classification_models import CovidCXRDataModule, LitCOVIDNext50
 
 __all__ = ["CovidCXRDataModule", "LitCOVIDNext50"]
