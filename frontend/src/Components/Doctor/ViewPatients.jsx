@@ -34,7 +34,7 @@ function ViewPatients({patients, token, onUpdate}) {
                 <div className="w-1/6">Profile</div>
                 <div className="w-1/4">Name</div>
                 <div className="w-1/4">Email</div>
-                <div className="w-1/4">Current State</div>
+                <div className="w-1/4 text-center">Current State</div>
             </div>
             {patients.map((patient) => (
                 <Card key={patient.patientId} onClick={() => navigate(`/doctor/patient/${patient.patientId}`)} className="p-4 cursor-pointer hover:bg-gray-200 transition-colors duration-200">
@@ -50,9 +50,9 @@ function ViewPatients({patients, token, onUpdate}) {
                                 <FaUser color="cyan" className="w-12 h-12"/>
                             )}
                         </div>
-                        <div className="w-1/4">{patient.name}</div>
-                        <div className="w-1/4">{patient.email}</div>
-                        <div className="w-1/4" onClick={(e) => e.stopPropagation()}>
+                        <div className="w-1/4 truncate">{patient.name}</div>
+                        <div className="w-1/4 truncate">{patient.email}</div>
+                        <div className="w-1/4 flex justify-center" onClick={(e) => e.stopPropagation()}>
                             <Dropdown label={patient.currentState} color='cyan'>
                                 <Dropdown.Item onClick={() => updatePatientState(patient.patientId, "Open")}>
                                     Open
