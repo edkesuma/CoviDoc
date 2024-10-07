@@ -86,7 +86,7 @@ function PatientManagement({}) {
         return matchesSearch && matchesGender && matchesAgeRange;
     });
 
-    function handleFilter({ gender, ageRange, specializations }) {
+    function handleFilter({ gender, ageRange }) {
         setFilteredGender(gender);
         setFilteredAge(ageRange);
     };

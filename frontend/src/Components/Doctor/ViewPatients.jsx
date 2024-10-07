@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 function ViewPatients({patients, token, onUpdate}) {
     const navigate = useNavigate();
     const updatePatientState = (patientId, newState) => {
-        console.log(newState);
+        console.log("newSAtate:", newState);
         axios
             .patch(
                 '/api/doctor/updatePatientState',
@@ -29,17 +29,22 @@ function ViewPatients({patients, token, onUpdate}) {
     };
 
     return (
-        <div className="mx-20 space-y-4">
-            <div className='flex flex-row mx-8 font-bold'>
-                <div className="w-1/6">Profile</div>
-                <div className="w-1/4">Name</div>
-                <div className="w-1/4">Email</div>
-                <div className="w-1/4 text-center">Current State</div>
+        <div className="space-y-2">
+            <div className="flex flex-row mx-6 font-bold">
+                <div className="w-2/12">Profile</div>
+                <div className="w-4/12">Patient Name</div>
+                <div className="w-4/12">Email</div>
+                <div className="w-2/12 text-center">Current State</div>
             </div>
+
             {patients.map((patient) => (
-                <Card key={patient.patientId} onClick={() => navigate(`/doctor/patient/${patient.patientId}`)} className="p-4 cursor-pointer hover:bg-gray-200 transition-colors duration-200">
+                <Card 
+                    key={patient.patientId} 
+                    onClick={() => navigate(`/doctor/patient/${patient.patientId}`)} 
+                    className="hover:bg-gray-100 transition duration-300 ease-in-out"
+                >
                     <div className="flex flex-row items-center">
-                        <div className="w-1/6">
+                        <div className="w-2/12">
                             {patient.profilePictureUrl ? (
                                 <img
                                     src={patient.profilePictureUrl}
@@ -47,12 +52,12 @@ function ViewPatients({patients, token, onUpdate}) {
                                     className="w-12 h-12 rounded-full object-cover"
                                 />
                             ) : (
-                                <FaUser color="cyan" className="w-12 h-12"/>
+                                <FaUser color="cyan" className="w-10 h-10"/>
                             )}
                         </div>
-                        <div className="w-1/4 truncate">{patient.name}</div>
-                        <div className="w-1/4 truncate">{patient.email}</div>
-                        <div className="w-1/4 flex justify-center" onClick={(e) => e.stopPropagation()}>
+                        <div className="w-4/12 truncate">{patient.name}</div>
+                        <div className="w-4/12 truncate">{patient.email}</div>
+                        <div className="w-2/12 flex justify-center" onClick={(e) => e.stopPropagation()}>
                             <Dropdown label={patient.currentState} color='cyan'>
                                 <Dropdown.Item onClick={() => updatePatientState(patient.patientId, "Open")}>
                                     Open

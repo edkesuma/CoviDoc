@@ -109,7 +109,7 @@ function DoctorEditAccountModal({ isOpen, onClose, doctorDetails }) {
     <>
       <Modal show={isOpen} onClose={resetFields} size="4xl" popup={true}>
         <Modal.Header>
-          <p className="text-2xl font-bold text-black px-10 pt-10">Editing Your Account</p>
+          <p className="text-2xl font-bold text-black px-10 p-10">Editing Your Account</p>
         </Modal.Header>
 
         <Modal.Body>
