@@ -1,7 +1,7 @@
 import { FaBirthdayCake, FaPhoneAlt, FaTransgender, FaUser } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
 import React, { useState } from "react";
-import EditPatientAccountModal from "../../../Patient/EditPatientAccountModal.jsx";
+import EditPatientAccountModal from "../../Patient/EditPatientAccountModal.jsx";
 
 function PatientDetail({ patientDetails }) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false); // State to control modal visibility

@@ -1,5 +1,5 @@
 "use client";
-import PatientDetail from "../../Components/Doctor/Consultation/View/PatientDetail.jsx";
+import PatientDetail from "../../Components/Doctor/Consultation/PatientDetail.jsx";
 import ViewConsultations from "../../Components/Doctor/Consultation/View/ViewConsultations.jsx";
 import {IoArrowBackCircleOutline} from "react-icons/io5";
 import {Button, Card, Spinner} from "flowbite-react";
