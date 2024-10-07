@@ -3,7 +3,7 @@ import { AuthContext } from "../../Components/Authentication/AuthContext";
 import { Button, Spinner } from "flowbite-react";
 import ActorNavbar from "../../Components/ActorNavbar";
 import axios from "axios";
-import PatientDetail from "../../Components/Doctor/Consultation/View/PatientDetail.jsx";
+import PatientDetail from "../../Components/Doctor/Consultation/PatientDetail";
 import ChangePatientPasswordModal from "../../Components/Patient/ChangePatientPasswordModal";
 import DeletePatientAccountConfirmationModal from "../../Components/Patient/DeletePatientAccountConfirmationModal"; // Import the DeleteAccountModal
 

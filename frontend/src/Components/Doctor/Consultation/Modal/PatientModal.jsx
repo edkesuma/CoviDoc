@@ -2,7 +2,7 @@
 
 import {Modal} from "flowbite-react";
 import React from "react";
-import PatientDetail from "../View/PatientDetail.jsx";
+import PatientDetail from "../PatientDetail.jsx";
 
 function PatientModal({isShow,onClose, patient}) {
 
