@@ -62,75 +62,87 @@ function ChangeDoctorPasswordModal({ isOpen, onClose }) {
 
   return (
     <>
-      <Modal show={isOpen} size="md" onClose={onClose} popup={true}>
-        <Modal.Header>
-          <p className="text-xl font-medium text-cyan-400">
-            Change Your Password
-          </p>
-        </Modal.Header>
+      <Modal show={isOpen} size="lg" onClose={onClose} popup={true}>
+        <Modal.Header />
+
         <Modal.Body>
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Current Password */}
-            <div className="mb-4">
-              <Label htmlFor="currentPassword" className="text-lg mb-2">
-                Enter current password
-              </Label>
-              <TextInput
-                id="currentPassword"
-                type="password"
-                value={currentPassword}
-                onChange={(e) => setCurrentPassword(e.target.value)}
-                required
-              />
-            </div>
+          <div>
+            <p className="text-2xl text-center font-bold text-black">
+              Update Your Password
+            </p>
+            <p className="text-center text-gray-500">
+              Enter your current password and a new password.
+            </p>
+          </div>
 
-            {/* New Password */}
-            <div className="mb-4">
-              <Label htmlFor="newPassword" className="text-lg mb-2">
-                Enter new password
-              </Label>
-              <TextInput
-                id="newPassword"
-                type="password"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                required
-              />
-            </div>
+          <div className="p-4"></div>
 
-            {/* Confirm Password */}
-            <div className="mb-6">
-              <Label htmlFor="confirmPassword" className="text-lg mb-2">
-                Confirm new password
-              </Label>
-              <TextInput
-                id="confirmPassword"
-                type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
-              />
-            </div>
+          <div>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Current Password */}
+              <div className="mb-4">
+                <Label htmlFor="currentPassword" className="text-lg mb-2">
+                  Current password
+                </Label>
+                <TextInput
+                  id="currentPassword"
+                  type="password"
+                  value={currentPassword}
+                  onChange={(e) => setCurrentPassword(e.target.value)}
+                  required
+                />
+              </div>
 
-            {/* Buttons */}
-            <div className="flex justify-between gap-4 mt-6">
-              <Button
-                type="button"
-                className="w-full py-1 bg-white border-2 border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition-colors"
-                onClick={onClose} // Close the modal
-              >
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                className="w-full py-1 bg-cyan-500 text-white hover:bg-cyan-400 transition-colors"
-              >
-                Done
-              </Button>
-            </div>
-            {/* Display Error Message */}
-            {errorMessage && <p className="text-red-500 text-center">{errorMessage}</p>}
-          </form>
+              {/* New Password */}
+              <div className="mb-4">
+                <Label htmlFor="newPassword" className="text-lg mb-2">
+                  New password
+                </Label>
+                <TextInput
+                  id="newPassword"
+                  type="password"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  required
+                />
+              </div>
+
+              {/* Confirm Password */}
+              <div className="mb-6">
+                <Label htmlFor="confirmPassword" className="text-lg mb-2">
+                  Confirm new password
+                </Label>
+                <TextInput
+                  id="confirmPassword"
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                />
+              </div>
+
+              <div className="pt-1"></div>
+
+              {/* Buttons */}
+              <div className="flex justify-center space-x-4 w-full">
+                <button
+                  onClick={onClose}
+                  className="w-5/12 py-2 border border-red-600 text-red-600 rounded hover:bg-red-600 hover:text-white transition duration-300"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="w-5/12 py-2 border border-cyan-400 text-cyan-400 rounded hover:bg-cyan-400 hover:text-white transition duration-300"
+                >
+                  Done
+                </button>
+              </div>
+              {/* Display Error Message */}
+              {errorMessage && <p className="text-red-500 text-center">{errorMessage}</p>}
+            </form>
+          </div>
+          
         </Modal.Body>
       </Modal>
 

@@ -39,38 +39,6 @@ function DoctorAccountPage() {
   }, [isLoading]);
 
 
-  // // Fetch doctor's profile when the component mounts
-  // useEffect(() => {
-  //   const fetchDoctorProfile = async () => {
-  //     try {
-  //       const response = await axios.get("/api/doctor/getDoctorProfile", {
-  //         headers: {
-  //           Authorization: `Bearer ${token}`,
-  //         },
-  //       });
-  //       setDoctorProfile(response.data.doctor); // Set the doctor object correctly
-  //       console.log("this is doctor data: ", response.data.doctor)
-  //       setIsLoading(false);
-  //     } catch (error) {
-  //       console.log("Error fetching doctor profile:", error);
-  //       setIsLoading(false);
-  //     }
-  //   };
-
-  //   if (token) {
-  //     fetchDoctorProfile();
-  //   }
-  // }, [token]);
-
-  // // If the page is still loading, show a spinner
-  // if (isLoading) {
-  //   return (
-  //     <div className="text-center text-8xl">
-  //       <Spinner aria-label="Extra large spinner example" size="xl" />
-  //     </div>
-  //   );
-  // }
-
   return (
     <div>
       <ActorNavbar />
@@ -79,22 +47,24 @@ function DoctorAccountPage() {
 
         {/* spinner when loading */}
         {isLoading ? (
-          <div className="flex justify-center">
+          <div className="flex">
             <Spinner aria-label="Center-aligned spinner" size="xl" />
           </div>
         ) : (
           doctorProfile && <DocMainModal doctorProfile={doctorProfile} />
         )}
 
+        <div className="p-7"></div>
+
         {/* Password Section */}
-        <div className="mt-10">
+        <div>
           <h2 className="text-2xl font-semibold mb-4">Password and Authentication</h2>
-          <Button 
-            className="bg-cyan-400 text-white px-4"
+          <button 
+            className="px-6 py-2 border border-cyan-400 bg-cyan-400 text-white rounded hover:bg-cyan-600 hover:border-cyan-600 transition duration-300"
             onClick={() => setIsPasswordModalOpen(true)} // Open password modal
           >
             Change Password
-          </Button>
+          </button>
         </div>
 
         {/* Render Change Password Modal */}

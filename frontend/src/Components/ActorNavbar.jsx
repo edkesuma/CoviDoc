@@ -45,12 +45,12 @@ function ActorNavbar() {
     }
 
     return (
-        <Navbar fluid rounded className='w-screen h-24'>
-            <Navbar.Brand href="/" className='ml-14'>
+        <Navbar fluid rounded className='mx-20 h-24'>
+            <Navbar.Brand href="/" className='ml-7'>
                 <img src={Logo} className="h-12" alt="Logo"/>
             </Navbar.Brand>
 
-            <div className="flex md:order-2">
+            <div className="flex md:order-2 mr-8">
                 <Dropdown
                 label={
                     imageError || !user.profilePicture ? (

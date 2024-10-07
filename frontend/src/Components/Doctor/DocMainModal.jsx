@@ -15,19 +15,19 @@ function DocMainModal({ doctorProfile }) {
   };
 
   return (
-    <div className="flex justify-center mt-10">
-      <div className="bg-white rounded-lg shadow-md p-4 w-3/4 max-w-screen-md flex justify-between items-center">
+    <div className="flex">
+      <div className="bg-white rounded-lg shadow-md p-10 w-full max-w-screen-md flex justify-between">
         {/* Profile Image */}
         <div className="flex-shrink-0">
           <img
-            className="w-40 h-40 object-cover"
+            className="w-52 h-52 object-cover"
             src={doctorProfile.profilePictureUrl || "https://via.placeholder.com/150"}  // Placeholder if no image URL
             alt="Profile"
           />
         </div>
 
         {/* Profile Information */}
-        <div className="ml-6 space-y-2">
+        <div className="space-y-2 text-lg mr-10">
           <p className="text-gray-600 flex items-center">
             <FaUser className="mr-2 text-cyan-400" /> {doctorProfile.name}
           </p>
@@ -51,7 +51,7 @@ function DocMainModal({ doctorProfile }) {
         {/* Edit Button */}
         <div>
           <button 
-            className="bg-cyan-500 text-white px-6 py-2  rounded hover:bg-blue-600"
+            className="px-6 py-2 border border-cyan-400 bg-cyan-400 text-white rounded hover:bg-cyan-600 hover:border-cyan-600 transition duration-300"
             onClick={handleEditClick} // Open the modal when clicked
           >
             Edit Account

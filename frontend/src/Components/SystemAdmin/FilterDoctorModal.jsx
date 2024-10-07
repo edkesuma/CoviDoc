@@ -51,7 +51,7 @@ function FilterDoctorModal({ show, onClose, onFilter, specializations }) {
 
 
   return (
-    <Modal show={show} size="lg" onClose={onClose}>
+    <Modal show={show} size="lg" onClose={resetFilter}>
       <Modal.Header>Filter</Modal.Header>
 
       <Modal.Body>
