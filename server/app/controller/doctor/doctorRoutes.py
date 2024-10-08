@@ -43,21 +43,15 @@ def updateDoctor() -> Dict[str, Union[str, int]]:
     # Remove fields that are None
     fieldsToUpdate = {k: v for k, v in fieldsToUpdate.items() if v is not None}
 
-    print(f"Request files {request.files}")
-
     # Update profile picture if included in the request
     if "profilePicture" in request.files:
         profilePicture = request.files["profilePicture"]
-        print(f"Profile Picture: {profilePicture}")
         if profilePicture and allowed_file(profilePicture.filename): # type: ignore
-            print(f"Profile Picture 2: {profilePicture.filename}")
             doctorId = get_jwt_identity()
             extension = extractExtension(profilePicture.filename) # type: ignore
             filename = secure_filename(f"{doctorId}.{extension}") # type: ignore
-            print(f"Filename: {filename}")
             destinationBlobName = f"profilePictures/{filename}"
             profilePictureUrl = uploadToGoogleCloud(current_app.config['BUCKET_NAME'], destinationBlobName, profilePicture)
-            print(f"Profile Picture URL: {profilePictureUrl}")
             fieldsToUpdate["profilePictureUrl"] = profilePictureUrl
         else:
             return {"status code": 400, "message": "Invalid file type"}
@@ -95,62 +89,110 @@ def deleteOwnDoctorAccount() -> Dict[str, Union[str, int]]:
     else:
         return {"status code": 400, "success": returnedBool, "message": message}
     
-@router.route("/createConsultation", methods=["PUT"])
+# @router.route("/createConsultation", methods=["PUT"])
+# @jwt_required()
+# @role_required(["Doctor"])
+# def createConsultation() -> Dict[str, Union[str, int]]:
+#     """Doctor creates a consultation"""
+#     consultationId = f"C{str(uuid.uuid4().hex)}"
+#     consultationDetails = {
+#         "consultationId": consultationId,
+#         "consultationDate": request.form.get("consultationDate"),
+#         "doctorId": get_jwt_identity(),
+#         "patientId": request.form.get("patientId"),
+#         "temperature": float(request.form.get("temperature")), # type: ignore
+#         "o2Saturation": int(request.form.get("o2Saturation")), # type: ignore
+#         "recentlyInIcu": request.form.get("recentlyInIcu") == 'true',
+#         "recentlyNeededSupplementalO2": request.form.get("recentlyNeededSupplementalO2") == 'true',
+#         "intubationPresent": request.form.get("intubationPresent") == 'true',
+#         "consultationNotes": request.form.get("consultationNotes")
+#     }
+#     # Upload xray image to Google Cloud
+#     xrayImage = request.files["xrayImage"]
+#     if xrayImage and allowed_file(xrayImage.filename): # type: ignore
+#         extension = extractExtension(xrayImage.filename) # type: ignore
+#         filename = secure_filename(f"{consultationId}.{extension}") # type: ignore
+#         destinationBlobName = f"xrayImages/{filename}"
+#         xrayImageUrl = uploadToGoogleCloud(current_app.config['BUCKET_NAME'], destinationBlobName, xrayImage)
+#         consultationDetails["xrayImageUrl"] = xrayImageUrl
+#     else:
+#         return {"status code": 400, "success": False, "message": "Invalid file type"}
+
+#     returnedBool, message = Consultation.createConsultation(consultationDetails)
+#     if returnedBool:
+#         return {"status code": 200, "success": returnedBool, "message": message, "consultationId": consultationId}
+#     else:
+#         return {"status code": 400, "success": returnedBool, "message": message}
+    
+@router.route("/generateClassification", methods=["PUT"])
 @jwt_required()
 @role_required(["Doctor"])
-def createConsultation() -> Dict[str, Union[str, int]]:
-    """Doctor creates a consultation"""
+def generateClassification() -> Dict[str, Union[str, int, dict]]:
+    """Doctor classifies an xray"""
     consultationId = f"C{str(uuid.uuid4().hex)}"
-    consultationDetails = {
-        "consultationId": consultationId,
-        "consultationDate": request.form.get("consultationDate"),
-        "doctorId": get_jwt_identity(),
-        "patientId": request.form.get("patientId"),
-        "temperature": float(request.form.get("temperature")), # type: ignore
-        "o2Saturation": int(request.form.get("o2Saturation")), # type: ignore
-        "recentlyInIcu": request.form.get("recentlyInIcu") == 'true',
-        "recentlyNeededSupplementalO2": request.form.get("recentlyNeededSupplementalO2") == 'true',
-        "intubationPresent": request.form.get("intubationPresent") == 'true',
-        "consultationNotes": request.form.get("consultationNotes")
-    }
     # Upload xray image to Google Cloud
     xrayImage = request.files["xrayImage"]
     if xrayImage and allowed_file(xrayImage.filename): # type: ignore
         extension = extractExtension(xrayImage.filename) # type: ignore
-        filename = secure_filename(f"{consultationId}.{extension}") # type: ignore
+        filename = secure_filename(f"{consultationId}.{extension}") 
         destinationBlobName = f"xrayImages/{filename}"
         xrayImageUrl = uploadToGoogleCloud(current_app.config['BUCKET_NAME'], destinationBlobName, xrayImage)
-        consultationDetails["xrayImageUrl"] = xrayImageUrl
     else:
         return {"status code": 400, "success": False, "message": "Invalid file type"}
-
-    returnedBool, message = Consultation.createConsultation(consultationDetails)
+    
+    consultationDetails = {
+        "consultationId": consultationId,
+        "doctorId": get_jwt_identity(),
+        "patientId": request.form.get("patientId"),
+        "xrayImageUrl": xrayImageUrl
+    }
+    
+    _, _, consultationId = Consultation.createConsultation(consultationDetails)
+    returnedBool, message, data = Report.classifyXray(consultationId)
     if returnedBool:
-        return {"status code": 200, "success": returnedBool, "message": message, "consultationId": consultationId}
+        return {"status code": 200, "success": returnedBool, "message": message, "data": data}
     else:
         return {"status code": 400, "success": returnedBool, "message": message}
     
-@router.route("/getAIResults", methods=["PUT"])
+@router.route("/updateFindings", methods=["PATCH"])
 @jwt_required()
 @role_required(["Doctor"])
-def getAIResults() -> Dict[str, Union[str, int]]:
-    """Doctor creates initial AI classification and LLM"""
+def updateFindings() -> Dict[str, Union[str, int]]:
+    """Doctor updates findings"""
     consultationId = request.json.get("consultationId")
-    returnedBool, message = Report.classifyAndLLM(consultationId)
-
-    consultation = Consultation.queryConsultation(consultationId) # type: ignore
-    report = Report.queryReport(consultation.reportId) # type: ignore
-
-    collectedData = {
-        "findings": report.getFindings(),
-        "consultationInfo": consultation.serialize(),
-        "patient": Patient.queryPatient(consultation.patientId).serialize(), # type: ignore
-        "suggestedPrescriptions": report.prescriptions,
-        "suggestedLifestyleChanges": report.lifestyleChanges
+    # Get current report id
+    reportId = Consultation.queryConsultation(consultationId).reportId
+    # Structure findings from json to dictionary
+    updatedFindings = {
+        "classification": request.json.get("classification"),
+        "classificationConfidence": request.json.get("classificationConfidence"),
+        "severity": request.json.get("severity"),
+        "severityConfidence": request.json.get("severityConfidence")
     }
-
+    returnedBool, message = Report.updateFindings(reportId, updatedFindings)
     if returnedBool:
-        return {"status code": 200, "success": returnedBool, "message": message, "collectedData": collectedData} # type: ignore
+        return {"status code": 200, "success": returnedBool, "message": message}
+    else:
+        return {"status code": 400, "success": returnedBool, "message": message}
+    
+@router.route("/updateConsultation", methods=["PATCH"])
+@jwt_required()
+@role_required(["Doctor"])
+def updateConsultation() -> Dict[str, Union[str, int]]:
+    """Doctor updates consultation"""
+    consultationId = request.json.get("consultationId")
+    consultationDetails = {
+        "consultationDate": datetime.strptime(request.json.get("consultationDate"), "%d/%m/%Y"),
+        "temperature": request.json.get("temperature"),
+        "o2Saturation": request.json.get("o2Saturation"),
+        "recentlyInIcu": request.json.get("recentlyInIcu"),
+        "recentlyNeededSupplementalO2": request.json.get("recentlyNeededSupplementalO2"),
+        "intubationPresent": request.json.get("intubationPresent"),
+        "consultationNotes": request.json.get("consultationNotes")
+    }
+    returnedBool, message = Consultation.updateConsultation(consultationId, consultationDetails)
+    if returnedBool:
+        return {"status code": 200, "success": returnedBool, "message": message}
     else:
         return {"status code": 400, "success": returnedBool, "message": message}
     
@@ -165,6 +207,21 @@ def updatePrescriptionsLifestyleChanges() -> Dict[str, Union[str, int]]:
     reportId = Consultation.queryConsultation(consultationId).reportId
     # print(f"Prescriptions: {prescriptions}, Lifestyle Changes: {lifestyleChanges}, Consultation ID: {consultationId}")
     returnedBool, message = Report.updatePrescriptionsLifestyleChanges(reportId, prescriptions, lifestyleChanges)
+    if returnedBool:
+        return {"status code": 200, "success": returnedBool, "message": message}
+    else:
+        return {"status code": 400, "success": returnedBool, "message": message}
+    
+@router.route("/generateLLMAdditionalInfo", methods=["PUT"])
+@jwt_required()
+@role_required(["Doctor"])
+def generateLLMAdditionalInfo() -> Dict[str, Union[str, int]]:
+    """Doctor generates LLM additional info"""
+    consultationId = request.json.get("consultationId")
+    consultation = Consultation.queryConsultation(consultationId)
+    reportId = consultation.reportId
+    # TODO: SAMPLE VALUES ONLY, FIX AFTER FIGURE OUT RAG-LLM
+    returnedBool, message = Report.generateLLMAdditionalInfo(reportId, consultation.xrayImageUrl, Patient(), Doctor(), Consultation())
     if returnedBool:
         return {"status code": 200, "success": returnedBool, "message": message}
     else:
@@ -313,5 +370,5 @@ def updatePatientState() -> Dict[str, Union[str, int]]:
 @role_required(["Doctor"])
 def getClassificationsOverTimeData() -> Dict[str, Union[str, int, dict]]:
     """Get classification data over time"""
-    data = Consultation.getClassificationsOverTimeData()
+    data = Consultation.getClassificationsOverTimeData() # type: ignore
     return {"status code": 200, "data": data}

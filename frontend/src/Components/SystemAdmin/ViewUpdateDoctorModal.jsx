@@ -31,8 +31,11 @@ function ViewUpdateDoctorModal({ show, onClose, data }) {
         setGender(data.gender);
 
         // ensure date string is parsed correctly
-        const parsedDate = typeof data.dob === 'string' ? new Date(data.dob.replace(/(\d{2})\/(\d{2})\/(\d{4})/, '$3-$2-$1')) : new Date(data.dob);
-        if (!isNaN(parsedDate)) {
+        const parsedDate = typeof data.dob === 'string' 
+            ? new Date(data.dob.replace(/(\d{2})\/(\d{2})\/(\d{4})/, '$3-$2-$1')) 
+            : new Date(data.dob);
+        // check if the parsed date is valid using getTime() instead of isNaN(parsedDate)
+        if (!isNaN(parsedDate.getTime())) {
             setBirthDate(parsedDate);
         } else {
             console.error("Invalid date format: ", data.dob);
@@ -374,7 +377,7 @@ function ViewUpdateDoctorModal({ show, onClose, data }) {
                                     ) : (
                                         <input
                                             type="password"
-                                            value={password}
+                                            value="●●●●●●●●"
                                             readOnly
                                             className="ml-2 w-4/5 border rounded-lg border-[#6EE0FA]"
                                         />
@@ -393,7 +396,7 @@ function ViewUpdateDoctorModal({ show, onClose, data }) {
                                             id="reEnterPassword"
                                             type="password"
                                             value={reEnterPassword}
-                                            placeholder="Re-enter Password"
+                                            placeholder="Re-enter password"
                                             onChange={(e) => setReEnterPassword(e.target.value)}
                                             required
                                             className="ml-2 w-4/5"

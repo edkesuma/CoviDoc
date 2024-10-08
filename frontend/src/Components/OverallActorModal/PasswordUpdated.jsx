@@ -1,30 +1,33 @@
-import React from "react";
+import React from 'react';
 import { Modal, Button } from "flowbite-react";
 
-const PasswordUpdated = ({ isOpen, onClose }) => {
-  const handleCloseModal = () => {
-    onClose();
-    window.history.back(); // Navigate back to the previous page
-  };
+function PasswordUpdated({ show, onClose }) {
+    function closeSuccess() {
+        onClose();
+        window.location.reload();
+    }
 
-  return (
-    <Modal show={isOpen} size="md" onClose={handleCloseModal} popup>
-      <Modal.Header>
-        <h2 className="text-lg font-semibold text-gray-800">Password Updated!</h2>
-      </Modal.Header>
-      <Modal.Body>
-        <div className="text-center">
-          <p>Your password has been updated successfully.</p>
-          <Button
-            className="mt-6 bg-cyan-500 hover:bg-cyan-600 text-white py-2 px-6 rounded-md"
-            onClick={handleCloseModal}
-          >
-            Back to Account
-          </Button>
-        </div>
-      </Modal.Body>
-    </Modal>
-  );
-};
+    return (
+        <Modal show={show} size="md" popup={true} onClose={closeSuccess}>
+            <Modal.Header />
+            
+            <Modal.Body>
+                <div className="flex justify-center">
+                    <div className="p-6 text-center">
+                        {/* Message */}
+                        <p className="text-lg text-black mb-4">Password successfully reset.</p>
+                        {/* Exit Button */}
+                        <button
+                            className="bg-cyan-400 text-white py-2 px-4 rounded cursor-pointer font-bold hover:bg-cyan-500"
+                            onClick={closeSuccess}
+                        >
+                            Back to Previous Page
+                        </button>
+                    </div>
+                </div>
+            </Modal.Body>
+        </Modal>
+    );
+}
 
 export default PasswordUpdated;

@@ -10,6 +10,7 @@ import jinja2
 from google.cloud import storage
 import os
 import pdfkit # type: ignore
+from google.cloud import storage
 
 # ML Libraries
 import torch
@@ -25,6 +26,8 @@ import numpy as np
 # Local dependencies
 from .sqlalchemy import db
 from . import Patient, Doctor, Consultation
+from app.model_loader import load_model
+from app.machine_learning.classification_models.data import val_transforms
 
 class Report(db.Model):
     __tablename__ = "Report"
@@ -63,38 +66,38 @@ class Report(db.Model):
         }
     
     @classmethod
-    def queryReport(cls, id: str) -> Self:
+    def queryReport(cls, id: str) -> Self | None:
         """Query a report by id"""
         return cls.query.filter(cls.id == id).one_or_none()
     
-    @classmethod
-    def classifyAndLLM(cls, consultationId: str) -> Tuple[bool, str]:
-        """Create a new report"""
-        # Create a blank report
-        report = cls()
-        db.session.add(report)
+    # @classmethod
+    # def classifyAndLLM(cls, consultationId: str) -> Tuple[bool, str]:
+    #     """Create a new report"""
+    #     # Create a blank report
+    #     report = cls()
+    #     db.session.add(report)
 
-        # Get the patient, doctor and consultation objects
-        consultation = Consultation.queryConsultation(consultationId)
-        patient = Patient.queryPatient(consultation.patientId)
-        doctor = Doctor.queryDoctor(consultation.doctorId)
+    #     # Get the patient, doctor and consultation objects
+    #     consultation = Consultation.queryConsultation(consultationId)
+    #     patient = Patient.queryPatient(consultation.patientId)
+    #     doctor = Doctor.queryDoctor(consultation.doctorId)
         
-        # Get the xray image URL
-        xrayImageUrl = consultation.xrayImageUrl
+    #     # Get the xray image URL
+    #     xrayImageUrl = consultation.xrayImageUrl
 
-        # Prediction pipeline
-        classificationSuccess, classificationMessage = cls.classifyXray(report.id, xrayImageUrl)
-        llmSuccess, llmMessage = cls.getLLMAdditionalInfo(report.id, xrayImageUrl, patient, doctor, consultation)
+    #     # Prediction pipeline
+    #     classificationSuccess, classificationMessage = cls.classifyXray(report.id, xrayImageUrl, consultation)
+    #     llmSuccess, llmMessage = cls.getLLMAdditionalInfo(report.id, xrayImageUrl, patient, doctor, consultation)
 
-        # Update consultation with new report id
-        consultation.reportId = report.id
-        db.session.commit()
+    #     # Update consultation with new report id
+    #     consultation.reportId = report.id
+    #     db.session.commit()
         
-        if not classificationSuccess:
-            return (False, classificationMessage)
-        if not llmSuccess:
-            return (False, llmMessage)
-        return (True, "Classification and LLM successful.")
+    #     if not classificationSuccess:
+    #         return (False, classificationMessage)
+    #     if not llmSuccess:
+    #         return (False, llmMessage)
+    #     return (True, "Classification and LLM successful.")
     
     @classmethod
     def updateViewableToPatient(cls, reportId: str, viewableToPatient: bool) -> Tuple[bool, str]:
@@ -114,70 +117,102 @@ class Report(db.Model):
         return (True, "Prescriptions and lifestyle changes updated successfully.")
     
     @classmethod
-    def classifyXray(cls, reportId: str, xrayImageUrl: str) -> Tuple[bool, str]:
+    def classifyXray(cls, consultationId: str) -> Tuple[bool, str, dict]:
         """Classify an x-ray image"""
-        # Class labels
-        class_names = ['Covid', 'Healthy', 'Other']
-        # Load model architecture
-        model = models.resnet50()
-        # Modify the final fully connected layer to match the number of classes (3 classes: Healthy, COVID, Other)
-        # and replicate the structure used during training (including Dropout)
-        model.fc = nn.Sequential( # type: ignore
-            nn.Dropout(0.5),  # Assuming Dropout was used during training
-            nn.Linear(model.fc.in_features, 3)
-        )
-        # Load the trained weights from your saved model
-        model_path = current_app.config["CLASSIFICATION_MODEL_PATH"]
+        # Create a blank report
+        report = cls()
+        db.session.add(report)
 
-        # Load the trained weights
-        model.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')))
+        # Get the consultation object
+        consultation = Consultation.queryConsultation(consultationId)
+        # Update consultation with new report id
+        consultation.reportId = report.id
+        
+        # Get the xray image URL
+        xrayImageUrl = consultation.xrayImageUrl
 
-        # Set the model to evaluation mode
-        model.eval()
-
-        # Move the model to GPU if available
-        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        model = model.to(device)
-
-        # Define image preprocessing (same as used during training)
-        transform = transforms.Compose([
-            transforms.Resize((224, 224)),
-            transforms.ToTensor(),
-            transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
-        ])
+        # Load the type classification model
+        type_clf_model = load_model(current_app.config["COVIDNEXT50_MODEL_PATH"], current_app.config["DEVICE"], n_classes=3)
 
         # Get image from URL
         response = requests.get(xrayImageUrl)
         image = Image.open(BytesIO(response.content)).convert("RGB")
         
         # Preprocess the image
-        image = transform(image).unsqueeze(0)  # type: ignore # Add batch dimension
-
+        transform = val_transforms(224, 224)
+        image = transform(image)
+        
         # Move the image to the same device as the model
-        image = image.to(device)
+        image = image.to(current_app.config["DEVICE"]) # type: ignore
         
-        # Forward pass to get predictions
-        with torch.no_grad():
-            output = model(image)
-            confidence = F.softmax(output, dim=1)  # Get confidence (softmax probabilities)
-            _, predicted_class = torch.max(output, 1)  # Get the predicted class
-        
-        predicted_class = class_names[predicted_class.item()] # type: ignore
-        confidence = round(np.max(confidence.cpu().numpy()[0])*100, 2)
+        # Classify the image
+        predicted_class_idx, classificationConfidence = type_clf_model.classify_image(type_clf_model, image)
+        predicted_class_idx = int(predicted_class_idx)
 
-        if predicted_class == "Other":
-            predicted_class = "Other lung infection"
+        # Generate gradcam image
+        gradcam_image = type_clf_model.generate_gradcam(image, target_class=predicted_class_idx)
+
+        # Convert the PIL.Image to a BytesIO object
+        gradcam_image_io = BytesIO()
+        gradcam_image.save(gradcam_image_io, format='JPEG')
+        gradcam_image_io.seek(0)  # Reset the stream position to the beginning
+
+        # Upload gradcam image to gcloud
+        gradcam_image_filename = f"{consultation.id}_highlighted.png"
+        storageClient = storage.Client()
+        bucket = storageClient.bucket(current_app.config["BUCKET_NAME"])
+        blob = bucket.blob(f"xrayImages/{gradcam_image_filename}")
+        blob.upload_from_file(gradcam_image_io, content_type="image/jpeg")
+        blob.cache_control = "private, no-cache, max-age=0"
+        blob.patch()
+        gradcam_image_url = blob.public_url
+
+        # Map the class index to the classification
+        idx_to_classification_mapping = {0: "Healthy", 1: "Covid-19", 2: "Other Lung Infection"}
+        predicted_type = idx_to_classification_mapping[predicted_class_idx]
 
         # Update the report
-        report = cls.queryReport(reportId)
-        report.classification = predicted_class
-        report.classificationConfidence = confidence
-        # TODO: EDRICK AFTER FIGURE OUT ML
-        report.severity = "Mild"
-        report.severityConfidence = 100
+        report.classification = predicted_type
+        report.classificationConfidence = classificationConfidence
+        # Update the consultation with gradcam image
+        consultation.highlightedXrayImageUrl = gradcam_image_url
+
+        if predicted_type == "Healthy":
+            report.severity = "NA"
+            report.severityConfidence = 100
+        else:
+            severity_clf_model = load_model(current_app.config["COVIDNEXT50SEV_MODEL_PATH"], current_app.config["DEVICE"], n_classes=2)
+            predicted_severity_idx, severityConfidence = severity_clf_model.classify_image(severity_clf_model, image)
+            predicted_severity_idx = int(predicted_severity_idx)
+            idx_to_severity_mapping = {0: "Mild", 1: "Moderate to Severe"}
+            predicted_severity = idx_to_severity_mapping[predicted_severity_idx]
+            # Update with predicted severity
+            report.severity = predicted_severity
+            report.severityConfidence = severityConfidence
 
         db.session.commit()
-        return (True, "X-ray classified successfully.")
+
+        data = {
+            "type_classification": predicted_type,
+            "severity_classification": predicted_severity,
+            "type_confidence": classificationConfidence,
+            "severity_confidence": severityConfidence,
+            "xray_image_url": xrayImageUrl,
+            "gradcam_image_url": gradcam_image_url
+        }
+
+        return (True, "X-ray classified successfully.", data)
+    
+    @classmethod
+    def updateFindings(cls, reportId: str, updatedFindings: dict) -> Tuple[bool, str]:
+        """Update the findings of a report"""
+        report = cls.queryReport(reportId)
+        report.classification = updatedFindings["classification"]
+        report.classificationConfidence = updatedFindings["classificationConfidence"]
+        report.severity = updatedFindings["severity"]
+        report.severityConfidence = updatedFindings["severityConfidence"]
+        db.session.commit()
+        return (True, "Findings updated successfully.")
     
     @classmethod
     def getValueFromRegexedKey(cls, dictionary, word):
@@ -201,9 +236,9 @@ class Report(db.Model):
     def stringifyJson(cls, jsonData):
         return ", ".join(f"{key}: {value}" for key, value in jsonData.items())
 
-    # TODO: EDRICK AFTER FIGURE OUT ML
+    # TODO: EDRICK AFTER FIGURE OUT RAG-LLM
     @classmethod
-    def getLLMAdditionalInfo(cls, reportId: str, xrayImageUrl: str, patient: Patient, doctor: Doctor, consultation: Consultation) -> Tuple[bool, str]:
+    def generateLLMAdditionalInfo(cls, reportId: str, xrayImageUrl: str, patient: Patient, doctor: Doctor, consultation: Consultation) -> Tuple[bool, str]:
         """Get additional information from LLM"""
 
         # Get current report object

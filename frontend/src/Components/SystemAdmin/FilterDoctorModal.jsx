@@ -1,73 +1,133 @@
-import React, { useState } from 'react';
-import Box from '@mui/material/Box';
-import Slider from '@mui/material/Slider';
+import React, { useState, useEffect } from "react";
+import { Modal, Button, Label, Dropdown, Checkbox } from "flowbite-react";
+// components
+import AgeRangeSlider from "../AgeRangeSlider";
 
-function FilterDoctorModal() {
-    const [gender, setGender] = useState('');
-    const [ageRange, setAgeRange] = useState([20, 60]);
-    const [specialization, setSpecialization] = useState('');
+function FilterDoctorModal({ show, onClose, onFilter, specializations }) {
+  const [selectedGender, setSelectedGender] = useState("");
+  const [selectedAgeRange, setSelectedAgeRange] = useState({ min: 0, max: 100 });
+  const [selectedSpecializations, setSelectedSpecializations] = useState([]);
 
-    // Function to handle gender selection
-    const handleGenderChange = (selectedGender) => setGender(selectedGender);
+  // handle gender filter
+  const handleToggleGender = (gender) => {
+    setSelectedGender((prevGender) => (prevGender === gender ? "" : gender));
+  };
 
-    // Function to handle age range change
-    const handleAgeRangeChange = (event, newValue) => setAgeRange(newValue);
+  // handle specialization filter
+  const handleToggleSpecialization = (specialization) => {
+    if (selectedSpecializations.includes(specialization)) {
+      // if specialization is already selected, remove it
+      setSelectedSpecializations((prev) =>
+        prev.filter((spec) => spec !== specialization)
+      );
+    } else {
+      // otherwise, add the selected specialization
+      setSelectedSpecializations((prev) => [...prev, specialization]);
+    }
+  };
 
-    function valuetext(value) {
-        return `${value}°C`;
-      }
+  // handle apply filter
+  function handleFilterSubmit() {
+    onFilter({
+      gender: selectedGender,
+      specializations: selectedSpecializations,
+      ageRange: selectedAgeRange // pass age range filter
+    });
+    onClose();
+  };
 
-    return (
-        <div className="flex justify-center items-center min-h-screen bg-gray-50">
-            <div className="max-w-sm p-6 border-2 border-cyan-400 rounded-lg bg-white shadow-lg">
-                {/* Title */}
-                <h2 className="text-xl font-bold mb-6 text-center">Filter Options</h2>
+  // reset filter (clear choices)
+  function resetFilter() {
+    setSelectedGender("");
+    setSelectedAgeRange({ min: 0, max: 100 });
+    setSelectedSpecializations([]);
+    onFilter({ 
+      gender: "",
+      ageRange: { min: 0, max: 100 },
+      specializations: []
+    });
+    onClose();
+  }
 
-                {/* Gender Section */}
-                <div className="mb-6">
-                    <label className="block font-bold mb-2">Gender</label>
-                    <div className="flex justify-between">
-                        <button
-                            onClick={() => handleGenderChange('Male')}
-                            className={`w-full py-2 mr-2 rounded ${gender === 'Male' ? 'bg-cyan-400 text-white' : 'bg-gray-100'}`}
-                        >
-                            Male
-                        </button>
-                        <button
-                            onClick={() => handleGenderChange('Female')}
-                            className={`w-full py-2 ml-2 rounded ${gender === 'Female' ? 'bg-cyan-400 text-white' : 'bg-gray-100'}`}
-                        >
-                            Female
-                        </button>
-                    </div>
-                </div>
 
-                {/* Age Range Section */}
-                <div className="mb-6">
-                    <label className="block font-bold mb-2">Age</label>
-                    <Box sx={{ width: 250 }}>
-                        <Slider
-                            value={ageRange}
-                            onChange={handleAgeRangeChange}
-                            valueLabelDisplay="auto"
-                            getAriaValueText={valuetext}
-                            min={0}
-                            max={100}
-                        />
-                    </Box>
-                    <div className="text-cyan-500 font-medium mt-2 text-center">
-                        <span>{ageRange[0]}</span> - <span>{ageRange[1]}</span>
-                    </div>
-                </div>
+  return (
+    <Modal show={show} size="lg" onClose={resetFilter}>
+      <Modal.Header>Filter</Modal.Header>
 
-                {/* specialization section */}
-                <div className="mb-6">
-                    <label className="block font-bold mb-2">Specialization</label>
-                    
-                </div>
+      <Modal.Body>
+        <div className="space-y-4">
+          <div>
+            {/* gender */}
+            <Label htmlFor="gender" value="Select Gender" className="text-md"/>
+            <div className="flex items-center space-x-4 mt-2">
+              {/* male */}
+              <button
+                className={`px-4 py-2 w-1/4 rounded-lg font-semibold border transition duration-300 ${
+                  selectedGender === "Male" ? "bg-cyan-500 text-white" : "bg-white border-cyan-500 text-cyan-500"
+                }`}
+                onClick={() => handleToggleGender("Male")}
+              >
+                Male
+              </button>
+
+              {/* female */}
+              <button
+                className={`px-4 py-2 w-1/4 rounded-lg font-semibold border transition duration-300 ${
+                  selectedGender === "Female" ? "bg-cyan-500 text-white" : "bg-white border-cyan-500 text-cyan-500"
+                }`}
+                onClick={() => handleToggleGender("Female")}
+              >
+                Female
+              </button>
             </div>
+
+
+            <div className="p-5"></div>
+
+
+            {/* age range */}
+            <Label htmlFor="ageRange" value="Select Age Range" />
+            <AgeRangeSlider
+              data={selectedAgeRange}
+              setData={setSelectedAgeRange}
+              minAge={0}
+              maxAge={100}
+            />
+
+
+            <div className="p-5"></div>
+
+
+            {/* specialization */}
+            <Label htmlFor="specialization" />
+            <Dropdown label="Select Specialization" inline={true}>
+              {/* list out all of the available specializations in the dropdown */}
+              {specializations.map((specialization) => (
+                <Dropdown.Item key={specialization}>
+                  <div className="flex items-center">
+                    {/* checkbox in dropdown list so can select multiple */}
+                    <Checkbox
+                      checked={selectedSpecializations.includes(specialization)}
+                      onChange={() => handleToggleSpecialization(specialization)}
+                    />
+                    <span className="ml-2">{specialization}</span>
+                  </div>
+                </Dropdown.Item>
+              ))}
+            </Dropdown>
+
+          </div>
         </div>
-    )
+      </Modal.Body>
+
+      <Modal.Footer>
+        <Button onClick={handleFilterSubmit}>Apply Filter</Button>
+        <Button color="gray" onClick={resetFilter}>
+          Reset Filter
+        </Button>
+      </Modal.Footer>
+    </Modal>
+  );
 }
 
-export default FilterDoctorModal
+export default FilterDoctorModal;

@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { IoPerson } from 'react-icons/io5';
-import { FaTransgender, FaBirthdayCake, FaPhoneAlt } from 'react-icons/fa';
-import { LuStethoscope } from 'react-icons/lu';
-import { IoIosMail } from 'react-icons/io';
+import { FaUser, FaStethoscope, FaVenusMars, FaBirthdayCake, FaEnvelope, FaPhoneAlt } from 'react-icons/fa';
 import DoctorEditAccountModal from './DoctorEditAccountModal'; // Ensure the correct path to the modal
 
 function DocMainModal({ doctorProfile }) {
@@ -17,33 +15,33 @@ function DocMainModal({ doctorProfile }) {
   };
 
   return (
-    <div className="flex justify-center mt-10">
-      <div className="bg-white rounded-lg shadow-md p-4 w-3/4 max-w-screen-md flex justify-between items-center">
+    <div className="flex">
+      <div className="bg-white rounded-lg shadow-md p-10 w-full max-w-screen-md flex justify-between">
         {/* Profile Image */}
         <div className="flex-shrink-0">
           <img
-            className="w-40 h-40 object-cover"
+            className="w-52 h-52 object-cover"
             src={doctorProfile.profilePictureUrl || "https://via.placeholder.com/150"}  // Placeholder if no image URL
             alt="Profile"
           />
         </div>
 
         {/* Profile Information */}
-        <div className="ml-6 space-y-2">
+        <div className="space-y-2 text-lg mr-10">
           <p className="text-gray-600 flex items-center">
-            <IoPerson className="mr-2 text-cyan-400" /> {doctorProfile.name}
+            <FaUser className="mr-2 text-cyan-400" /> {doctorProfile.name}
           </p>
           <p className="text-gray-600 flex items-center">
-            <LuStethoscope className="mr-2 text-cyan-400" /> {doctorProfile.specialization}
+            <FaStethoscope className="mr-2 text-cyan-400" /> {doctorProfile.specialization}
           </p>
           <p className="text-gray-600 flex items-center">
-            <FaTransgender className="mr-2 text-cyan-400" /> {doctorProfile.gender}
+            <FaVenusMars className="mr-2 text-cyan-400" /> {doctorProfile.gender}
           </p>
           <p className="text-gray-600 flex items-center">
             <FaBirthdayCake className="mr-2 text-cyan-400" /> {doctorProfile.dob}
           </p>
           <p className="text-gray-600 flex items-center">
-            <IoIosMail className="mr-2 text-cyan-400" /> {doctorProfile.email}
+            <FaEnvelope className="mr-2 text-cyan-400" /> {doctorProfile.email}
           </p>
           <p className="text-gray-600 flex items-center">
             <FaPhoneAlt className="mr-2 text-cyan-400" /> {doctorProfile.phone}
@@ -53,7 +51,7 @@ function DocMainModal({ doctorProfile }) {
         {/* Edit Button */}
         <div>
           <button 
-            className="bg-cyan-500 text-white px-6 py-2  rounded hover:bg-blue-600"
+            className="px-6 py-2 border border-cyan-400 bg-cyan-400 text-white rounded hover:bg-cyan-600 hover:border-cyan-600 transition duration-300"
             onClick={handleEditClick} // Open the modal when clicked
           >
             Edit Account
@@ -66,7 +64,7 @@ function DocMainModal({ doctorProfile }) {
         <DoctorEditAccountModal 
           isOpen={isEditModalOpen}
           onClose={handleCloseModal} // Close the modal
-          doctorProfile={doctorProfile} // Pass doctor profile to modal
+          doctorDetails={doctorProfile} // Pass doctor profile to modal
         />
       )}
     </div>
