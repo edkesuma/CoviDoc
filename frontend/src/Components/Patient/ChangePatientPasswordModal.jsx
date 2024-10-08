@@ -36,13 +36,13 @@ function ChangePatientPasswordModal({ isOpen, onClose }) {
           },
         }
       );
-      
+
       // Close the ChangePassword modal immediately
       onClose();
 
       // Show the PasswordUpdated modal
       setIsPasswordUpdatedModalOpen(true);
-      
+
     } catch (error) {
       setErrorMessage(
         error.response?.data?.message || "Error changing password."
@@ -122,9 +122,9 @@ function ChangePatientPasswordModal({ isOpen, onClose }) {
 
       {/* Password Updated Modal */}
       {isPasswordUpdatedModalOpen && (
-        <PasswordUpdated 
-          isOpen={isPasswordUpdatedModalOpen} 
-          onClose={() => setIsPasswordUpdatedModalOpen(false)} 
+        <PasswordUpdated
+          isOpen={isPasswordUpdatedModalOpen}
+          onClose={() => setIsPasswordUpdatedModalOpen(false)}
         />
       )}
     </>
