@@ -1,3 +1,16 @@
+<!-- 
+1. Change x-ray image URL paths:
+   <img src="{{xrayUrl}}" alt="X-ray Image 1">
+   <img src="{{xrayUrl2}}" alt="X-ray Image 2">
+
+2. Observation severity path:
+   <span style="font-family:'Times New Roman', Times, serif; font-size:14.67px;">
+       {{severity}}
+   </span>
+-->
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -10,18 +23,13 @@
             margin: 20mm;
         }
 
-        html,
-        body {
+        html, body {
             margin: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             background-color: #f5f5f5;
             font-family: Georgia;
-        }
-
-        body {
-            justify-content: center;
         }
 
         .content {
@@ -35,41 +43,71 @@
             margin: auto;
         }
 
-        .table {
-            box-shadow: 10px 10px 5px lightblue;
+        /* Ensure the content can break across pages */
+        .content, table, p {
+            page-break-inside: avoid;
         }
 
-        .recommendations-section {
-            white-space: pre-wrap;
-            min-height: 100px;
-            overflow: auto;
-            font-size: 14px;
-            line-height: 1.5;
+        .table {
+            box-shadow: 10px 10px 5px lightblue;
+            padding: 10px; /* Add padding inside the table for spacing */
         }
 
         .header-container {
             display: flex;
-            flex-wrap: wrap;
-            align-items: center;
+            align-items: center; /* Align items vertically */
             font-family: 'Times New Roman', Times, serif;
+            margin-bottom: 10px; /* Reduce space after header */
         }
+
         .logo {
-            max-height: 64px;
-            margin-right: 20px;
+            max-height: 56px; /* Keep the logo height smaller */
+            margin-right: 10px; /* Reduce the space between logo and text */
         }
+
+        /* Adjust the size of the title and subtitle to match the logo */
         .text-container {
             display: flex;
             flex-direction: column;
+            justify-content: center;
         }
+
         .title {
-            font-size: 64px;
+            font-size: 36px;  /* Adjusted font size */
             font-weight: bold;
-            line-height: 64px;
+            line-height: 56px; /* Match the line-height to logo's height */
         }
+
         .subtitle {
-            font-size: 26.67px;
+            font-size: 28px;   /* Smaller font for subtitle */
             font-weight: bold;
-            line-height: 32px;
+            line-height: 28px;
+        }
+
+        .image-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .image-container img {
+            width: 48%;
+            border: 1px solid #000;
+        }
+
+        ul {
+            padding-left: 0;
+            margin: 0;
+            list-style-position: inside;
+        }
+
+        td {
+            padding: 5px; /* Add padding inside table cells for text spacing */
+        }
+
+        /* Make headers bold */
+        .bold {
+            font-weight: bold;
         }
     </style>
     <title>Medical Report</title>
@@ -92,22 +130,19 @@
             <img src="https://storage.googleapis.com/covidoc-storage/covidoc-logo.jpg" alt="CoviDoc Logo" class="logo">
             <span class="text-container">
                 <span class="title">CoviDoc</span>
-                <br>
                 <span class="subtitle">Patient's Report</span>
             </span>
         </div>
-                            
-                        
 
         <!-- Patient Info Table -->
         <figure class="table" style="margin-left:0px;margin-right:auto;">
-            <table style="border-collapse:collapse;border:1px solid #000000">
+            <table style="border-collapse:collapse;border:1px solid #000000;">
                 <tbody>
                     <tr>
-                        <td style="background-color:#c9fb00;border:1px solid #000000;padding:0px 7.2px;vertical-align:top;width:632.87px;"
+                        <td style="background-color:#c9fb00;border:1px solid #000000;vertical-align:top;width:632.87px;"
                             colspan="2">
                             <p style="line-height:1;margin-bottom:0px;margin-top:0px;">
-                                <span style="font-family:'Times New Roman', Times, serif;font-size:16px;">
+                                <span class="bold" style="font-family:'Times New Roman', Times, serif;font-size:16px;">
                                     <b>Patient Information</b>
                                 </span>
                             </p>
@@ -116,46 +151,70 @@
                     <tr>
                         <td style="border:none">
                             <p style="line-height:1;margin-bottom:0px;margin-top:0px;">
+                                <span class="bold" style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
+                                    Patient Name:
+                                </span>
                                 <span style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
-                                    Patient name: {{patientName}}
+                                    {{patientName}}
                                 </span>
                             </p>
                             <p style="line-height:1;margin-bottom:0px;margin-top:0px;">
+                                <span class="bold" style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
+                                    Patient ID:
+                                </span>
                                 <span style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
-                                    Patient ID: {{patientId}}
+                                    {{patientId}}
                                 </span>
                             </p>
                             <p style="line-height:1;margin-bottom:0px;margin-top:0px;">
+                                <span class="bold" style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
+                                    Doctor Name:
+                                </span>
                                 <span style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
-                                    Doctor name: {{doctorName}}
+                                    {{doctorName}}
                                 </span>
                             </p>
                             <p style="line-height:1;margin-bottom:0px;margin-top:0px;">
+                                <span class="bold" style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
+                                    Doctor ID:
+                                </span>
                                 <span style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
-                                    Doctor ID: {{doctorId}}
+                                    {{doctorId}}
                                 </span>
                             </p>
                         </td>
                         <td
-                            style="border-color:#000000;border-width:1px;padding:0px 7.2px;vertical-align:top;width:321.33px;">
+                            style="border-color:#000000;border-width:1px;vertical-align:top;width:321.33px;">
                             <p style="line-height:1;margin-bottom:0px;margin-top:0px;">
+                                <span class="bold" style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
+                                    Date of Birth:
+                                </span>
                                 <span style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
-                                    Date of birth: {{dob}}, Age: {{age}} years old
+                                    {{dob}}, Age: {{age}} years old
                                 </span>
                             </p>
                             <p style="line-height:1;margin-bottom:0px;margin-top:0px;">
+                                <span class="bold" style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
+                                    Gender:
+                                </span>
                                 <span style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
-                                    Gender: {{gender}}
+                                    {{gender}}
                                 </span>
                             </p>
                             <p style="line-height:1;margin-bottom:0px;margin-top:0px;">
+                                <span class="bold" style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
+                                    Medical History:
+                                </span>
                                 <span style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
-                                    Medical history: {{medicalHistory}}
+                                    {{medicalHistory}}
                                 </span>
                             </p>
                             <p style="line-height:1;margin-bottom:0px;margin-top:0px;">
+                                <span class="bold" style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
+                                    Allergies:
+                                </span>
                                 <span style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
-                                    Allergies: {{allergies}}
+                                    {{allergies}}
                                 </span>
                             </p>
                         </td>
@@ -169,69 +228,73 @@
             <table style="border-collapse:collapse;border:1px solid #000000;">
                 <tbody>
                     <tr>
-                        <td style="background-color:#00b0f0;border:1px solid #000000;padding:0px 7.2px;vertical-align:top;width:601.07px;"
+                        <td style="background-color:#00b0f0;border:1px solid #000000;vertical-align:top;width:601.07px;"
                             colspan="2">
                             <p style="line-height:1;margin-bottom:0px;margin-top:0px;">
-                                <span style="font-family:'Times New Roman', Times, serif;font-size:16px;">
+                                <span class="bold" style="font-family:'Times New Roman', Times, serif;font-size:16px;">
                                     <b>Consultation Details</b>
                                 </span>
                             </p>
                         </td>
                     </tr>
+                    <!-- Two Images Side by Side -->
                     <tr>
-                        <td
-                            style="border:1px solid #000000;height:27.67px;padding:0px 7.2px;vertical-align:top;width:283.2px;">
-                            <p style="line-height:1;margin-bottom:0px;margin-top:0px;">
-                                <picture>
-                                    <img src="{{xrayUrl}}" alt="X-ray Image" data-ckbox-resource-id="UljkSfq567v_" width="298" height="357" uploadprocessed="true" />
-                                </picture>
-                            </p>
+                        <td colspan="2">
+                            <div class="image-container">
+                                <img src="{{xrayUrl}}" alt="X-ray Image 1">
+                                <img src="{{xrayUrl2}}" alt="X-ray Image 2">
+                            </div>
                         </td>
-                        <td
-                            style="border:1px solid #000000;height:27.67px;padding:0px 7.2px;vertical-align:top;width:317.87px;">
+                    </tr>
+                    <!-- Patient Details Section After Images -->
+                    <tr>
+                        <td style="border:1px solid #000000;vertical-align:top;width:632.87px;" colspan="2">
                             <p style="line-height:1;margin-bottom:0px;margin-top:0px;">
+                                <span class="bold" style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
+                                    Temperature:
+                                </span>
                                 <span style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
-                                    Temperature: {{temperature}}°C
+                                    {{temperature}}°C
                                 </span>
                             </p>
                             <p style="line-height:1;margin-bottom:0px;margin-top:0px;">
+                                <span class="bold" style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
+                                    O2 Saturation:
+                                </span>
                                 <span style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
-                                    O2 Saturation: {{o2Saturation}}%
+                                    {{o2Saturation}}%
                                 </span>
                             </p>
                             <p style="line-height:1;margin-bottom:0px;margin-top:0px;">
+                                <span class="bold" style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
+                                    Recently in ICU:
+                                </span>
                                 <span style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
-                                    Leukocyte count: {{leukocyteCount}} cells/μL
+                                    {{recentlyInIcu}}
                                 </span>
                             </p>
                             <p style="line-height:1;margin-bottom:0px;margin-top:0px;">
+                                <span class="bold" style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
+                                    Recently needed supplemental O2:
+                                </span>
                                 <span style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
-                                    Neutrophil count: {{neutrophilCount}} cells/μL
+                                    {{recentlyNeededSupplementalO2}}
                                 </span>
                             </p>
                             <p style="line-height:1;margin-bottom:0px;margin-top:0px;">
+                                <span class="bold" style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
+                                    Intubation Present:
+                                </span>
                                 <span style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
-                                    Lymphocyte count: {{lymphocyteCount}} cells/μL
+                                    {{intubationPresent}}
                                 </span>
                             </p>
                             <p style="line-height:1;margin-bottom:0px;margin-top:0px;">
-                                <span style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
-                                    Recently in ICU: {{recentlyInIcu}}
+                                <span class="bold" style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
+                                    Consultation Notes:
                                 </span>
-                            </p>
-                            <p style="line-height:1;margin-bottom:0px;margin-top:0px;">
                                 <span style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
-                                    Recently needed supplemental O2: {{recentlyNeededSupplementalO2}}
-                                </span>
-                            </p>
-                            <p style="line-height:1;margin-bottom:0px;margin-top:0px;">
-                                <span style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
-                                    Intubation present: {{intubationPresent}}
-                                </span>
-                            </p>
-                            <p style="line-height:1;margin-bottom:0px;margin-top:0px;">
-                                <span style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
-                                    Consultation notes: {{consultationNotes}}
+                                    {{consultationNotes}}
                                 </span>
                             </p>
                         </td>
@@ -255,54 +318,65 @@
                         </td>
                     </tr>
                     <tr>
-                        <td style="border:1px solid #000000;padding:0px 7.2px;vertical-align:top;width:632.87px;"
-                            colspan="2">
-                            <p style="line-height:1;margin-bottom:0px;margin-top:0px;">
-                                <span style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
-                                    Classification: {{classification}}
-                                </span>
-                            </p>
-                            <p style="line-height:1;margin-bottom:0px;margin-top:0px;">
-                                <span style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
-                                    Confidence: {{confidence}}
-                                </span>
-                            </p>
-                            <p style="line-height:1;margin-bottom:0px;margin-top:0px;">
-                                <span style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
-                                    Severity: {{severity}}
-                                </span>
-                            </p>
-                            <p style="line-height:1;margin-bottom:0px;margin-top:0px;">
-                                <span style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
-                                    Observations: {{observations}}
-                                </span>
-                            </p>
-                        </td>
+                        <td style="border:1px solid #000000; vertical-align:top; width:632.87px;" colspan="2">
+        <p style="line-height:1; margin-bottom:0px; margin-top:0px;">
+            <span class="bold" style="font-family:'Times New Roman', Times, serif; font-size:14.67px;">
+                Classification:
+            </span>
+            <span style="font-family:'Times New Roman', Times, serif; font-size:14.67px;">
+                {{classification}}
+            </span>
+        </p>
+        <p style="line-height:1; margin-bottom:0px; margin-top:0px;">
+            <span class="bold" style="font-family:'Times New Roman', Times, serif; font-size:14.67px;">
+                Confidence:
+            </span>
+            <span style="font-family:'Times New Roman', Times, serif; font-size:14.67px;">
+                {{confidence}}
+            </span>
+        </p>
+        <p style="line-height:1; margin-bottom:0px; margin-top:0px;">
+            <span class="bold" style="font-family:'Times New Roman', Times, serif; font-size:14.67px;">
+                Severity:
+            </span>
+            <span style="font-family:'Times New Roman', Times, serif; font-size:14.67px;">
+                {{severity}}
+            </span>
+        </p>
+        <p style="line-height:1; margin-bottom:0px; margin-top:0px;">
+            <span class="bold" style="font-family:'Times New Roman', Times, serif; font-size:14.67px;">
+                Severity Confidence:
+            </span>
+            <span style="font-family:'Times New Roman', Times, serif; font-size:14.67px;">
+                {{severity_confidence}}
+            </span>
+        </p>
+    </td>
                     </tr>
                 </tbody>
             </table>
         </figure>
 
-        <!-- Prescriptions Section  -->
+        <!-- Prescriptions Section -->
         <figure class="table" style="margin-left:0px;margin-right:auto;">
             <table style="border-collapse:collapse;border:1px solid #000000;">
                 <tbody>
                     <tr>
-                        <td style="background-color:#00b0f0;border:1px solid #000000;padding:0px 7.2px;vertical-align:top;width:632.87px;"
+                        <td style="background-color:#00b0f0;border:1px solid #000000;vertical-align:top;width:632.87px;"
                             colspan="2">
                             <p style="line-height:1;margin-bottom:0px;margin-top:0px;">
-                                <span style="font-family:'Times New Roman', Times, serif;font-size:16px;">
+                                <span class="bold" style="font-family:'Times New Roman', Times, serif;font-size:16px;">
                                     <b>Prescriptions</b>
                                 </span>
                             </p>
                         </td>
                     </tr>
                     <tr>
-                        <td style="border:1px solid #000000;padding:0px 7.2px;vertical-align:top;width:632.87px;"
+                        <td style="border:1px solid #000000;vertical-align:top;width:632.87px;"
                             colspan="2">
-                            <ul style="padding-left: 0; margin: 0; list-style-position: inside;">
+                            <ul>
                                 {% for prescription in prescriptions %}
-                                <li style="line-height:1;margin-bottom:0px;margin-top:0px;">
+                                <li>
                                     <span style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
                                         {{prescription.prescriptionName[0]}}: {{prescription.prescriptionName[1]}}
                                     </span>
@@ -320,21 +394,21 @@
             <table style="border-collapse:collapse;border:1px solid #000000;">
                 <tbody>
                     <tr>
-                        <td style="background-color:#00b0f0;border:1px solid #000000;padding:0px 7.2px;vertical-align:top;width:632.87px;"
+                        <td style="background-color:#00b0f0;border:1px solid #000000;vertical-align:top;width:632.87px;"
                             colspan="2">
                             <p style="line-height:1;margin-bottom:0px;margin-top:0px;">
-                                <span style="font-family:'Times New Roman', Times, serif;font-size:16px;">
+                                <span class="bold" style="font-family:'Times New Roman', Times, serif;font-size:16px;">
                                     <b>Lifestyle Changes</b>
                                 </span>
                             </p>
                         </td>
                     </tr>
                     <tr>
-                        <td style="border:1px solid #000000;padding:0px 7.2px;vertical-align:top;width:632.87px;"
+                        <td style="border:1px solid #000000;vertical-align:top;width:632.87px;"
                             colspan="2">
-                            <ul style="padding-left: 0; margin: 0; list-style-position: inside;">
+                            <ul>
                                 {% for lifestyleChange in lifestyleChanges %}
-                                <li style="line-height:1;margin-bottom:0px;margin-top:0px;">
+                                <li>
                                     <span style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
                                         {{lifestyleChange.lifestyleChange}}
                                     </span>
@@ -347,7 +421,6 @@
             </table>
         </figure>
 
-        
     </div>
 </body>
 
