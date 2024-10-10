@@ -13,21 +13,28 @@ import pdfkit # type: ignore
 from google.cloud import storage
 
 # ML Libraries
-import torch
-import torch.nn as nn
 import torch.nn.functional as F
 from PIL import Image
-from torchvision import models, transforms
 import requests
 from io import BytesIO
+
+# RAG LLM Libraries
 import google.generativeai as genai # type: ignore
-import numpy as np
+from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_google_genai import GoogleGenerativeAIEmbeddings
+from langchain_core.prompts import PromptTemplate
+from langchain_community.vectorstores import Chroma
+from langchain.chains import RetrievalQA
 
 # Local dependencies
 from .sqlalchemy import db
 from . import Patient, Doctor, Consultation
 from app.model_loader import load_model
 from app.machine_learning.classification_models.data import val_transforms
+
+# Turn off warnings
+import warnings
+warnings.filterwarnings("ignore")
 
 class Report(db.Model):
     __tablename__ = "Report"
@@ -39,7 +46,9 @@ class Report(db.Model):
     severity = db.Column(db.String, nullable=True)
     severityConfidence = db.Column(db.Float, nullable=True)
     prescriptions = db.Column(db.String, nullable=True)
+    prescriptionsLink = db.Column(db.String, nullable=True)
     lifestyleChanges = db.Column(db.String, nullable=True)
+    lifestyleLink = db.Column(db.String, nullable=True)
     viewableToPatient = db.Column(db.Boolean, nullable=False, default=False)
 
     def serialize(self) -> dict:
@@ -69,35 +78,6 @@ class Report(db.Model):
     def queryReport(cls, id: str) -> Self | None:
         """Query a report by id"""
         return cls.query.filter(cls.id == id).one_or_none()
-    
-    # @classmethod
-    # def classifyAndLLM(cls, consultationId: str) -> Tuple[bool, str]:
-    #     """Create a new report"""
-    #     # Create a blank report
-    #     report = cls()
-    #     db.session.add(report)
-
-    #     # Get the patient, doctor and consultation objects
-    #     consultation = Consultation.queryConsultation(consultationId)
-    #     patient = Patient.queryPatient(consultation.patientId)
-    #     doctor = Doctor.queryDoctor(consultation.doctorId)
-        
-    #     # Get the xray image URL
-    #     xrayImageUrl = consultation.xrayImageUrl
-
-    #     # Prediction pipeline
-    #     classificationSuccess, classificationMessage = cls.classifyXray(report.id, xrayImageUrl, consultation)
-    #     llmSuccess, llmMessage = cls.getLLMAdditionalInfo(report.id, xrayImageUrl, patient, doctor, consultation)
-
-    #     # Update consultation with new report id
-    #     consultation.reportId = report.id
-    #     db.session.commit()
-        
-    #     if not classificationSuccess:
-    #         return (False, classificationMessage)
-    #     if not llmSuccess:
-    #         return (False, llmMessage)
-    #     return (True, "Classification and LLM successful.")
     
     @classmethod
     def updateViewableToPatient(cls, reportId: str, viewableToPatient: bool) -> Tuple[bool, str]:
@@ -146,7 +126,7 @@ class Report(db.Model):
         image = image.to(current_app.config["DEVICE"]) # type: ignore
         
         # Classify the image
-        predicted_class_idx, classificationConfidence = type_clf_model.classify_image(type_clf_model, image)
+        predicted_class_idx, classificationConfidence = type_clf_model.classify_image(image)
         predicted_class_idx = int(predicted_class_idx)
 
         # Generate gradcam image
@@ -182,7 +162,7 @@ class Report(db.Model):
             report.severityConfidence = 100
         else:
             severity_clf_model = load_model(current_app.config["COVIDNEXT50SEV_MODEL_PATH"], current_app.config["DEVICE"], n_classes=2)
-            predicted_severity_idx, severityConfidence = severity_clf_model.classify_image(severity_clf_model, image)
+            predicted_severity_idx, severityConfidence = severity_clf_model.classify_image(image)
             predicted_severity_idx = int(predicted_severity_idx)
             idx_to_severity_mapping = {0: "Mild", 1: "Moderate to Severe"}
             predicted_severity = idx_to_severity_mapping[predicted_severity_idx]
@@ -235,93 +215,166 @@ class Report(db.Model):
     @classmethod
     def stringifyJson(cls, jsonData):
         return ", ".join(f"{key}: {value}" for key, value in jsonData.items())
-
-    # TODO: EDRICK AFTER FIGURE OUT RAG-LLM
+    
     @classmethod
-    def generateLLMAdditionalInfo(cls, reportId: str, xrayImageUrl: str, patient: Patient, doctor: Doctor, consultation: Consultation) -> Tuple[bool, str]:
+    def cleanJsonString(cls, jsonString: str):
+        jsonString = jsonString.strip('```json\n')
+        jsonString = jsonString.replace('\n', '')
+        jsonString = jsonString.replace('  ', '')
+        jsonString = jsonString.replace('    ', '')
+        return jsonString
+
+    @classmethod
+    def generatePrescriptions(cls, chain: RetrievalQA, patientString: str, consultationString: str, classificationData: dict):
+        prompt = f"""You are an assistant to a doctor, analyzing patient data to provide recommendations for both the patient and the treating doctor.
+            The patient has been classified as having {classificationData['classification']} with a confidence level of {classificationData['classificationConfidence']}.
+            Note that the severity of the condition is {classificationData['severity']} with a confidence level of {classificationData['severityConfidence']}.
+
+            Here is patient's metadata:
+            {patientString}
+
+            Here is the consultation details:
+            {consultationString}
+            Put emphasis on whether the patient was recently in the ICU, needed supplemental O2 and O2 saturation.
+
+            Instructions:
+            Based on the patient metadata and consultation details, generate the prescriptions.
+            Offer prescriptions tailored to the patient's situation, specifically to address the {classificationData['severity']} {classificationData['classification']}.
+            Here are the guidelines:
+            - Suggest prescription medications that could be beneficial based on the patient's medical history.
+            - Use clear and concise medical language.
+            - Provide 5 prescription recommendations.
+            - For each prescription, recommend the name, dosage and reason.
+            - Wrap every recommendation in a {{}}
+            
+            ONLY INCLUDE THE JSON
+
+            Return a list of JSON in this format:
+            Return a `List[{{"prescriptionName": List[name (dosage), reason]]}}]` with your responses."""
+        
+        response = chain({"query": prompt})
+        print(f"Response from prescription chain: {response}")
+        while response.get("finish_reason") == "RECITATION":
+            response = chain({"query": prompt})
+            print(f"Repeated response from prescription chain: {response}")
+        
+        documentLink = response['source_documents'][0].metadata['link']
+        responseStr = response['result']
+        cleanedStr = cls.cleanJsonString(responseStr)
+
+        return cleanedStr, documentLink
+    
+    @classmethod
+    def generateLifestyle(cls, chain: RetrievalQA, patientString: str, consultationString: str, classificationData: dict):
+        prompt = f"""You are an assistant to a doctor, analyzing patient data to provide recommendations for both the patient and the treating doctor.
+            The patient has been classified as having {classificationData['classification']} with a confidence level of {classificationData['classificationConfidence']}.
+            Note that the severity of the condition is {classificationData['severity']} with a confidence level of {classificationData['severityConfidence']}.
+
+            Here is patient's metadata:
+            {patientString}
+
+            Here is the consultation details:
+            {consultationString}
+            Put emphasis on whether the patient was recently in the ICU, needed supplemental O2 and O2 saturation.
+
+            Instructions:
+            Based on the patient metadata and consultation details, generate the rehabilitation practices.
+            Offer rehabilitation practices tailored to the patient's situation, specifically to address the {classificationData['severity']} {classificationData['classification']}.
+            Here are the guidelines:
+            - Suggest rehabilitation practices or breathing exercises that could be beneficial based on the patient's medical history.
+            - If a breathing exercise is suggested, include concise steps to perform the exercise.
+            - Use clear and concise medical language.
+            - Provide 5 rehabilitation practice recommendations.
+            - Wrap every recommendation in a {{}}   
+
+            ONLY INCLUDE THE JSON
+
+            Return a list of JSON in this format:
+            Return a `List[{{"lifestyleChange": List[lifestyleChange, reason]]}}]` with your responses."""
+        
+        response = chain({"query": prompt})
+        print(f"Response from lifestyle chain: {response}")
+        while response.get("finish_reason") == "RECITATION":
+            response = chain({"query": prompt})
+            print(f"Repeated response from lifestyle chain: {response}")
+        
+        documentLink = response['source_documents'][0].metadata['link']
+        responseStr = response['result']
+        cleanedStr = cls.cleanJsonString(responseStr)
+
+        return cleanedStr, documentLink
+
+    @classmethod
+    def generateLLMAdditionalInfo(cls, reportId: str, patient: Patient, consultation: Consultation) -> Tuple[bool, str, dict]:
         """Get additional information from LLM"""
 
         # Get current report object
         report = cls.queryReport(reportId)
         
         # # Initialize gemini model
-        # genai.configure(api_key=current_app.config["GEMINI_API_KEY"])
-        # model = genai.GenerativeModel('gemini-1.5-flash', generation_config={"response_mime_type": "application/json"})
+        genai.configure(api_key=current_app.config["GEMINI_API_KEY"])
+        model = ChatGoogleGenerativeAI(model="gemini-1.5-flash", google_api_key=current_app.config["GEMINI_API_KEY"], temperature=0.2) # type: ignore
+        embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001", google_api_key=current_app.config["GEMINI_API_KEY"])
+
+        # Load from db
+        persistentDirectory = "app/machine_learning/chromaDB"
+        vector_store = Chroma(persist_directory=persistentDirectory, embedding_function=embeddings)
 
         # # Get medical data from patient and consultation
-        # patientData = patient.getMedicalData()
-        # consultationData = consultation.getMedicalData()
+        patientData = patient.getMedicalData()
+        consultationData = consultation.getMedicalData()
+        classificationData = report.getFindings()
 
-        # # Stringify medical data
-        # patientString = cls.stringifyJson(patientData)
-        # consultationString = cls.stringifyJson(consultationData)
+        # Stringify medical data
+        patientString = cls.stringifyJson(patientData)
+        consultationString = cls.stringifyJson(consultationData)
 
-        # # Setup prompt
-        # prompt = f"""
-        #     You are an assistant to a doctor, analyzing patient data to provide recommendations for both the patient and the treating doctor.
-        #     The patient has been classified as having {report.classification} with a confidence level of {report.confidence} based on the X-ray image provided.
+        # Set filter
+        if classificationData["classification"] == "Covid-19":
+            filterType = "covid"
+        elif classificationData["classification"] == "Other Lung Infection":
+            filterType = "other-lung-infection"
 
-        #     Here is patient's metadata:
-        #     {patientString}
-
-        #     Here is the consultation details:
-        #     {consultationString}
-
-        #     Instructions:
-        #     Based on the image, patient metadata and consultation details, generate the following.
-        #     1. Based on the image only, what points to the existence of {report.classification} in the lungs.
-        #     2. Provide the severity level of the patient.
-        #     3. Offer prescriptions and lifestyle changes tailored to the patient's situation.
-        #     {{
-        #     'lifestyleChanges': "The following are health and lifestyle suggestions:\n- Rest and hydration are essential.\n- Breathing exercises: ...\n- Diet and nutrition: ..."
-        #     }}
-        #     4. **For the 'lifestyleChanges' section:**
-        #     - Provide health and lifestyle advice tailored to the patient’s situation.
-        #     - Include specific recommendations on rest, hydration, and over-the-counter relief options (such as pain relievers, decongestants).
-        #     - Clearly explain when the patient should seek further medical consultation.
-        #     - Add information on how to manage potential long COVID symptoms and offer recovery advice.
-        #     - Use a clear, concise, friendly and accessible tone.
-        #     - Provide 5 lifestyle change recommendations.
-        #     - Wrap every recommendation in a {{}}
-        #     5. **For the 'prescriptions' section:**
-        #     - Provide a concise medical note summarizing key considerations for the doctor.
-        #     - Suggest prescription medications that could be beneficial based on the patient's medical history.
-        #     - Use clear and concise medical language.
-        #     - Provide 5 prescription recommendations.
-        #     - Wrap every recommendation in a {{}}
-            
-        #     Using this JSON schema:
-        #         Observation = {{"observation": str}}
-        #         Severity = {{"severity": enum("Mild", "Moderate", "Severe")}}
-        #         Prescription = List[{{"prescriptionName": List[dosage, reason]]}}]
-        #         LifestyleChange = List[{{"lifestyleChange": str}}]
-        #     Return a `Tuple(Observation, Severity, Prescription, LifestyleChange)` with your responses.
-        #     """
-
-        # # Call Gemini model
-        # response = model.generate_content([prompt, xrayImageUrl], safety_settings={
-        #         'HATE': 'BLOCK_NONE',
-        #         'HARASSMENT': 'BLOCK_NONE',
-        #         'SEXUAL' : 'BLOCK_NONE',
-        #         'DANGEROUS' : 'BLOCK_NONE'
-        #     })
+        # Set up retriever
+        retriever = vector_store.as_retriever(
+            search_type="mmr", 
+            search_kwargs={
+                "k": 1, 
+                "filter": dict(type=filterType)
+            })
         
-        # # Parse response
-        # responseJson = response.text
-        # print(responseJson)
-        # print(f"Observations: {cls.getValueOrFallback(json.loads(responseJson), 'observation')}")
-        # print(f"Severity: {cls.getValueOrFallback(json.loads(responseJson), 'severity')}")
-        # parsedJson = json.loads(responseJson)
-        # prescriptions = cls.getValueFromRegexedKey(parsedJson, "prescription")
-        # lifestyleChanges = cls.getValueFromRegexedKey(parsedJson, "lifestyleChange")
+        # Setup chain
+        template = """Use the following pieces of context to answer the question.
+        {context}
+        Question: {question}
+        Helpful Answer:"""
+        QA_CHAIN_PROMPT = PromptTemplate(template=template, input_variables=['context', 'question'])# Run chain
+        qa_chain = RetrievalQA.from_chain_type(
+            model,
+            retriever=retriever,
+            return_source_documents=True,
+            chain_type_kwargs={"prompt": QA_CHAIN_PROMPT}
+        )
+
+        # Generate prescriptions, lifestyle suggestions
+        prescriptions, prescriptionsLink = cls.generatePrescriptions(qa_chain, patientString, consultationString, classificationData)
+        lifestyleChanges, lifestyleLink = cls.generateLifestyle(qa_chain, patientString, consultationString, classificationData)
         
-        # report.prescriptions = json.dumps(prescriptions)
-        # report.lifestyleChanges = json.dumps(lifestyleChanges)
-        report.prescriptions = """[{"prescriptionName":["Dexamethasone","To reduce inflammation and improve oxygenation"]},{"prescriptionName":["Remdesivir","Antiviral medication for COVID-19"]},{"prescriptionName":["Oxygen therapy","To improve oxygen levels"]},{"prescriptionName":["Albuterol inhaler","To manage asthma symptoms"]},{"prescriptionName":["Antihistamines","To manage allergies"]}]"""
-        report.lifestyleChanges = """[{"lifestyleChange":"Rest and hydration are essential. Get plenty of sleep and drink fluids to stay hydrated. This will help your body fight the infection and recover."},{"lifestyleChange":"Breathing exercises can help improve your lung capacity and reduce shortness of breath. Try deep breathing exercises or diaphragmatic breathing to help you breathe more easily."},{"lifestyleChange":"Maintain a nutritious diet. Focus on consuming fruits, vegetables, and protein-rich foods to support your immune system and overall health."},{"lifestyleChange":"Avoid smoking and limit exposure to smoke or pollutants. This will help reduce irritation and inflammation in your lungs."},{"lifestyleChange":"Monitor your symptoms closely. If you experience worsening symptoms, such as difficulty breathing, persistent fever, or chest pain, seek immediate medical attention."}]"""
+        # Store prescriptions and lifestyle changes
+        report.prescriptions = prescriptions
+        report.lifestyleChanges = lifestyleChanges
+        report.prescriptionsLink = prescriptionsLink
+        report.lifestyleLink = lifestyleLink
         db.session.commit()
 
-        return (True, "Additional information retrieved successfully.")
+        data = {
+            "prescriptions": prescriptions,
+            "lifestyleChanges": lifestyleChanges,
+            "prescriptionsLink": prescriptionsLink,
+            "lifestyleLink": lifestyleLink
+        }
+
+        return (True, "Additional information retrieved successfully.", data)
 
     @classmethod
     def generateReport(cls, reportId: str, xrayImageUrl: str, consultationId: str) -> Tuple[bool, str]:
