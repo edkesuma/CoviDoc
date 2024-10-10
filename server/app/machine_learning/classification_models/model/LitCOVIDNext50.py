@@ -110,17 +110,17 @@ class LitCOVIDNext50(L.LightningModule):
         # Return the image
         return Image.fromarray(cam_image)
 
-    def classify_image(self, model, img):
+    def classify_image(self, img):
         # Preprocess the image
         img = img.unsqueeze(0)
 
         # Set the model to evaluation mode
-        model.eval()
+        self.model.eval()
         
         # Disable gradient calculation
         with torch.no_grad():
             # Get the model output
-            output = model(img)
+            output = self.model(img)
             # Apply softmax to get probabilities
             probabilities = torch.nn.functional.softmax(output, dim=-1)
             

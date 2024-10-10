@@ -13,7 +13,7 @@ class COVIDNext50(nn.Module):
         trainable = True
 
         # Layers
-        backbone = models.resnext50_32x4d(pretrained=True)
+        backbone = models.resnext50_32x4d(weights=None)
         self.block0 = Trainable(nn.Sequential(
                                     backbone.conv1,
                                     backbone.bn1,
