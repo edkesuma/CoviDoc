@@ -239,9 +239,7 @@ def generateReport() -> Dict[str, Union[str, int]]:
     """Doctor generates a report"""
     consultationId = request.json.get("consultationId")
     consultation = Consultation.queryConsultation(consultationId)
-    reportId = consultation.reportId
-    xrayImageUrl = consultation.xrayImageUrl
-    returnedBool, message = Report.generateReport(reportId, xrayImageUrl, consultationId)
+    returnedBool, message = Report.generateReport(consultation)
     if returnedBool:
         return {"status code": 200, "success": returnedBool, "message": message}
     else:
