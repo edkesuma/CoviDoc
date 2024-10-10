@@ -190,7 +190,13 @@
                                     Date of Birth:
                                 </span>
                                 <span style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
-                                    {{dob}}, Age: {{age}} years old
+                                    {{dob}}, 
+                                </span>
+                                <span class="bold" style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
+                                    Age: 
+                                </span>
+                                <span style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
+                                    {{age}} years old
                                 </span>
                             </p>
                             <p style="line-height:1;margin-bottom:0px;margin-top:0px;">
@@ -329,10 +335,10 @@
         </p>
         <p style="line-height:1; margin-bottom:0px; margin-top:0px;">
             <span class="bold" style="font-family:'Times New Roman', Times, serif; font-size:14.67px;">
-                Confidence:
+                Classification Confidence:
             </span>
             <span style="font-family:'Times New Roman', Times, serif; font-size:14.67px;">
-                {{confidence}}
+                {{classificationConfidence}}%
             </span>
         </p>
         <p style="line-height:1; margin-bottom:0px; margin-top:0px;">
@@ -348,7 +354,7 @@
                 Severity Confidence:
             </span>
             <span style="font-family:'Times New Roman', Times, serif; font-size:14.67px;">
-                {{severity_confidence}}
+                {{severityConfidence}}%
             </span>
         </p>
     </td>
@@ -374,11 +380,17 @@
                     <tr>
                         <td style="border:1px solid #000000;vertical-align:top;width:632.87px;"
                             colspan="2">
+                            <span style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
+                                Prescriptions Source Document: <br>
+                                <a href={{prescriptionsLink}}>
+                                    {{prescriptionsLink}}
+                                </a> 
+                            </span>
                             <ul>
                                 {% for prescription in prescriptions %}
                                 <li>
                                     <span style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
-                                        {{prescription.prescriptionName[0]}}: {{prescription.prescriptionName[1]}}
+                                        <u>{{prescription.prescriptionName[0]}}</u>: {{prescription.prescriptionName[1]}}
                                     </span>
                                 </li>
                                 {% endfor %}
@@ -406,11 +418,17 @@
                     <tr>
                         <td style="border:1px solid #000000;vertical-align:top;width:632.87px;"
                             colspan="2">
+                            <span style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
+                                Lifestyle Changes Source Document: <br>
+                                <a href={{lifestyleLink}}>
+                                    {{lifestyleLink}}
+                                </a> 
+                            </span>
                             <ul>
-                                {% for lifestyleChange in lifestyleChanges %}
+                                {% for change in lifestyleChanges %}
                                 <li>
                                     <span style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
-                                        {{lifestyleChange.lifestyleChange}}
+                                        <u>{{change.lifestyleChange[0].strip(".")}}</u>: {{change.lifestyleChange[1]}}
                                     </span>
                                 </li>
                                 {% endfor %}

@@ -222,6 +222,8 @@ class Report(db.Model):
         jsonString = jsonString.replace('\n', '')
         jsonString = jsonString.replace('  ', '')
         jsonString = jsonString.replace('    ', '')
+        if jsonString[-2] == ',':
+            jsonString = jsonString[:-2] + ']'
         return jsonString
 
     @classmethod
@@ -261,6 +263,7 @@ class Report(db.Model):
         documentLink = response['source_documents'][0].metadata['link']
         responseStr = response['result']
         cleanedStr = cls.cleanJsonString(responseStr)
+        print(f"Cleaned string: {cleanedStr}")
 
         return cleanedStr, documentLink
     
@@ -377,16 +380,15 @@ class Report(db.Model):
         return (True, "Additional information retrieved successfully.", data)
 
     @classmethod
-    def generateReport(cls, reportId: str, xrayImageUrl: str, consultationId: str) -> Tuple[bool, str]:
+    def generateReport(cls, consultation: Consultation) -> Tuple[bool, str]:
         """Generate the medical report"""
 
-        # Get the patient, doctor and consultation objects
-        consultation = Consultation.queryConsultation(consultationId)
+        # Get the patient, doctor objects
         patient = Patient.queryPatient(consultation.patientId)
         doctor = Doctor.queryDoctor(consultation.doctorId)
         
         # Get the report object
-        report = cls.queryReport(reportId)
+        report = cls.queryReport(consultation.reportId)
 
         # Serialize the patient object
         patientData = patient.serialize()
@@ -398,7 +400,7 @@ class Report(db.Model):
         # Get the data for the report (according to report template)
         dataForReport = {
             "consultationDate": consultation.consultationDate.strftime("%d/%m/%Y"),
-            "reportId": reportId,
+            "reportId": report.id,
             "patientName": patient.name,
             "patientId": patientData["patientId"],
             "gender": patientData["gender"],
@@ -406,7 +408,9 @@ class Report(db.Model):
             "age": patientData["age"],
             "medicalHistory": patientData["medicalHistory"],
             "allergies": patientData["allergies"],
-            "xrayUrl": xrayImageUrl,
+            "xrayUrl": consultation.xrayImageUrl,
+            "xrayUrl2": consultation.highlightedXrayImageUrl,
+            "highlightedXrayUrl": consultation.highlightedXrayImageUrl,
 
         # Doctor information dictionary
             "doctorName": doctor.name,
@@ -425,7 +429,9 @@ class Report(db.Model):
             "severity": report.severity,
             "severityConfidence": report.severityConfidence,
             "prescriptions": prescriptions,
-            "lifestyleChanges": lifestyleChanges
+            "lifestyleChanges": lifestyleChanges,
+            "prescriptionsLink": report.prescriptionsLink,
+            "lifestyleLink": report.lifestyleLink
         }
 
         # Determine the base directory
@@ -443,7 +449,7 @@ class Report(db.Model):
 
         # Upload the PDF to Google Cloud
         storageClient = storage.Client()
-        reportFilename = f"{reportId}.pdf"
+        reportFilename = f"{report.id}.pdf"
         destinationBlobName = f"pdfReports/{reportFilename}"
         bucket = storageClient.bucket(current_app.config["BUCKET_NAME"])
         blob = bucket.blob(destinationBlobName)
@@ -453,6 +459,10 @@ class Report(db.Model):
             blob.upload_from_file(sourceFile, content_type="application/pdf")
         # Delete the local PDF file
         os.remove("pdf_generated.pdf")
+
+        # Remove cache control
+        blob.cache_control = "private, no-cache, max-age=0"
+        blob.patch()
 
         # Update the report
         report.reportUrl = blob.public_url
