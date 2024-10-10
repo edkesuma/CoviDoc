@@ -23,8 +23,7 @@
             margin: 20mm;
         }
 
-        html,
-        body {
+        html, body {
             margin: 0;
             display: flex;
             justify-content: center;
@@ -51,19 +50,27 @@
             page-break-inside: avoid;
         }
 
+        /* Ensure the content can break across pages */
+        .content, table, p {
+            page-break-inside: avoid;
+        }
+
         .table {
             box-shadow: 10px 10px 5px lightblue;
             padding: 10px;
             /* Add padding inside the table for spacing */
+            padding: 10px; /* Add padding inside the table for spacing */
         }
 
         .header-container {
             display: flex;
             align-items: center;
             /* Align items vertically */
+            align-items: center; /* Align items vertically */
             font-family: 'Times New Roman', Times, serif;
             margin-bottom: 10px;
             /* Reduce space after header */
+            margin-bottom: 10px; /* Reduce space after header */
         }
 
         .logo {
@@ -71,6 +78,11 @@
             /* Keep the logo height smaller */
             margin-right: 10px;
             /* Reduce the space between logo and text */
+        }
+
+        /* Adjust the size of the title and subtitle to match the logo */
+            max-height: 56px; /* Keep the logo height smaller */
+            margin-right: 10px; /* Reduce the space between logo and text */
         }
 
         /* Adjust the size of the title and subtitle to match the logo */
@@ -83,9 +95,11 @@
         .title {
             font-size: 36px;
             /* Adjusted font size */
+            font-size: 36px;  /* Adjusted font size */
             font-weight: bold;
             line-height: 56px;
             /* Match the line-height to logo's height */
+            line-height: 56px; /* Match the line-height to logo's height */
         }
 
         .subtitle {
@@ -115,6 +129,34 @@
         td {
             padding: 5px;
             /* Add padding inside table cells for text spacing */
+        }
+
+        /* Make headers bold */
+        .bold {
+            font-size: 28px;   /* Smaller font for subtitle */
+            font-weight: bold;
+            line-height: 28px;
+        }
+
+        .image-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .image-container img {
+            width: 48%;
+            border: 1px solid #000;
+        }
+
+        ul {
+            padding-left: 0;
+            margin: 0;
+            list-style-position: inside;
+        }
+
+        td {
+            padding: 5px; /* Add padding inside table cells for text spacing */
         }
 
         /* Make headers bold */
@@ -167,6 +209,9 @@
                                     style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
                                     Patient Name:
                                 </span>
+                                <span class="bold" style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
+                                    Patient Name:
+                                </span>
                                 <span style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
                                     {{patientName}}
                                 </span>
@@ -174,6 +219,9 @@
                             <p style="line-height:1;margin-bottom:0px;margin-top:0px;">
                                 <span class="bold"
                                     style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
+                                    Patient ID:
+                                </span>
+                                <span class="bold" style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
                                     Patient ID:
                                 </span>
                                 <span style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
@@ -185,6 +233,9 @@
                                     style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
                                     Doctor Name:
                                 </span>
+                                <span class="bold" style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
+                                    Doctor Name:
+                                </span>
                                 <span style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
                                     {{doctorName}}
                                 </span>
@@ -194,15 +245,23 @@
                                     style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
                                     Doctor ID:
                                 </span>
+                                <span class="bold" style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
+                                    Doctor ID:
+                                </span>
                                 <span style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
                                     {{doctorId}}
                                 </span>
                             </p>
                         </td>
                         <td style="border-color:#000000;border-width:1px;vertical-align:top;width:321.33px;">
+                        <td
+                            style="border-color:#000000;border-width:1px;vertical-align:top;width:321.33px;">
                             <p style="line-height:1;margin-bottom:0px;margin-top:0px;">
                                 <span class="bold"
                                     style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
+                                    Date of Birth:
+                                </span>
+                                <span class="bold" style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
                                     Date of Birth:
                                 </span>
                                 <span style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
@@ -214,6 +273,9 @@
                                     style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
                                     Gender:
                                 </span>
+                                <span class="bold" style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
+                                    Gender:
+                                </span>
                                 <span style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
                                     {{gender}}
                                 </span>
@@ -223,6 +285,9 @@
                                     style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
                                     Medical History:
                                 </span>
+                                <span class="bold" style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
+                                    Medical History:
+                                </span>
                                 <span style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
                                     {{medicalHistory}}
                                 </span>
@@ -230,6 +295,9 @@
                             <p style="line-height:1;margin-bottom:0px;margin-top:0px;">
                                 <span class="bold"
                                     style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
+                                    Allergies:
+                                </span>
+                                <span class="bold" style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
                                     Allergies:
                                 </span>
                                 <span style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
@@ -273,6 +341,9 @@
                                     style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
                                     Temperature:
                                 </span>
+                                <span class="bold" style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
+                                    Temperature:
+                                </span>
                                 <span style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
                                     {{temperature}}°C
                                 </span>
@@ -280,6 +351,9 @@
                             <p style="line-height:1;margin-bottom:0px;margin-top:0px;">
                                 <span class="bold"
                                     style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
+                                    O2 Saturation:
+                                </span>
+                                <span class="bold" style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
                                     O2 Saturation:
                                 </span>
                                 <span style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
@@ -291,6 +365,9 @@
                                     style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
                                     Recently in ICU:
                                 </span>
+                                <span class="bold" style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
+                                    Recently in ICU:
+                                </span>
                                 <span style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
                                     {{recentlyInIcu}}
                                 </span>
@@ -298,6 +375,8 @@
                             <p style="line-height:1;margin-bottom:0px;margin-top:0px;">
                                 <span class="bold"
                                     style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
+                                    Recently needed supplemental O2:
+                                <span class="bold" style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
                                     Recently needed supplemental O2:
                                 </span>
                                 <span style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
@@ -308,6 +387,8 @@
                                 <span class="bold"
                                     style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
                                     Intubation Present:
+                                <span class="bold" style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
+                                    Intubation Present:
                                 </span>
                                 <span style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
                                     {{intubationPresent}}
@@ -316,6 +397,8 @@
                             <p style="line-height:1;margin-bottom:0px;margin-top:0px;">
                                 <span class="bold"
                                     style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
+                                    Consultation Notes:
+                                <span class="bold" style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
                                     Consultation Notes:
                                 </span>
                                 <span style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
@@ -381,6 +464,40 @@
                                 </span>
                             </p>
                         </td>
+                        <td style="border:1px solid #000000; vertical-align:top; width:632.87px;" colspan="2">
+        <p style="line-height:1; margin-bottom:0px; margin-top:0px;">
+            <span class="bold" style="font-family:'Times New Roman', Times, serif; font-size:14.67px;">
+                Classification:
+            </span>
+            <span style="font-family:'Times New Roman', Times, serif; font-size:14.67px;">
+                {{classification}}
+            </span>
+        </p>
+        <p style="line-height:1; margin-bottom:0px; margin-top:0px;">
+            <span class="bold" style="font-family:'Times New Roman', Times, serif; font-size:14.67px;">
+                Confidence:
+            </span>
+            <span style="font-family:'Times New Roman', Times, serif; font-size:14.67px;">
+                {{confidence}}
+            </span>
+        </p>
+        <p style="line-height:1; margin-bottom:0px; margin-top:0px;">
+            <span class="bold" style="font-family:'Times New Roman', Times, serif; font-size:14.67px;">
+                Severity:
+            </span>
+            <span style="font-family:'Times New Roman', Times, serif; font-size:14.67px;">
+                {{severity}}
+            </span>
+        </p>
+        <p style="line-height:1; margin-bottom:0px; margin-top:0px;">
+            <span class="bold" style="font-family:'Times New Roman', Times, serif; font-size:14.67px;">
+                Severity Confidence:
+            </span>
+            <span style="font-family:'Times New Roman', Times, serif; font-size:14.67px;">
+                {{severity_confidence}}
+            </span>
+        </p>
+    </td>
                     </tr>
                 </tbody>
             </table>
@@ -402,6 +519,9 @@
                     </tr>
                     <tr>
                         <td style="border:1px solid #000000;vertical-align:top;width:632.87px;" colspan="2">
+                            <ul>
+                        <td style="border:1px solid #000000;vertical-align:top;width:632.87px;"
+                            colspan="2">
                             <ul>
                                 {% for prescription in prescriptions %}
                                 <li>
@@ -433,6 +553,9 @@
                     </tr>
                     <tr>
                         <td style="border:1px solid #000000;vertical-align:top;width:632.87px;" colspan="2">
+                            <ul>
+                        <td style="border:1px solid #000000;vertical-align:top;width:632.87px;"
+                            colspan="2">
                             <ul>
                                 {% for lifestyleChange in lifestyleChanges %}
                                 <li>
