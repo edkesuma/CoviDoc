@@ -410,7 +410,6 @@ class Report(db.Model):
             "allergies": patientData["allergies"],
             "xrayUrl": consultation.xrayImageUrl,
             "xrayUrl2": consultation.highlightedXrayImageUrl,
-            "highlightedXrayUrl": consultation.highlightedXrayImageUrl,
 
         # Doctor information dictionary
             "doctorName": doctor.name,
