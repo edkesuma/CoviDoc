@@ -217,13 +217,18 @@ def updatePrescriptionsLifestyleChanges() -> Dict[str, Union[str, int]]:
 @role_required(["Doctor"])
 def generateLLMAdditionalInfo() -> Dict[str, Union[str, int]]:
     """Doctor generates LLM additional info"""
+
+    # Get consultation object and report id
     consultationId = request.json.get("consultationId")
     consultation = Consultation.queryConsultation(consultationId)
     reportId = consultation.reportId
-    # TODO: SAMPLE VALUES ONLY, FIX AFTER FIGURE OUT RAG-LLM
-    returnedBool, message = Report.generateLLMAdditionalInfo(reportId, consultation.xrayImageUrl, Patient(), Doctor(), Consultation())
+
+    # Get patient object
+    patient = Patient.queryPatient(consultation.patientId)
+
+    returnedBool, message, data = Report.generateLLMAdditionalInfo(reportId, patient=patient, consultation=consultation)
     if returnedBool:
-        return {"status code": 200, "success": returnedBool, "message": message}
+        return {"status code": 200, "success": returnedBool, "message": message, "data": data} # type: ignore
     else:
         return {"status code": 400, "success": returnedBool, "message": message}
 
