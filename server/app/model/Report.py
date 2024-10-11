@@ -172,6 +172,7 @@ class Report(db.Model):
         db.session.commit()
 
         data = {
+            "consultationId": consultationId,
             "type_classification": predicted_type,
             "severity_classification": predicted_severity,
             "type_confidence": classificationConfidence,

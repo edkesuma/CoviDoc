@@ -10,6 +10,7 @@ import {useNavigate, useParams} from "react-router-dom";
 import axios from "axios";
 import CreateConsultationModal from "../../Components/Doctor/Consultation/Modal/CreateConsultationModal.jsx";
 import ViewXrays from "../../Components/Doctor/Consultation/View/ViewXRays.jsx";
+import UploadXrayImage from "../../Components/Doctor/Consultation/Create/UploadXrayImage.jsx";
 function DoctorViewPatientPage() {
     const {token} = useContext(AuthContext);
     const {patientId} = useParams();
@@ -86,7 +87,7 @@ function DoctorViewPatientPage() {
         <div className="flex flex-col ">
             <ActorNavbar/>
             {/* Place the modal outside of other content */}
-            <CreateConsultationModal
+            <UploadXrayImage
                 patientId={patientId}
                 modalOpen={consultationModalOpen}
                 setModalOpen={setConsultationModalOpen}

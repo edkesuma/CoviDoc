@@ -41,6 +41,7 @@ import ViewFindingPage from "./Pages/Doctor/ViewFindingPage.jsx";
 import ViewPDFPage from "./Pages/Doctor/ViewPDFPage.jsx";
 import DoctorViewPatientPage from "./Pages/Doctor/DoctorViewPatientPage.jsx";
 import DoctorEditAccountModal from "./Components/Doctor/DoctorEditAccountModal.jsx";
+import ModelPredictionPage from "./Pages/Doctor/ModelPredicationPage.jsx";
 
 // App entry point
 ReactDOM.createRoot(document.getElementById("root")).render(
@@ -126,10 +127,10 @@ ReactDOM.createRoot(document.getElementById("root")).render(
                     }
                 />
                 <Route
-                    path="/doctor/patient/:patientId/:consultationId"
+                    path="/doctor/patient/:patientId/:consultationId/classification"
                     element={
                         <PrivateRoute doctor>
-                            <ViewFindingPage />
+                            <ModelPredictionPage />
                         </PrivateRoute>
                     }
                 />
@@ -177,6 +178,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
                 />
 
                 {/* to be deleted */}
+                <Route path="/test" element={<ModelPredictionPage/>}/>
                 <Route path="/login/forget" element={<ForgetPage />} />
                 <Route path="/login/reset" element={<ResetPage />} />
                 <Route path="/login/setSucc" element={<ResetSuccPage />} /> 
