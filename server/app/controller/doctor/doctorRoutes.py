@@ -89,40 +89,16 @@ def deleteOwnDoctorAccount() -> Dict[str, Union[str, int]]:
     else:
         return {"status code": 400, "success": returnedBool, "message": message}
     
-# @router.route("/createConsultation", methods=["PUT"])
-# @jwt_required()
-# @role_required(["Doctor"])
-# def createConsultation() -> Dict[str, Union[str, int]]:
-#     """Doctor creates a consultation"""
-#     consultationId = f"C{str(uuid.uuid4().hex)}"
-#     consultationDetails = {
-#         "consultationId": consultationId,
-#         "consultationDate": request.form.get("consultationDate"),
-#         "doctorId": get_jwt_identity(),
-#         "patientId": request.form.get("patientId"),
-#         "temperature": float(request.form.get("temperature")), # type: ignore
-#         "o2Saturation": int(request.form.get("o2Saturation")), # type: ignore
-#         "recentlyInIcu": request.form.get("recentlyInIcu") == 'true',
-#         "recentlyNeededSupplementalO2": request.form.get("recentlyNeededSupplementalO2") == 'true',
-#         "intubationPresent": request.form.get("intubationPresent") == 'true',
-#         "consultationNotes": request.form.get("consultationNotes")
-#     }
-#     # Upload xray image to Google Cloud
-#     xrayImage = request.files["xrayImage"]
-#     if xrayImage and allowed_file(xrayImage.filename): # type: ignore
-#         extension = extractExtension(xrayImage.filename) # type: ignore
-#         filename = secure_filename(f"{consultationId}.{extension}") # type: ignore
-#         destinationBlobName = f"xrayImages/{filename}"
-#         xrayImageUrl = uploadToGoogleCloud(current_app.config['BUCKET_NAME'], destinationBlobName, xrayImage)
-#         consultationDetails["xrayImageUrl"] = xrayImageUrl
-#     else:
-#         return {"status code": 400, "success": False, "message": "Invalid file type"}
-
-#     returnedBool, message = Consultation.createConsultation(consultationDetails)
-#     if returnedBool:
-#         return {"status code": 200, "success": returnedBool, "message": message, "consultationId": consultationId}
-#     else:
-#         return {"status code": 400, "success": returnedBool, "message": message}
+@router.route("/getXrayHistory", methods=["GET"])
+@jwt_required()
+@role_required(["Doctor"])
+def getXrayHistory() -> Dict[str, Union[str, int, list]]:
+    """Doctor gets xray history"""
+    patientId = request.args.get("patientId")
+    if not patientId:
+        return {"status code": 400, "success": False, "message": "Patient ID not provided"}
+    xrayHistory = Report.getXrayHistory(patientId=patientId)
+    return {"status code": 200, "success": True, "data": xrayHistory}
     
 @router.route("/generateClassification", methods=["PUT"])
 @jwt_required()
