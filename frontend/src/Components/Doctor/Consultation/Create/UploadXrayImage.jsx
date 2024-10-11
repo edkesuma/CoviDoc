@@ -9,34 +9,30 @@ import {AuthContext} from "../../../Authentication/AuthContext.jsx";
 import {format} from "date-fns";
 import {useNavigate} from "react-router-dom";
 
-function UploadXrayImage({modalOpen, setModalOpen}) {
-    //const { token } = useContext(AuthContext);
+function UploadXrayImage({patientId, modalOpen, setModalOpen}) {
+    const {token} = useContext(AuthContext);
     const [xrayImage, setXrayImage] = useState(null)
-    //const navigate = useNavigate();
-
-    /*
-        const createConsultation = () => {
-            var formData = new FormData();
-            formData.append('patientId', patientId)
-            formData.append('xrayImage', xrayImage);
-
-            axios
-                .put(`/api/doctor/createConsultation`, formData, {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        'Content-Type': 'multipart/form-data'
-                    }
-                })
-                .then((response) => {
-                    console.log("Consultation created successfully: ", response.data);
-                    setModalOpen(false);
-                    navigate(`/doctor/patient/${patientId}/${response.data.consultationId}`);
-                })
-                .catch((error) => {
-                    console.log("Error creating consultation: ", error);
-                });
-        }
-    */
+    const navigate = useNavigate();
+    const upload = () => {
+        var formData = new FormData();
+        formData.append('patientId', patientId)
+        formData.append('xrayImage', xrayImage);
+        axios
+            .put(`/api/doctor/generateClassification`,formData , {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'multipart/form-data'
+                }
+            })
+            .then((response) => {
+                console.log("Got Image: ", response.data);
+                setModalOpen(false);
+                navigate(`/doctor/patient/${patientId}/${response.data.consultationId}/classification`);
+            })
+            .catch((error) => {
+                console.log("Error creating consultation: ", error);
+            });
+    }
 
     return (
         <div>
@@ -52,7 +48,7 @@ function UploadXrayImage({modalOpen, setModalOpen}) {
                 </Modal.Header>
                 <Modal.Body>
                     <div className='flex flex-col'>
-                        <div className='flex justify-center text-2xl mt-2'>
+                        <div className='flex font-bold justify-center text-2xl mt-2'>
                             Upload X-Ray
                         </div>
                         <div className='flex w-full flex-col px-4 justify-center my-4 mb-10'>
@@ -69,7 +65,7 @@ function UploadXrayImage({modalOpen, setModalOpen}) {
                         </div>
                     </div>
                     <div className="w-full flex justify-center">
-                        <Button color='cyan' className='text-cyan-300'>Submit</Button>
+                        <Button color='cyan' className='text-cyan-300' onClick={upload}>Submit</Button>
                     </div>
                 </Modal.Body>
             </Modal>

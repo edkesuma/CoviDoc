@@ -18,12 +18,12 @@ import requests
 from io import BytesIO
 
 # RAG LLM Libraries
-import google.generativeai as genai # type: ignore
-from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain_google_genai import GoogleGenerativeAIEmbeddings
-from langchain_core.prompts import PromptTemplate
-from langchain_community.vectorstores import Chroma
-from langchain.chains import RetrievalQA
+# import google.generativeai as genai # type: ignore
+# from langchain_google_genai import ChatGoogleGenerativeAI
+# from langchain_google_genai import GoogleGenerativeAIEmbeddings
+# from langchain_core.prompts import PromptTemplate
+# from langchain_community.vectorstores import Chroma
+# from langchain.chains import RetrievalQA
 
 # Local dependencies
 from .sqlalchemy import db

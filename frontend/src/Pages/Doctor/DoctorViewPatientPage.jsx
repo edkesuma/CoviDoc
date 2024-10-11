@@ -2,14 +2,14 @@
 import PatientDetail from "../../Components/Doctor/Consultation/PatientDetail.jsx";
 import ViewConsultations from "../../Components/Doctor/Consultation/View/ViewConsultations.jsx";
 import {IoArrowBackCircleOutline} from "react-icons/io5";
-import {Button, Card, Spinner} from "flowbite-react";
+import {Button, Spinner} from "flowbite-react";
 import ActorNavbar from "../../Components/ActorNavbar.jsx";
 import {useContext, useState, useEffect} from "react";
 import {AuthContext} from "../../Components/Authentication/AuthContext.jsx";
 import {useNavigate, useParams} from "react-router-dom";
 import axios from "axios";
-import CreateConsultationModal from "../../Components/Doctor/Consultation/Modal/CreateConsultationModal.jsx";
 import ViewXrays from "../../Components/Doctor/Consultation/View/ViewXRays.jsx";
+import UploadXrayImage from "../../Components/Doctor/Consultation/Create/UploadXrayImage.jsx";
 function DoctorViewPatientPage() {
     const {token} = useContext(AuthContext);
     const {patientId} = useParams();
@@ -86,7 +86,7 @@ function DoctorViewPatientPage() {
         <div className="flex flex-col ">
             <ActorNavbar/>
             {/* Place the modal outside of other content */}
-            <CreateConsultationModal
+            <UploadXrayImage
                 patientId={patientId}
                 modalOpen={consultationModalOpen}
                 setModalOpen={setConsultationModalOpen}
