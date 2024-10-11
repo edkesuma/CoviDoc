@@ -212,38 +212,38 @@ def updatePrescriptionsLifestyleChanges() -> Dict[str, Union[str, int]]:
     else:
         return {"status code": 400, "success": returnedBool, "message": message}
     
-@router.route("/generateLLMAdditionalInfo", methods=["PUT"])
-@jwt_required()
-@role_required(["Doctor"])
-def generateLLMAdditionalInfo() -> Dict[str, Union[str, int]]:
-    """Doctor generates LLM additional info"""
-
-    # Get consultation object and report id
-    consultationId = request.json.get("consultationId")
-    consultation = Consultation.queryConsultation(consultationId)
-    reportId = consultation.reportId
-
-    # Get patient object
-    patient = Patient.queryPatient(consultation.patientId)
-
-    returnedBool, message, data = Report.generateLLMAdditionalInfo(reportId, patient=patient, consultation=consultation)
-    if returnedBool:
-        return {"status code": 200, "success": returnedBool, "message": message, "data": data} # type: ignore
-    else:
-        return {"status code": 400, "success": returnedBool, "message": message}
-
-@router.route("/generateReport", methods=["PUT"])
-@jwt_required()
-@role_required(["Doctor"])
-def generateReport() -> Dict[str, Union[str, int]]:
-    """Doctor generates a report"""
-    consultationId = request.json.get("consultationId")
-    consultation = Consultation.queryConsultation(consultationId)
-    returnedBool, message = Report.generateReport(consultation)
-    if returnedBool:
-        return {"status code": 200, "success": returnedBool, "message": message}
-    else:
-        return {"status code": 400, "success": returnedBool, "message": message}
+# @router.route("/generateLLMAdditionalInfo", methods=["PUT"])
+# @jwt_required()
+# @role_required(["Doctor"])
+# def generateLLMAdditionalInfo() -> Dict[str, Union[str, int]]:
+#     """Doctor generates LLM additional info"""
+#
+#     # Get consultation object and report id
+#     consultationId = request.json.get("consultationId")
+#     consultation = Consultation.queryConsultation(consultationId)
+#     reportId = consultation.reportId
+#
+#     # Get patient object
+#     patient = Patient.queryPatient(consultation.patientId)
+#
+#     returnedBool, message, data = Report.generateLLMAdditionalInfo(reportId, patient=patient, consultation=consultation)
+#     if returnedBool:
+#         return {"status code": 200, "success": returnedBool, "message": message, "data": data} # type: ignore
+#     else:
+#         return {"status code": 400, "success": returnedBool, "message": message}
+#
+# @router.route("/generateReport", methods=["PUT"])
+# @jwt_required()
+# @role_required(["Doctor"])
+# def generateReport() -> Dict[str, Union[str, int]]:
+#     """Doctor generates a report"""
+#     consultationId = request.json.get("consultationId")
+#     consultation = Consultation.queryConsultation(consultationId)
+#     returnedBool, message = Report.generateReport(consultation)
+#     if returnedBool:
+#         return {"status code": 200, "success": returnedBool, "message": message}
+#     else:
+#         return {"status code": 400, "success": returnedBool, "message": message}
 
 @router.route("/viewReportPage", methods=["GET"])
 @jwt_required()

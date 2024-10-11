@@ -1,9 +1,9 @@
-import ModelPrediction from "./Doctor/Consultation/Create/ModelPrediction.jsx";
+import ModelPredictionPage from "../Pages/Doctor/ModelPredictionPage.jsx";
 
 function Test() {
     return (
         <div>
-            <ModelPrediction/>
+            <ModelPredictionPage/>
         </div>)
 }
 
