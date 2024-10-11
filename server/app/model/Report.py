@@ -225,247 +225,247 @@ class Report(db.Model):
             jsonString = jsonString[:-2] + ']'
         return jsonString
 
-    # @classmethod
-    # def generatePrescriptions(cls, chain: RetrievalQA, patientString: str, consultationString: str, classificationData: dict):
-    #     prompt = f"""You are an assistant to a doctor, analyzing patient data to provide recommendations for both the patient and the treating doctor.
-    #         The patient has been classified as having {classificationData['classification']} with a confidence level of {classificationData['classificationConfidence']}.
-    #         Note that the severity of the condition is {classificationData['severity']} with a confidence level of {classificationData['severityConfidence']}.
-    #
-    #         Here is patient's metadata:
-    #         {patientString}
-    #
-    #         Here is the consultation details:
-    #         {consultationString}
-    #         Put emphasis on whether the patient was recently in the ICU, needed supplemental O2 and O2 saturation.
-    #
-    #         Instructions:
-    #         Based on the patient metadata and consultation details, generate the prescriptions.
-    #         Offer prescriptions tailored to the patient's situation, specifically to address the {classificationData['severity']} {classificationData['classification']}.
-    #         Here are the guidelines:
-    #         - Suggest prescription medications that could be beneficial based on the patient's medical history.
-    #         - Use clear and concise medical language.
-    #         - Provide 5 prescription recommendations.
-    #         - For each prescription, recommend the name, dosage and reason.
-    #         - Wrap every recommendation in a {{}}
-    #
-    #         ONLY INCLUDE THE JSON
-    #
-    #         Return a list of JSON in this format:
-    #         Return a `List[{{"prescriptionName": List[name (dosage), reason]]}}]` with your responses."""
-    #
-    #     response = chain({"query": prompt})
-    #     print(f"Response from prescription chain: {response}")
-    #     while response.get("finish_reason") == "RECITATION":
-    #         response = chain({"query": prompt})
-    #         print(f"Repeated response from prescription chain: {response}")
-    #
-    #     documentLink = response['source_documents'][0].metadata['link']
-    #     responseStr = response['result']
-    #     cleanedStr = cls.cleanJsonString(responseStr)
-    #     print(f"Cleaned string: {cleanedStr}")
-    #
-    #     return cleanedStr, documentLink
-    #
-    # @classmethod
-    # def generateLifestyle(cls, chain: RetrievalQA, patientString: str, consultationString: str, classificationData: dict):
-    #     prompt = f"""You are an assistant to a doctor, analyzing patient data to provide recommendations for both the patient and the treating doctor.
-    #         The patient has been classified as having {classificationData['classification']} with a confidence level of {classificationData['classificationConfidence']}.
-    #         Note that the severity of the condition is {classificationData['severity']} with a confidence level of {classificationData['severityConfidence']}.
-    #
-    #         Here is patient's metadata:
-    #         {patientString}
-    #
-    #         Here is the consultation details:
-    #         {consultationString}
-    #         Put emphasis on whether the patient was recently in the ICU, needed supplemental O2 and O2 saturation.
-    #
-    #         Instructions:
-    #         Based on the patient metadata and consultation details, generate the rehabilitation practices.
-    #         Offer rehabilitation practices tailored to the patient's situation, specifically to address the {classificationData['severity']} {classificationData['classification']}.
-    #         Here are the guidelines:
-    #         - Suggest rehabilitation practices or breathing exercises that could be beneficial based on the patient's medical history.
-    #         - If a breathing exercise is suggested, include concise steps to perform the exercise.
-    #         - Use clear and concise medical language.
-    #         - Provide 5 rehabilitation practice recommendations.
-    #         - Wrap every recommendation in a {{}}
-    #
-    #         ONLY INCLUDE THE JSON
-    #
-    #         Return a list of JSON in this format:
-    #         Return a `List[{{"lifestyleChange": List[lifestyleChange, reason]]}}]` with your responses."""
-    #
-    #     response = chain({"query": prompt})
-    #     print(f"Response from lifestyle chain: {response}")
-    #     while response.get("finish_reason") == "RECITATION":
-    #         response = chain({"query": prompt})
-    #         print(f"Repeated response from lifestyle chain: {response}")
-    #
-    #     documentLink = response['source_documents'][0].metadata['link']
-    #     responseStr = response['result']
-    #     cleanedStr = cls.cleanJsonString(responseStr)
-    #
-    #     return cleanedStr, documentLink
-    #
-    # @classmethod
-    # def generateLLMAdditionalInfo(cls, reportId: str, patient: Patient, consultation: Consultation) -> Tuple[bool, str, dict]:
-    #     """Get additional information from LLM"""
-    #
-    #     # Get current report object
-    #     report = cls.queryReport(reportId)
-    #
-    #     # # Initialize gemini model
-    #     genai.configure(api_key=current_app.config["GEMINI_API_KEY"])
-    #     model = ChatGoogleGenerativeAI(model="gemini-1.5-flash", google_api_key=current_app.config["GEMINI_API_KEY"], temperature=0.2) # type: ignore
-    #     embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001", google_api_key=current_app.config["GEMINI_API_KEY"])
-    #
-    #     # Load from db
-    #     persistentDirectory = "app/machine_learning/chromaDB"
-    #     vector_store = Chroma(persist_directory=persistentDirectory, embedding_function=embeddings)
-    #
-    #     # # Get medical data from patient and consultation
-    #     patientData = patient.getMedicalData()
-    #     consultationData = consultation.getMedicalData()
-    #     classificationData = report.getFindings()
-    #
-    #     # Stringify medical data
-    #     patientString = cls.stringifyJson(patientData)
-    #     consultationString = cls.stringifyJson(consultationData)
-    #
-    #     # Set filter
-    #     if classificationData["classification"] == "Covid-19":
-    #         filterType = "covid"
-    #     elif classificationData["classification"] == "Other Lung Infection":
-    #         filterType = "other-lung-infection"
-    #
-    #     # Set up retriever
-    #     retriever = vector_store.as_retriever(
-    #         search_type="mmr",
-    #         search_kwargs={
-    #             "k": 1,
-    #             "filter": dict(type=filterType)
-    #         })
-    #
-    #     # Setup chain
-    #     template = """Use the following pieces of context to answer the question.
-    #     {context}
-    #     Question: {question}
-    #     Helpful Answer:"""
-    #     QA_CHAIN_PROMPT = PromptTemplate(template=template, input_variables=['context', 'question'])# Run chain
-    #     qa_chain = RetrievalQA.from_chain_type(
-    #         model,
-    #         retriever=retriever,
-    #         return_source_documents=True,
-    #         chain_type_kwargs={"prompt": QA_CHAIN_PROMPT}
-    #     )
-    #
-    #     # Generate prescriptions, lifestyle suggestions
-    #     prescriptions, prescriptionsLink = cls.generatePrescriptions(qa_chain, patientString, consultationString, classificationData)
-    #     lifestyleChanges, lifestyleLink = cls.generateLifestyle(qa_chain, patientString, consultationString, classificationData)
-    #
-    #     # Store prescriptions and lifestyle changes
-    #     report.prescriptions = prescriptions
-    #     report.lifestyleChanges = lifestyleChanges
-    #     report.prescriptionsLink = prescriptionsLink
-    #     report.lifestyleLink = lifestyleLink
-    #     db.session.commit()
-    #
-    #     data = {
-    #         "prescriptions": prescriptions,
-    #         "lifestyleChanges": lifestyleChanges,
-    #         "prescriptionsLink": prescriptionsLink,
-    #         "lifestyleLink": lifestyleLink
-    #     }
-    #
-    #     return (True, "Additional information retrieved successfully.", data)
-    #
-    # @classmethod
-    # def generateReport(cls, consultation: Consultation) -> Tuple[bool, str]:
-    #     """Generate the medical report"""
-    #
-    #     # Get the patient, doctor objects
-    #     patient = Patient.queryPatient(consultation.patientId)
-    #     doctor = Doctor.queryDoctor(consultation.doctorId)
-    #
-    #     # Get the report object
-    #     report = cls.queryReport(consultation.reportId)
-    #
-    #     # Serialize the patient object
-    #     patientData = patient.serialize()
-    #
-    #     # Load the json from strings
-    #     prescriptions = json.loads(report.prescriptions)
-    #     lifestyleChanges = json.loads(report.lifestyleChanges)
-    #
-    #     # Get the data for the report (according to report template)
-    #     dataForReport = {
-    #         "consultationDate": consultation.consultationDate.strftime("%d/%m/%Y"),
-    #         "reportId": report.id,
-    #         "patientName": patient.name,
-    #         "patientId": patientData["patientId"],
-    #         "gender": patientData["gender"],
-    #         "dob": patientData["dob"],
-    #         "age": patientData["age"],
-    #         "medicalHistory": patientData["medicalHistory"],
-    #         "allergies": patientData["allergies"],
-    #         "xrayUrl": consultation.xrayImageUrl,
-    #         "xrayUrl2": consultation.highlightedXrayImageUrl,
-    #
-    #     # Doctor information dictionary
-    #         "doctorName": doctor.name,
-    #         "doctorId": doctor.id,
-    #
-    #     # Consultation details dictionary
-    #         "temperature": consultation.temperature,
-    #         "o2Saturation": consultation.o2Saturation,
-    #         "recentlyInIcu": consultation.recentlyInIcu,
-    #         "recentlyNeededSupplementalO2": consultation.recentlyNeededSupplementalO2,
-    #         "intubationPresent": consultation.intubationPresent,
-    #         "consultationNotes": consultation.consultationNotes,
-    #
-    #         "classification": report.classification,
-    #         "classificationConfidence": report.classificationConfidence,
-    #         "severity": report.severity,
-    #         "severityConfidence": report.severityConfidence,
-    #         "prescriptions": prescriptions,
-    #         "lifestyleChanges": lifestyleChanges,
-    #         "prescriptionsLink": report.prescriptionsLink,
-    #         "lifestyleLink": report.lifestyleLink
-    #     }
-    #
-    #     # Determine the base directory
-    #     base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    #
-    #     # Load the template
-    #     template_loader = jinja2.FileSystemLoader(os.path.join(base_dir, 'app/miscellaneous'))
-    #     template_env = jinja2.Environment(loader=template_loader)
-    #     template = template_env.get_template("reportTemplate.html")
-    #     output_text = template.render(dataForReport)
-    #
-    #     # Generate the PDF
-    #     config = pdfkit.configuration(wkhtmltopdf = current_app.config["WKHTML_PATH"])
-    #     pdfkit.from_string(output_text, 'pdf_generated.pdf', configuration=config)
-    #
-    #     # Upload the PDF to Google Cloud
-    #     storageClient = storage.Client()
-    #     reportFilename = f"{report.id}.pdf"
-    #     destinationBlobName = f"pdfReports/{reportFilename}"
-    #     bucket = storageClient.bucket(current_app.config["BUCKET_NAME"])
-    #     blob = bucket.blob(destinationBlobName)
-    #
-    #     # Open generated PDF file
-    #     with open("pdf_generated.pdf", "rb") as sourceFile:
-    #         blob.upload_from_file(sourceFile, content_type="application/pdf")
-    #     # Delete the local PDF file
-    #     os.remove("pdf_generated.pdf")
-    #
-    #     # Remove cache control
-    #     blob.cache_control = "private, no-cache, max-age=0"
-    #     blob.patch()
-    #
-    #     # Update the report
-    #     report.reportUrl = blob.public_url
-    #     db.session.commit()
-    #     return (True, "COVID-19 report generated successfully.")
+    @classmethod
+    def generatePrescriptions(cls, chain: RetrievalQA, patientString: str, consultationString: str, classificationData: dict):
+        prompt = f"""You are an assistant to a doctor, analyzing patient data to provide recommendations for both the patient and the treating doctor.
+            The patient has been classified as having {classificationData['classification']} with a confidence level of {classificationData['classificationConfidence']}.
+            Note that the severity of the condition is {classificationData['severity']} with a confidence level of {classificationData['severityConfidence']}.
+
+            Here is patient's metadata:
+            {patientString}
+
+            Here is the consultation details:
+            {consultationString}
+            Put emphasis on whether the patient was recently in the ICU, needed supplemental O2 and O2 saturation.
+
+            Instructions:
+            Based on the patient metadata and consultation details, generate the prescriptions.
+            Offer prescriptions tailored to the patient's situation, specifically to address the {classificationData['severity']} {classificationData['classification']}.
+            Here are the guidelines:
+            - Suggest prescription medications that could be beneficial based on the patient's medical history.
+            - Use clear and concise medical language.
+            - Provide 5 prescription recommendations.
+            - For each prescription, recommend the name, dosage and reason.
+            - Wrap every recommendation in a {{}}
+            
+            ONLY INCLUDE THE JSON
+
+            Return a list of JSON in this format:
+            Return a `List[{{"prescriptionName": List[name (dosage), reason]]}}]` with your responses."""
+        
+        response = chain({"query": prompt})
+        print(f"Response from prescription chain: {response}")
+        while response.get("finish_reason") == "RECITATION":
+            response = chain({"query": prompt})
+            print(f"Repeated response from prescription chain: {response}")
+        
+        documentLink = response['source_documents'][0].metadata['link']
+        responseStr = response['result']
+        cleanedStr = cls.cleanJsonString(responseStr)
+        print(f"Cleaned string: {cleanedStr}")
+
+        return cleanedStr, documentLink
+    
+    @classmethod
+    def generateLifestyle(cls, chain: RetrievalQA, patientString: str, consultationString: str, classificationData: dict):
+        prompt = f"""You are an assistant to a doctor, analyzing patient data to provide recommendations for both the patient and the treating doctor.
+            The patient has been classified as having {classificationData['classification']} with a confidence level of {classificationData['classificationConfidence']}.
+            Note that the severity of the condition is {classificationData['severity']} with a confidence level of {classificationData['severityConfidence']}.
+
+            Here is patient's metadata:
+            {patientString}
+
+            Here is the consultation details:
+            {consultationString}
+            Put emphasis on whether the patient was recently in the ICU, needed supplemental O2 and O2 saturation.
+
+            Instructions:
+            Based on the patient metadata and consultation details, generate the rehabilitation practices.
+            Offer rehabilitation practices tailored to the patient's situation, specifically to address the {classificationData['severity']} {classificationData['classification']}.
+            Here are the guidelines:
+            - Suggest rehabilitation practices or breathing exercises that could be beneficial based on the patient's medical history.
+            - If a breathing exercise is suggested, include concise steps to perform the exercise.
+            - Use clear and concise medical language.
+            - Provide 5 rehabilitation practice recommendations.
+            - Wrap every recommendation in a {{}}   
+
+            ONLY INCLUDE THE JSON
+
+            Return a list of JSON in this format:
+            Return a `List[{{"lifestyleChange": List[lifestyleChange, reason]]}}]` with your responses."""
+        
+        response = chain({"query": prompt})
+        print(f"Response from lifestyle chain: {response}")
+        while response.get("finish_reason") == "RECITATION":
+            response = chain({"query": prompt})
+            print(f"Repeated response from lifestyle chain: {response}")
+        
+        documentLink = response['source_documents'][0].metadata['link']
+        responseStr = response['result']
+        cleanedStr = cls.cleanJsonString(responseStr)
+
+        return cleanedStr, documentLink
+
+    @classmethod
+    def generateLLMAdditionalInfo(cls, reportId: str, patient: Patient, consultation: Consultation) -> Tuple[bool, str, dict]:
+        """Get additional information from LLM"""
+
+        # Get current report object
+        report = cls.queryReport(reportId)
+        
+        # # Initialize gemini model
+        genai.configure(api_key=current_app.config["GEMINI_API_KEY"])
+        model = ChatGoogleGenerativeAI(model="gemini-1.5-flash", google_api_key=current_app.config["GEMINI_API_KEY"], temperature=0.2) # type: ignore
+        embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001", google_api_key=current_app.config["GEMINI_API_KEY"])
+
+        # Load from db
+        persistentDirectory = os.path.abspath("app/machine_learning/chromaDB") 
+        vector_store = Chroma(persist_directory=persistentDirectory, embedding_function=embeddings)
+
+        # # Get medical data from patient and consultation
+        patientData = patient.getMedicalData()
+        consultationData = consultation.getMedicalData()
+        classificationData = report.getFindings()
+
+        # Stringify medical data
+        patientString = cls.stringifyJson(patientData)
+        consultationString = cls.stringifyJson(consultationData)
+
+        # Set filter
+        if classificationData["classification"] == "Covid-19":
+            filterType = "covid"
+        elif classificationData["classification"] == "Other Lung Infection":
+            filterType = "other-lung-infection"
+
+        # Set up retriever
+        retriever = vector_store.as_retriever(
+            search_type="mmr", 
+            search_kwargs={
+                "k": 1, 
+                "filter": dict(type=filterType)
+            })
+        
+        # Setup chain
+        template = """Use the following pieces of context to answer the question.
+        {context}
+        Question: {question}
+        Helpful Answer:"""
+        QA_CHAIN_PROMPT = PromptTemplate(template=template, input_variables=['context', 'question'])# Run chain
+        qa_chain = RetrievalQA.from_chain_type(
+            model,
+            retriever=retriever,
+            return_source_documents=True,
+            chain_type_kwargs={"prompt": QA_CHAIN_PROMPT}
+        )
+
+        # Generate prescriptions, lifestyle suggestions
+        prescriptions, prescriptionsLink = cls.generatePrescriptions(qa_chain, patientString, consultationString, classificationData)
+        lifestyleChanges, lifestyleLink = cls.generateLifestyle(qa_chain, patientString, consultationString, classificationData)
+        
+        # Store prescriptions and lifestyle changes
+        report.prescriptions = prescriptions
+        report.lifestyleChanges = lifestyleChanges
+        report.prescriptionsLink = prescriptionsLink
+        report.lifestyleLink = lifestyleLink
+        db.session.commit()
+
+        data = {
+            "prescriptions": prescriptions,
+            "lifestyleChanges": lifestyleChanges,
+            "prescriptionsLink": prescriptionsLink,
+            "lifestyleLink": lifestyleLink
+        }
+
+        return (True, "Additional information retrieved successfully.", data)
+
+    @classmethod
+    def generateReport(cls, consultation: Consultation) -> Tuple[bool, str]:
+        """Generate the medical report"""
+
+        # Get the patient, doctor objects
+        patient = Patient.queryPatient(consultation.patientId)
+        doctor = Doctor.queryDoctor(consultation.doctorId)
+        
+        # Get the report object
+        report = cls.queryReport(consultation.reportId)
+
+        # Serialize the patient object
+        patientData = patient.serialize()
+
+        # Load the json from strings
+        prescriptions = json.loads(report.prescriptions)
+        lifestyleChanges = json.loads(report.lifestyleChanges)
+        
+        # Get the data for the report (according to report template)
+        dataForReport = {
+            "consultationDate": consultation.consultationDate.strftime("%d/%m/%Y"),
+            "reportId": report.id,
+            "patientName": patient.name,
+            "patientId": patientData["patientId"],
+            "gender": patientData["gender"],
+            "dob": patientData["dob"],
+            "age": patientData["age"],
+            "medicalHistory": patientData["medicalHistory"],
+            "allergies": patientData["allergies"],
+            "xrayUrl": consultation.xrayImageUrl,
+            "xrayUrl2": consultation.highlightedXrayImageUrl,
+
+        # Doctor information dictionary
+            "doctorName": doctor.name,
+            "doctorId": doctor.id,
+
+        # Consultation details dictionary
+            "temperature": consultation.temperature,
+            "o2Saturation": consultation.o2Saturation,
+            "recentlyInIcu": consultation.recentlyInIcu,
+            "recentlyNeededSupplementalO2": consultation.recentlyNeededSupplementalO2,
+            "intubationPresent": consultation.intubationPresent,
+            "consultationNotes": consultation.consultationNotes,
+
+            "classification": report.classification,
+            "classificationConfidence": report.classificationConfidence,
+            "severity": report.severity,
+            "severityConfidence": report.severityConfidence,
+            "prescriptions": prescriptions,
+            "lifestyleChanges": lifestyleChanges,
+            "prescriptionsLink": report.prescriptionsLink,
+            "lifestyleLink": report.lifestyleLink
+        }
+
+        # Determine the base directory
+        base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+        # Load the template
+        template_loader = jinja2.FileSystemLoader(os.path.join(base_dir, 'app/miscellaneous'))
+        template_env = jinja2.Environment(loader=template_loader)
+        template = template_env.get_template("reportTemplate.html")
+        output_text = template.render(dataForReport)
+
+        # Generate the PDF
+        config = pdfkit.configuration(wkhtmltopdf = current_app.config["WKHTML_PATH"])
+        pdfkit.from_string(output_text, 'pdf_generated.pdf', configuration=config)
+
+        # Upload the PDF to Google Cloud
+        storageClient = storage.Client()
+        reportFilename = f"{report.id}.pdf"
+        destinationBlobName = f"pdfReports/{reportFilename}"
+        bucket = storageClient.bucket(current_app.config["BUCKET_NAME"])
+        blob = bucket.blob(destinationBlobName)
+
+        # Open generated PDF file
+        with open("pdf_generated.pdf", "rb") as sourceFile:
+            blob.upload_from_file(sourceFile, content_type="application/pdf")
+        # Delete the local PDF file
+        os.remove("pdf_generated.pdf")
+
+        # Remove cache control
+        blob.cache_control = "private, no-cache, max-age=0"
+        blob.patch()
+
+        # Update the report
+        report.reportUrl = blob.public_url
+        db.session.commit()
+        return (True, "COVID-19 report generated successfully.")
     
     # TODO: FOR KARTHI VIZ
     @classmethod
