@@ -319,7 +319,7 @@ class Report(db.Model):
         embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001", google_api_key=current_app.config["GEMINI_API_KEY"])
 
         # Load from db
-        persistentDirectory = "app/machine_learning/chromaDB"
+        persistentDirectory = os.path.abspath("app/machine_learning/chromaDB") 
         vector_store = Chroma(persist_directory=persistentDirectory, embedding_function=embeddings)
 
         # # Get medical data from patient and consultation

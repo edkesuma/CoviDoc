@@ -172,3 +172,4 @@ servicekey*
 
 # ML Models
 /server/app/ml_models
+server/app/machine_learning/chromaDB
