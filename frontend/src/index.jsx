@@ -41,7 +41,9 @@ import ViewFindingPage from "./Pages/Doctor/ViewFindingPage.jsx";
 import ViewPDFPage from "./Pages/Doctor/ViewPDFPage.jsx";
 import DoctorViewPatientPage from "./Pages/Doctor/DoctorViewPatientPage.jsx";
 import DoctorEditAccountModal from "./Components/Doctor/DoctorEditAccountModal.jsx";
-import ModelPredictionPage from "./Pages/Doctor/ModelPredicationPage.jsx";
+import CreateConsultationPage from "./Pages/Doctor/CreateConsultationPage.jsx";
+import ModelPredictionPage from "./Pages/Doctor/ModelPredictionPage.jsx";
+import LLMResultPage from "./Pages/Doctor/LLMResultPage.jsx";
 
 // App entry point
 ReactDOM.createRoot(document.getElementById("root")).render(
@@ -130,7 +132,23 @@ ReactDOM.createRoot(document.getElementById("root")).render(
                     path="/doctor/patient/:patientId/:consultationId/classification"
                     element={
                         <PrivateRoute doctor>
+                            <CreateConsultationPage />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path="/doctor/patient/:patientId/:consultationId/newClassification"
+                    element={
+                        <PrivateRoute doctor>
                             <ModelPredictionPage />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path="/doctor/patient/:patientId/:consultationId/additionalInfo"
+                    element={
+                        <PrivateRoute doctor>
+                            <LLMResultPage />
                         </PrivateRoute>
                     }
                 />
@@ -178,7 +196,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
                 />
 
                 {/* to be deleted */}
-                <Route path="/test" element={<ModelPredictionPage/>}/>
+                <Route path="/test" element={<CreateConsultationPage/>}/>
                 <Route path="/login/forget" element={<ForgetPage />} />
                 <Route path="/login/reset" element={<ResetPage />} />
                 <Route path="/login/setSucc" element={<ResetSuccPage />} /> 

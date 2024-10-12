@@ -26,8 +26,17 @@ function UploadXrayImage({patientId, modalOpen, setModalOpen}) {
             })
             .then((response) => {
                 console.log("Got Image: ", response.data);
+                const nextDate = {
+                    'consultationId':response.data.data.consultationId,
+                    'gradcam_image_url':response.data.data.gradcam_image_url,
+                    'severity_classification':response.data.data.severity_classification,
+                    'severity_confidence':response.data.data.severity_confidence,
+                    'type_classification':response.data.data.type_classification,
+                    'type_confidence':response.data.data.type_confidence,
+                    'xray_image_url':response.data.data.xray_image_url}
                 setModalOpen(false);
-                navigate(`/doctor/patient/${patientId}/${response.data.consultationId}/classification`);
+                navigate(`/doctor/patient/${patientId}/${response.data.data.consultationId}/classification`,
+                    { state: { formData: nextDate } });
             })
             .catch((error) => {
                 console.log("Error creating consultation: ", error);
