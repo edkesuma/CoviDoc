@@ -28,6 +28,9 @@ def deleteFromGoogleCloud(bucketName, destinationBlobName):
     storageClient = storage.Client()
     bucket = storageClient.bucket(bucketName)
     for ext in extensions:
-        blob = bucket.blob(f"{destinationBlobName}.{ext}")
-        blob.delete()
+        try:
+            blob = bucket.blob(f"{destinationBlobName}.{ext}")
+            blob.delete()
+        except:
+            pass
     return True
