@@ -7,6 +7,7 @@ import axios from "axios";
 // components
 import DropImageInput from "../OverallActorModal/DropImageInput";
 import CreatePatientSuccess from "./CreatePatientSuccess";
+import CreateUpdatePatientError from "./CreateUpdatePatientError";
 
 function CreatePatientModal(props) {
     const { token } = useContext(AuthContext);
@@ -23,6 +24,7 @@ function CreatePatientModal(props) {
     const [reEnterPassword, setReEnterPassword] = useState('');
 
     const [createPatientSuccess, setCreatePatientSuccess] = useState(false);
+    const [createPatientError, setCreatePatientError] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
 
 
@@ -35,8 +37,16 @@ function CreatePatientModal(props) {
             setErrorMessage("Please fill in all the fields.");
             return;
         }
-        if (isNaN(phoneNumber)) {
-            setErrorMessage("Phone number must be a valid number.");
+        if (!validateEmail(email)) {
+            setErrorMessage("Invalid email format.");
+            return;
+        }
+        if (!validatePhoneNumber(phoneNumber)) {
+            setErrorMessage("Phone number must contain only digits and be 8 to 15 digits long.");
+            return;
+        }
+        if (!validatePassword(password)) {
+            setErrorMessage("Password must be at least 8 characters long, include at least one number, and one special character.");
             return;
         }
         if (password !== reEnterPassword) {
@@ -65,17 +75,54 @@ function CreatePatientModal(props) {
                 }
             })
             .then((response) => {
-                console.log("Patient account created successfully: ", response.data);
-                setCreatePatientSuccess(true);
-                props.onClose();
-                // window.location.reload();
+                const { success, message, status } = response.data;
+                
+                // check account creation
+                if (success) {
+                    console.log("Patient account created successfully: ", response.data);
+                    setCreatePatientSuccess(true);
+                    props.onClose();
+                } else {
+                    console.log("Error: ", message);
+                    setErrorMessage(message);
+                    setCreatePatientError(true);
+                } 
             })
             .catch((error) => {
                 console.log("Error creating consultation: ", error);
-                setErrorMessage("Failed to create patient account.");
+
+                // if the error comes from the backend, check the response status
+                if (error.response) {
+                    if (error.response.status === 400) {
+                        setErrorMessage(error.response.data.message || "Account already exists.");
+                    } else {
+                        setErrorMessage("Failed to create patient account.");
+                    }
+                } else {
+                    setErrorMessage("Network or server error occurred.");
+                }
+                setCreatePatientError(true);
             });
         resetFields();
     };
+
+    // email validation
+    function validateEmail(email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    }
+
+    // phone number validation
+    function validatePhoneNumber(phoneNumber) {
+        const phoneRegex = /^\d{8,15}$/;
+        return phoneRegex.test(phoneNumber);
+    }
+
+    // password validation
+    function validatePassword(password) {
+        const passwordRegex = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,}$/;
+        return passwordRegex.test(password);
+    }
 
     function resetFields() {
         setFullName('');
@@ -94,6 +141,11 @@ function CreatePatientModal(props) {
 
     function handleCreatePatientSuccess() {
         setCreatePatientSuccess(false);
+        props.onClose();
+    }
+
+    function handleCreatePatientError() {
+        setCreatePatientError(false);
         props.onClose();
     }
 
@@ -310,6 +362,8 @@ function CreatePatientModal(props) {
 
             {/* create patient success */}
             <CreatePatientSuccess show={createPatientSuccess} onClose={handleCreatePatientSuccess} />
+            {/* create patient error */}
+            <CreateUpdatePatientError show={createPatientError} onClose={handleCreatePatientError} errorMessage={errorMessage} />
         </div>
     )
 }
