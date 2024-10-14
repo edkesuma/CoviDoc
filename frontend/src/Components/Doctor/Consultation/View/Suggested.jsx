@@ -1,21 +1,63 @@
 "use client";
-import React, {useEffect, useState} from "react";
-import {Textarea, Button} from "flowbite-react";
+import React, {useContext, useEffect, useState} from "react";
+import {Textarea, Button, Spinner} from "flowbite-react";
+import {AuthContext} from "../../../Authentication/AuthContext.jsx";
+import {FaFilePdf} from "react-icons/fa";
+import {useNavigate} from "react-router-dom";
+import axios from "axios";
 
-function Suggested({ prescriptions, setPrescriptions, lifestyleChanges, setLifestyleChanges }) {
+function Suggested({consultationId}) {
+    const [prescriptions, setPrescriptions] = useState('');
+    const [prescriptionsLink, setPrescriptionsLink] = useState('')
+    const [lifestyleChanges, setLifestyleChanges] = useState('');
+    const [lifestyleChangesLink, setLifestyleChangesLink] = useState('')
     const [lifestyleEditable, setLifestyleEditable] = useState(false);
     const [prescriptionEditable, setPrescriptionEditable] = useState(false);
+    const [isLoading, setIsLoading] = useState(true)
+    const {token} = useContext(AuthContext);
+
+    function analysisPrescriptions(str) {
+        let jsonString = str.replace(/\\"/g, '"');
+        let jsonArray = JSON.parse(jsonString);
+        let resultArray = jsonArray.map(item => '• ' + item.prescriptionName[0] + '.');
+        let resultString = resultArray.join('\n');
+        return resultString
+    }
+
+    function analysislifestyle(str) {
+        let jsonString = str.replace(/\\"/g, '"');
+        const lifestyleChanges = JSON.parse(jsonString);
+        let lifestyleChangesString = '';
+        lifestyleChanges.forEach((item) => {
+            lifestyleChangesString += `•  ${item.lifestyleChange[0]}\n`;
+            lifestyleChangesString += `${item.lifestyleChange[1]}\n\n`; // 两行换行以便美观
+        });
+        return lifestyleChangesString
+    }
 
     useEffect(() => {
-        const formattedLifestyleChanges = lifestyleChanges
-            .map(change => `• ${change.lifestyleChange}`)
-            .join('\n');
-        setLifestyleChanges(formattedLifestyleChanges);
-        const formattedPrescriptions = prescriptions
-            .map(prescription => `• ${prescription.prescriptionName[0]}: ${prescription.prescriptionName[1]}`)
-            .join('\n');
-        setPrescriptions(formattedPrescriptions);
-    }, []);
+        if (token && consultationId) {
+            const fetchSuggest = async () => {
+                try {
+                    const response = await axios.put(`/api/doctor/generateLLMAdditionalInfo`, {consultationId: consultationId}, {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    });
+                    setPrescriptionsLink(response.data.data.prescriptionsLink)
+                    setLifestyleChangesLink(response.data.data.lifestyleLink)
+                    setPrescriptions(analysisPrescriptions(response.data.data.prescriptions))
+                    setLifestyleChanges(analysislifestyle(response.data.data.lifestyleChanges))
+                    setIsLoading(false);
+
+                } catch (error) {
+                    console.log("Error fetching patient details: ", error);
+                    setIsLoading(false);
+                }
+            }
+            fetchSuggest()
+        }
+    }, [token, consultationId]);
 
     useEffect(() => {
         console.log(lifestyleChanges);
@@ -28,7 +70,7 @@ function Suggested({ prescriptions, setPrescriptions, lifestyleChanges, setLifes
     const handleKeyDown = (e, value, setValue) => {
         if (e.key === 'Enter') {
             e.preventDefault();
-            const { selectionStart, selectionEnd } = e.target;
+            const {selectionStart, selectionEnd} = e.target;
             const newValue = value.substring(0, selectionStart) + '\n• ' + value.substring(selectionEnd);
             setValue(newValue);
             setTimeout(() => {
@@ -37,11 +79,20 @@ function Suggested({ prescriptions, setPrescriptions, lifestyleChanges, setLifes
         }
     };
 
-    return (
+    return isLoading ? (
+        <div className="text-center text-8xl">
+            <Spinner aria-label="Extra large spinner example" size="xl"/>
+        </div>
+    ) : (
         <div className='px-20'>
             <div className='flex flex-row'>
                 <div className='w-1/2 pr-16'>
-                    <p className='text-xl text-cyan-400'>SUGGESTED PRESCRIPTIONS</p>
+                    <div className='flex flex-row items-center'>
+                        <p className='text-xl text-cyan-400'>SUGGESTED PRESCRIPTIONS</p>
+                        <a href={prescriptionsLink} className='mx-2'>
+                            <FaFilePdf color='cyan'/>
+                        </a>
+                    </div>
                     <Textarea
                         id="prescriptionText"
                         required
@@ -59,7 +110,12 @@ function Suggested({ prescriptions, setPrescriptions, lifestyleChanges, setLifes
                     </div>
                 </div>
                 <div className='w-1/2 pr-16'>
-                    <p className='text-xl text-cyan-400'>SUGGESTED LIFESTYLE CHANGES</p>
+                    <div className='flex flex-row items-center'>
+                        <p className='text-xl text-cyan-400'>SUGGESTED LIFESTYLE CHANGES</p>
+                        <a href={lifestyleChangesLink} className='mx-2'>
+                            <FaFilePdf color='cyan'/>
+                        </a>
+                    </div>
                     <Textarea
                         id="prescriptionText"
                         required

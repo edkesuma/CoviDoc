@@ -8,3 +8,4 @@ opentelemetry-proto==1.27.0
 opentelemetry-sdk==1.27.0
 opentelemetry-semantic-conventions==0.48b0
 opentelemetry-util-http==0.48b0
+

@@ -12,11 +12,15 @@ function PatientDetail({ patientDetails }) {
         <div className='flex flex-col md:flex-row'>
           {/* Left Side: Image and Basic Info */}
           <div className='md:w-1/3 flex justify-center items-center'>
-            <img
-                src={patientDetails.profilePictureUrl || "https://via.placeholder.com/150"}
+            {patientDetails.profilePictureUrl?(
+                <img
+                src={patientDetails.profilePictureUrl}
                 className='mb-3 w-52 h-52 object-cover '
                 alt="Patient profile"
-            />
+            />):(
+                <FaUser className='mb-3 w-52 h-52 object-cover'/>
+            )}
+
           </div>
           <div className='md:w-1/3 flex flex-col mx-4'>
             <div className='flex flex-row my-1'>

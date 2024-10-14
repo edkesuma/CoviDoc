@@ -1,21 +1,79 @@
 "use client";
-import React, {useState} from "react";
+import React, {useContext, useState} from "react";
 import {Label, TextInput, Button, Datepicker, Checkbox, Textarea} from "flowbite-react";
 import x from '../../../../assets/X-ray/before.jpg'
 import y from '../../../../assets/X-ray/after.jpg'
+import {AuthContext} from "../../../Authentication/AuthContext.jsx";
+import {useLocation, useNavigate} from "react-router-dom";
+import axios from "axios";
 
-function ModelPrediction() {
-    const Classification = 'Covid'
-    const ClassificationCon = '96%'
-    const Severity = 'Mild'
-    const SeverityCon = '78%'
+function ModelPrediction({patientId, consultationId}) {
+    const location = useLocation();
+    const formData = location.state?.formData;
+    const Classification = formData.type_classification
+    const ClassificationCon = formData.type_confidence
+    const Severity = formData.severity_classification
+    const SeverityCon = formData.severity_confidence
     const [date, setDate] = useState(Date.now())
-    const [temperature, setTemperature] = useState('36.5')
-    const [O2, setO2] = useState('95')
+    const [temperature, setTemperature] = useState(null)
+    const [O2, setO2] = useState(null)
     const [ICU, setICU] = useState(false)
     const [supplemental, setSupplemental] = useState(false)
     const [intubation, setIntubation] = useState(false)
-    const [note, setNote] = useState('Previously had mild ground glass opacities.')
+    const [note, setNote] = useState('')
+    const {token} = useContext(AuthContext);
+    const navigate = useNavigate();
+    const upload = () => {
+        const formatDate = (date) => {
+            const d = new Date(date)
+            const day = d.getDate();
+            const month = d.getMonth() + 1;
+            const year = d.getFullYear();
+            return `${day}/${month}/${year}`;
+        };
+
+        const data =
+            {
+                'consultationId': consultationId,
+                'consultationDate': formatDate(date),
+                'temperature': temperature,
+                'o2Saturation': O2,
+                'recentlyInIcu': ICU,
+                'recentlyNeededSupplementalO2': supplemental,
+                'intubationPresent': intubation,
+                'consultationNotes': note
+            }
+        axios
+            .patch(`/api/doctor/updateConsultation`, data, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then((response) => {
+                console.log("Consultation Created", response.data);
+                const nextDate = {
+                    'gradcam_image_url': formData.gradcam_image_url,
+                    'severity_classification': Severity,
+                    'severity_confidence': SeverityCon,
+                    'type_classification': Classification,
+                    'type_confidence': ClassificationCon,
+                    'xray_image_url': formData.xray_image_url,
+                    'consultationDate': formatDate(date),
+                    'temperature': temperature,
+                    'o2Saturation': O2,
+                    'recentlyInIcu': ICU,
+                    'recentlyNeededSupplementalO2': supplemental,
+                    'intubationPresent': intubation,
+                    'consultationNotes': note
+                }
+                navigate(`/doctor/patient/${patientId}/${consultationId}/additionalInfo`,
+                    { state: { formData: nextDate } });
+            })
+            .catch((error) => {
+                console.log("Error creating consultation: ", error);
+            });
+    }
 
     return (
         <div className='flex justify-center'>
@@ -26,17 +84,23 @@ function ModelPrediction() {
                         <div className='flex flex-col'>
                             <p className='text-xl text-cyan-400'>X-RAY IMAGE AND AREAS OF INTEREST</p>
                             <div className='flex flex-row bg-gray-100 w-full'>
-                                <img src={x} alt='x' className='px-4 py-4 w-72 h-72'/>
-                                <img src={y} alt='y' className='px-4 py-4 w-72 h-72'/>
+                                <div className='flex w-1/2'>
+                                    <img src={formData.xray_image_url} alt='x'
+                                         className='px-4 py-4 max-w-full max-h-full'/>
+                                </div>
+                                <div className='flex w-1/2'>
+                                    <img src={formData.gradcam_image_url} alt='y'
+                                         className='px-4 py-4 max-w-full max-h-full'/>
+                                </div>
                             </div>
                         </div>
                         <div className='flex flex-col mt-6'>
                             <p className='text-xl text-cyan-400  mt-4'>FINDINGS</p>
                             <div className='flex flex-col rounded-lg border-2 border-cyan-400 px-4 py-4'>
                                 <p>Classification: {Classification}</p>
-                                <p>Classification Confidence: {ClassificationCon}</p>
+                                <p>Classification Confidence: {ClassificationCon + '%'}</p>
                                 <p>Severity: {Severity}</p>
-                                <p>Severity Confidence: {SeverityCon}</p>
+                                <p>Severity Confidence: {SeverityCon + '%'}</p>
                             </div>
                         </div>
                     </div>
@@ -85,14 +149,15 @@ function ModelPrediction() {
                                 <div className='px-4'>
                                     <Label className='font-bold'>Consultation Notes</Label>
                                     <Textarea id="notes" value={note}
-                                          required rows={6} onChange={(event) => setNote(event.target.value)}/>
+                                              required rows={6} onChange={(event) => setNote(event.target.value)}/>
                                 </div>
 
                             </div>
                         </div>
                     </div>
                 </div>
-                <Button color='cyan' type={"submit"} className='text-cyan-400 my-10'>Generate Prescriptions and
+                <Button color='cyan' type={"submit"} onClick={upload} className='text-cyan-400 my-10'>Generate
+                    Prescriptions and
                     Lifestyle
                     Changes</Button>
             </div>
