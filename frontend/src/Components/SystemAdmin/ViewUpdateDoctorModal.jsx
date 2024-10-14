@@ -6,6 +6,7 @@ import { format } from "date-fns";
 import axios from "axios";
 // components
 import UpdateDoctorSuccess from './UpdateDoctorSuccess';
+import CreateUpdateDoctorError from './CreateUpdateDoctorError';
 import DropImageInput from '../OverallActorModal/DropImageInput';
 
 function ViewUpdateDoctorModal({ show, onClose, data }) {
@@ -23,6 +24,7 @@ function ViewUpdateDoctorModal({ show, onClose, data }) {
     const [selectedImage, setSelectedImage] = useState(null);
 
     const [updateDoctorSuccess, setUpdateDoctorSuccess] = useState(false);
+    const [updateDoctorError, setUpdateDoctorError] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
 
 
@@ -58,9 +60,17 @@ function ViewUpdateDoctorModal({ show, onClose, data }) {
             setErrorMessage("Please fill in all the fields.");
             return;
         }
-        if (isNaN(phoneNumber)) {
-                setErrorMessage("Phone number must be a valid number.");
-                return;
+        if (!validateEmail(email)) {
+            setErrorMessage("Invalid email format.");
+            return;
+        }
+        if (!validatePhoneNumber(phoneNumber)) {
+            setErrorMessage("Phone number must contain only digits and be 8 to 15 digits long.");
+            return;
+        }
+        if (!validatePassword(password)) {
+            setErrorMessage("Password must be at least 8 characters long, include at least one number, and one special character.");
+            return;
         }
         if (password !== reEnterPassword) {
             setErrorMessage("Passwords do not match.");
@@ -88,15 +98,52 @@ function ViewUpdateDoctorModal({ show, onClose, data }) {
                 }
             })
             .then((response) => {
-                console.log("Doctor account updated successfully: ", response.data);
-                setUpdateDoctorSuccess(true);
-                setIsEditable(false);
-                onClose();
+                const { success, message, status } = response.data;
+
+                if (success) {
+                    console.log("Doctor account updated successfully: ", response.data);
+                    setUpdateDoctorSuccess(true);
+                    setIsEditable(false);
+                    onClose();
+                } else {
+                    console.log("Error: ", message);
+                    setErrorMessage(message);
+                    setUpdateDoctorError(true);
+                }
             })
             .catch((error) => {
                 console.log("Error updating doctor account: ", error);
+
+                if (error.response) {
+                    if (error.response.status === 400) {
+                        setErrorMessage(error.response.data.message || "Account already exists.");
+                    } else {
+                        setErrorMessage("Failed to create doctor account.");
+                    }
+                } else {
+                    setErrorMessage("Network or server error occurred.");
+                }
+                setUpdateDoctorError(true);
             });
     };
+
+    // email validation
+    function validateEmail(email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    }
+
+    // phone number validation
+    function validatePhoneNumber(phoneNumber) {
+        const phoneRegex = /^\d{8,15}$/;
+        return phoneRegex.test(phoneNumber);
+    }
+
+    // password validation
+    function validatePassword(password) {
+        const passwordRegex = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,}$/;
+        return passwordRegex.test(password);
+    }
 
     // Function to reset fields and exit edit mode on modal close
     function resetFields() {
@@ -131,6 +178,11 @@ function ViewUpdateDoctorModal({ show, onClose, data }) {
     function handleUpdateDoctorSuccess() {
         setReEnterPassword("");
         setUpdateDoctorSuccess(false);
+        onClose();
+    }
+
+    function handleUpdateDoctorError() {
+        setUpdateDoctorError(true);
         onClose();
     }
     
@@ -438,6 +490,8 @@ function ViewUpdateDoctorModal({ show, onClose, data }) {
 
             {/* update doctor success */}
             <UpdateDoctorSuccess show={updateDoctorSuccess} onClose={handleUpdateDoctorSuccess} />
+            {/* update doctor error */}
+            <CreateUpdateDoctorError show={updateDoctorError} onClose={handleUpdateDoctorError} errorMessage={errorMessage} />
         </div>
     )
 }

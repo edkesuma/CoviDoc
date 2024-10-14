@@ -10,7 +10,9 @@ import {useNavigate} from "react-router-dom";
 
 function UploadXrayImage({patientId, modalOpen, setModalOpen}) {
     const {token} = useContext(AuthContext);
+
     const [isLoading, setIsLoading] = useState(false)
+
     const [xrayImage, setXrayImage] = useState(null)
     const navigate = useNavigate();
     const upload = () => {
@@ -18,7 +20,9 @@ function UploadXrayImage({patientId, modalOpen, setModalOpen}) {
         formData.append('patientId', patientId)
         formData.append('xrayImage', xrayImage);
         axios
+
             .put(`/api/doctor/generateClassification`, formData, {
+
                 headers: {
                     Authorization: `Bearer ${token}`,
                     'Content-Type': 'multipart/form-data'
@@ -38,6 +42,7 @@ function UploadXrayImage({patientId, modalOpen, setModalOpen}) {
                 setModalOpen(false);
                 navigate(`/doctor/patient/${patientId}/${response.data.data.consultationId}/classification`,
                     {state: {formData: nextDate}});
+
             })
             .catch((error) => {
                 console.log("Error creating consultation: ", error);
@@ -57,6 +62,7 @@ function UploadXrayImage({patientId, modalOpen, setModalOpen}) {
 
                 </Modal.Header>
                 <Modal.Body>
+
                     {isLoading ? (
                         <div className="text-center text-8xl">
                             <Spinner aria-label="Extra large spinner example" size="xl"/>

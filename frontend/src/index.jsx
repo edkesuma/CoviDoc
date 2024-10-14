@@ -45,10 +45,11 @@ import CreateConsultationPage from "./Pages/Doctor/CreateConsultationPage.jsx";
 import ModelPredictionPage from "./Pages/Doctor/ModelPredictionPage.jsx";
 import LLMResultPage from "./Pages/Doctor/LLMResultPage.jsx";
 
+
 // App entry point
 ReactDOM.createRoot(document.getElementById("root")).render(
     <AuthProvider>
-        <BrowserRouter> 
+        <BrowserRouter>
             <Routes>
                 {/* DEVELOPMENT/EXAMPLE ONLY routes */}
                 {/* <Route path="/test" element={<TestPage />} />
@@ -58,30 +59,30 @@ ReactDOM.createRoot(document.getElementById("root")).render(
                 {/* Landing pages */}
                 <Route
                     path="/"
-                    element={<HomePage />}
+                    element={<HomePage/>}
                 />
-                <Route 
-                    path="/about" 
-                    element={<AboutPage />} 
+                <Route
+                    path="/about"
+                    element={<AboutPage/>}
                 />
-                <Route 
-                    path="/contact" 
-                    element={<ContactPage />}
+                <Route
+                    path="/contact"
+                    element={<ContactPage/>}
                 />
-                
-                <Route 
-                    path="/login" 
+
+                <Route
+                    path="/login"
                     element={
                         <UnauthenticatedRoute>
-                            <LoginPage />
+                            <LoginPage/>
                         </UnauthenticatedRoute>
-                    } 
+                    }
                 />
                 <Route
                     path="/signup/*"
                     element={
                         <UnauthenticatedRoute>
-                            <SignUpFlow />
+                            <SignUpFlow/>
                         </UnauthenticatedRoute>
                     }
                 />
@@ -90,7 +91,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
                     path="/systemAdmin/doctorManagement"
                     element={
                         <PrivateRoute systemAdmin>
-                            <DoctorManagement />
+                            <DoctorManagement/>
                         </PrivateRoute>
                     }
                 />
@@ -98,7 +99,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
                     path="/systemAdmin/patientManagement"
                     element={
                         <PrivateRoute systemAdmin>
-                            <PatientManagement />
+                            <PatientManagement/>
                         </PrivateRoute>
                     }
                 />
@@ -107,7 +108,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
                     path="/doctor"
                     element={
                         <PrivateRoute doctor>
-                            <PatientListPage />
+                            <PatientListPage/>
                         </PrivateRoute>
                     }
                 />
@@ -116,7 +117,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
                     path="/doctor/account"
                     element={
                         <PrivateRoute doctor>
-                            <DoctorAccountPage />
+                            <DoctorAccountPage/>
                         </PrivateRoute>
                     }
                 />
@@ -124,7 +125,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
                     path="/doctor/patient/:patientId"
                     element={
                         <PrivateRoute doctor>
-                            <DoctorViewPatientPage />
+                            <DoctorViewPatientPage/>
                         </PrivateRoute>
                     }
                 />
@@ -132,6 +133,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
                     path="/doctor/patient/:patientId/:consultationId/classification"
                     element={
                         <PrivateRoute doctor>
+
                             <CreateConsultationPage />
                         </PrivateRoute>
                     }
@@ -149,14 +151,17 @@ ReactDOM.createRoot(document.getElementById("root")).render(
                     element={
                         <PrivateRoute doctor>
                             <LLMResultPage />
+
                         </PrivateRoute>
                     }
                 />
+
+
                 <Route
                     path="/doctor/patient/:patientId/:consultationId/pdf"
                     element={
                         <PrivateRoute doctor>
-                            <ViewPDFPage />
+                            <ViewPDFPage/>
                         </PrivateRoute>
                     }
                 />
@@ -164,7 +169,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
                     path="/doctor/visualizations"
                     element={
                         <PrivateRoute doctor>
-                            <VisualizationsPage />
+                            <VisualizationsPage/>
                         </PrivateRoute>
                     }
                 />
@@ -173,7 +178,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
                     path="/patient"
                     element={
                         <PrivateRoute patient>
-                            <ConsultationHistoryPage />
+                            <ConsultationHistoryPage/>
                         </PrivateRoute>
                     }
                 />
@@ -182,7 +187,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
                     path="/patient/account"
                     element={
                         <PrivateRoute patient>
-                            <PatientAccountPage />
+                            <PatientAccountPage/>
                         </PrivateRoute>
                     }
                 />
@@ -190,7 +195,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
                     path="/patient/consultation/:consultationId"
                     element={
                         <PrivateRoute patient>
-                            <ConsultationDetailsPage />
+                            <ConsultationDetailsPage/>
                         </PrivateRoute>
                     }
                 />
@@ -201,16 +206,17 @@ ReactDOM.createRoot(document.getElementById("root")).render(
                 <Route path="/login/reset" element={<ResetPage />} />
                 <Route path="/login/setSucc" element={<ResetSuccPage />} /> 
                 
-                {/* <Route path="/test/doc/viewfinding" element={} /> */}
-                <Route path="/test/doc/viewpdf" element={<ViewPDFPage />} />
-                <Route path="/test/doc/consultationPage" element={<DoctorViewPatientPage />} />
-                <Route path="/test/doc/editAccountModal" element={<DoctorEditAccountModal />} />
 
-                <Route path="/test/doc/account" element={<DoctorAccountPage />} />
-                <Route path="/test/doc/patientdetails" element={<PatientDetailsPage />} />
-                <Route path="/test/doc/patientlist" element={<PatientListPage />} />
-                <Route path="/test/doc/consultationdetails" element={<ViewConsultationDetailsPage />} />
-                <Route path="/test/doc/visualizations" element={<VisualizationsPage />} />
+                {/* <Route path="/test/doc/viewfinding" element={} /> */}
+                <Route path="/test/doc/viewpdf" element={<ViewPDFPage/>}/>
+                <Route path="/test/doc/consultationPage" element={<DoctorViewPatientPage/>}/>
+                <Route path="/test/doc/editAccountModal" element={<DoctorEditAccountModal/>}/>
+
+                <Route path="/test/doc/account" element={<DoctorAccountPage/>}/>
+                <Route path="/test/doc/patientdetails" element={<PatientDetailsPage/>}/>
+                <Route path="/test/doc/patientlist" element={<PatientListPage/>}/>
+                <Route path="/test/doc/consultationdetails" element={<ViewConsultationDetailsPage/>}/>
+                <Route path="/test/doc/visualizations" element={<VisualizationsPage/>}/>
             </Routes>
         </BrowserRouter>
     </AuthProvider>

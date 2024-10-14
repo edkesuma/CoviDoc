@@ -96,6 +96,27 @@ class Report(db.Model):
         return (True, "Prescriptions and lifestyle changes updated successfully.")
     
     @classmethod
+    def getXrayHistory(cls, patientId: str):
+        """Get the x-ray history of a patient"""
+        # Get all consultations for the patient
+        consultations = Consultation.queryAllPatientConsultations(patientId)
+        xrayHistory = []
+        for consultation in consultations:
+            report = cls.queryReport(consultation.reportId)
+            xrayHistory.append({
+                "consultationId": consultation.id,
+                "consultationDate": consultation.consultationDate.strftime("%d/%m/%Y"),
+                "xrayImageUrl": consultation.xrayImageUrl,
+                "highlightedXrayImageUrl": consultation.highlightedXrayImageUrl,
+                "classification": report.classification,
+                "classificationConfidence": report.classificationConfidence,
+                "severity": report.severity,
+                "severityConfidence": report.severityConfidence,
+                "prescriptions": report.prescriptions
+            })
+        return xrayHistory
+    
+    @classmethod
     def classifyXray(cls, consultationId: str) -> Tuple[bool, str, dict]:
         """Classify an x-ray image"""
         # Create a blank report
