@@ -14,7 +14,6 @@ function Results({patientId}) {
     const [patient,setPatient] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const {token} = useContext(AuthContext);
-    const navigate = useNavigate();
 
     useEffect(() => {
         if (token && patientId) {
