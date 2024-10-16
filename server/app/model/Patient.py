@@ -186,3 +186,5 @@ class Patient(db.Model):
         except Exception as e:
             print(e)
             return (False, "Failed to delete account")
+
+            

@@ -5,13 +5,15 @@ import ConsultationNavbar from "../../Components/Doctor/Consultation/View/Consul
 
 import AgeDistributionChart from "../../Components/Doctor/Analytics/AgeDistributionOfPatients.jsx";
 import ClassificationConfidenceChart from "../../Components/Doctor/Analytics/ClassificationConfidenceChart.jsx";
-import ClassificationOverTime from "../../Components/Doctor/Analytics/ClassificationOverTime.jsx";
+import ConsultationOverTime from "../../Components/Doctor/Analytics/ConsultationOverTime.jsx";
 import PatientConsultationByGender from "../../Components/Doctor/Analytics/PatientConsultationByGender.jsx";
 import SeverityIllnessChart from "../../Components/Doctor/Analytics/SeverityIllnessChart.jsx";
 import SymptomPrevalenceHM from "../../Components/Doctor/Analytics/SymptomsPrevelanceHM.jsx";
 import { IoArrowBackCircleOutline } from "react-icons/io5";
 import { Button, Card } from "flowbite-react";
 import ActorNavbar from "../../Components/ActorNavbar.jsx";
+
+const token = localStorage.getItem("token");
 
 function VisualizationsPage() {
     const [selectedChart, setSelectedChart] = useState("Age Distribution");
@@ -41,7 +43,6 @@ function VisualizationsPage() {
                     <option value="Classification Confidence">Classfication Confidence</option>
                     <option value="Consultation over time">Consultation over time</option>
                     <option value="Patient Consultation by Gender">Patient Consultation by Gender</option>
-                    <option value="Severity Illness">Severity Illness</option>
                     <option value="Symptom Prevalence Heatmap">Symptom Prevalence</option>
 
                     
@@ -51,12 +52,11 @@ function VisualizationsPage() {
 
             {/* Render the selected chart */}
             <Card className='mx-20'>
-                {selectedChart === "Age Distribution" && <AgeDistributionChart />}
-                {selectedChart === "Classification Confidence" && <ClassificationConfidenceChart />}
-                {selectedChart === "Consultation over time" && <ClassificationOverTime />}
-                {selectedChart === "Patient Consultation by Gender" && <PatientConsultationByGender />}
-                {selectedChart === "Severity Illness" && <SeverityIllnessChart />}
-                {selectedChart === "Symptom Prevalence Heatmap" && <SymptomPrevalenceHM />}
+                {selectedChart === "Age Distribution" && <AgeDistributionChart token={token} />}
+                {selectedChart === "Classification Confidence" && <ClassificationConfidenceChart token={token} />}
+                {selectedChart === "Consultation over time" && <ConsultationOverTime token={token} />}
+                {selectedChart === "Patient Consultation by Gender" && <PatientConsultationByGender token={token} />}
+                {selectedChart === "Symptom Prevalence Heatmap" && <SymptomPrevalenceHM token={token} />}
 
 
 

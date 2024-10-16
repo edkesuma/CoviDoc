@@ -1,18 +1,76 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ApexCharts from "react-apexcharts";
-import { mockData } from "./Dataset/dataset";
+import axios from "axios";
 
-function SymptomPrevalenceHeatmap() {
-  const symptoms = ["Cough", "Fever", "Shortness of Breath", "Fatigue", "Loss of Taste/Smell"];
-  const patients = mockData.patients;
+function SymptomPrevalenceHeatmap({ token }) {
+  const [patients, setPatients] = useState([]);
+  const [symptomData, setSymptomData] = useState([]);
+  const [symptomCategories, setSymptomCategories] = useState([]);
 
-  // Generate random symptom presence data for demonstration purposes
-  const generateSymptomData = () => {
-    return symptoms.map((symptom) => ({
-      name: symptom,
-      data: patients.map(() => Math.floor(Math.random() * 2)), // 0 or 1 for symptom presence
-    }));
-  };
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Step 1: Fetch the patient list
+        const patientResponse = await axios.get("/api/doctor/getPatientList", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const patientsArray = patientResponse.data.patients;
+        setPatients(patientsArray); // Store the patient details for later use
+
+        // Initialize a set to store unique symptoms
+        const uniqueSymptoms = new Set();
+
+        // Step 2: Loop through patients to get their consultation notes
+        const symptomMatrix = [];
+        for (const patient of patientsArray) {
+          const patientId = patient.patientId;
+          try {
+            const consultationResponse = await axios.get(
+              `/api/doctor/getPatientConsultationHistory`,
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+                params: { patientId },
+              }
+            );
+
+            const consultations = consultationResponse.data.consultationHistory;
+
+            // Step 3: Loop through consultations and extract symptoms from consultation notes
+            consultations.forEach((consultation) => {
+              const consultationNotes = consultation.ConsultationNotes.split(", ");
+              consultationNotes.forEach((symptom) => {
+                uniqueSymptoms.add(symptom.trim());
+              });
+            });
+
+            // Add a new row in the matrix for this patient, initialized with 0s for all symptoms
+            const symptomPresence = Array.from(uniqueSymptoms).map((symptom) =>
+              consultations.some((consultation) =>
+                consultation.ConsultationNotes.includes(symptom)
+              )
+                ? 1
+                : 0
+            );
+            symptomMatrix.push(symptomPresence);
+          } catch (error) {
+            console.error(`Error fetching consultation history for ${patientId}:`, error);
+          }
+        }
+
+        // Update state with the unique symptoms and matrix data
+        setSymptomCategories(Array.from(uniqueSymptoms));
+        setSymptomData(symptomMatrix);
+      } catch (error) {
+        console.error("Error fetching patient list:", error);
+      }
+    };
+
+    fetchData();
+  }, [token]);
 
   return (
     <ApexCharts
@@ -36,8 +94,14 @@ function SymptomPrevalenceHeatmap() {
         xaxis: {
           categories: patients.map((patient) => patient.name),
         },
+        yaxis: {
+          categories: symptomCategories,
+        },
       }}
-      series={generateSymptomData()}
+      series={symptomCategories.map((symptom, index) => ({
+        name: symptom,
+        data: symptomData.map((row) => row[index]),
+      }))}
       type="heatmap"
       width="700"
     />
@@ -45,3 +109,4 @@ function SymptomPrevalenceHeatmap() {
 }
 
 export default SymptomPrevalenceHeatmap;
+
