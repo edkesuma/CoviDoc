@@ -37,7 +37,7 @@ function CreateConsultation({patientId, consultationId}) {
             .then((response) => {
                 console.log("Consultation Created", response.data);
                 navigate(`/doctor/patient/${patientId}/${consultationId}/newClassification`,
-                    { state: { formData: formData } });
+                    { state: { formData: data } });
             })
             .catch((error) => {
                 console.log("Error creating consultation: ", error);

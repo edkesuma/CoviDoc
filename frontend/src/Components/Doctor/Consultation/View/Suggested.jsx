@@ -3,7 +3,6 @@ import React, {useContext, useEffect, useState} from "react";
 import {Textarea, Button, Spinner} from "flowbite-react";
 import {AuthContext} from "../../../Authentication/AuthContext.jsx";
 import {FaFilePdf} from "react-icons/fa";
-import {useNavigate} from "react-router-dom";
 import axios from "axios";
 
 function Suggested({consultationId}) {
@@ -89,7 +88,7 @@ function Suggested({consultationId}) {
                 <div className='w-1/2 pr-16'>
                     <div className='flex flex-row items-center'>
                         <p className='text-xl text-cyan-400'>SUGGESTED PRESCRIPTIONS</p>
-                        <a href={prescriptionsLink} className='mx-2'>
+                        <a href={prescriptionsLink} className='mx-2' title='View Prescription PDF'>
                             <FaFilePdf color='cyan'/>
                         </a>
                     </div>
@@ -112,7 +111,7 @@ function Suggested({consultationId}) {
                 <div className='w-1/2 pr-16'>
                     <div className='flex flex-row items-center'>
                         <p className='text-xl text-cyan-400'>SUGGESTED LIFESTYLE CHANGES</p>
-                        <a href={lifestyleChangesLink} className='mx-2'>
+                        <a href={lifestyleChangesLink} className='mx-2' title='View Suggestion PDF'>
                             <FaFilePdf color='cyan'/>
                         </a>
                     </div>
