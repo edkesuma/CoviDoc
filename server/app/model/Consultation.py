@@ -24,6 +24,7 @@ class Consultation(db.Model):
     consultationNotes = db.Column(db.String, nullable=True)
     xrayImageUrl = db.Column(db.String, nullable=True)
     highlightedXrayImageUrl = db.Column(db.String, nullable=True)
+    workflowStage = db.Column(db.String, nullable=True)
     reportId = db.Column(db.String, db.ForeignKey('Report.id'), nullable=True)
 
     # @classmethod
@@ -109,3 +110,12 @@ class Consultation(db.Model):
             db.session.commit()
             return (True, "Consultation updated successfully")
         return (False, "Consultation not found")
+    
+    @classmethod
+    def updateWorkflowStage(cls, consultationId: str,  stage: str):
+        """Update consultation's workflow stage"""
+        consultation = cls.queryConsultation(consultationId)
+        if consultation:
+            consultation.workflowStage = stage
+            db.session.commit()
+            return True

@@ -129,13 +129,13 @@ class Report(db.Model):
         consultation.reportId = report.id
         
         # Get the xray image URL
-        xrayImageUrl = consultation.xrayImageUrl
+        xray_image_url = consultation.xrayImageUrl
 
         # Load the type classification model
         type_clf_model = load_model(current_app.config["COVIDNEXT50_MODEL_PATH"], current_app.config["DEVICE"], n_classes=3)
 
         # Get image from URL
-        response = requests.get(xrayImageUrl)
+        response = requests.get(xray_image_url)
         image = Image.open(BytesIO(response.content)).convert("RGB")
         
         # Preprocess the image
@@ -146,7 +146,7 @@ class Report(db.Model):
         image = image.to(current_app.config["DEVICE"]) # type: ignore
         
         # Classify the image
-        predicted_class_idx, classificationConfidence = type_clf_model.classify_image(image)
+        predicted_class_idx, classification_confidence = type_clf_model.classify_image(image)
         predicted_class_idx = int(predicted_class_idx)
 
         # Generate gradcam image
@@ -173,32 +173,32 @@ class Report(db.Model):
 
         # Update the report
         report.classification = predicted_type
-        report.classificationConfidence = classificationConfidence
+        report.classificationConfidence = classification_confidence
         # Update the consultation with gradcam image
         consultation.highlightedXrayImageUrl = gradcam_image_url
 
         if predicted_type == "Healthy":
-            report.severity = "NA"
-            report.severityConfidence = 100
+            predicted_severity = "NA"
+            severity_confidence = 100
         else:
             severity_clf_model = load_model(current_app.config["COVIDNEXT50SEV_MODEL_PATH"], current_app.config["DEVICE"], n_classes=2)
-            predicted_severity_idx, severityConfidence = severity_clf_model.classify_image(image)
+            predicted_severity_idx, severity_confidence = severity_clf_model.classify_image(image)
             predicted_severity_idx = int(predicted_severity_idx)
             idx_to_severity_mapping = {0: "Mild", 1: "Moderate to Severe"}
             predicted_severity = idx_to_severity_mapping[predicted_severity_idx]
-            # Update with predicted severity
-            report.severity = predicted_severity
-            report.severityConfidence = severityConfidence
-
+        
+        # Update with predicted severity
+        report.severity = predicted_severity
+        report.severityConfidence = severity_confidence
         db.session.commit()
 
         data = {
             "consultationId": consultationId,
             "type_classification": predicted_type,
             "severity_classification": predicted_severity,
-            "type_confidence": classificationConfidence,
-            "severity_confidence": severityConfidence,
-            "xray_image_url": xrayImageUrl,
+            "type_confidence": classification_confidence,
+            "severity_confidence": severity_confidence,
+            "xray_image_url": xray_image_url,
             "gradcam_image_url": gradcam_image_url
         }
 
