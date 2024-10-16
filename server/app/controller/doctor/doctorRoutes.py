@@ -125,6 +125,7 @@ def generateClassification() -> Dict[str, Union[str, int, dict]]:
     
     _, _, consultationId = Consultation.createConsultation(consultationDetails)
     returnedBool, message, data = Report.classifyXray(consultationId)
+    stageUpdated = Consultation.updateWorkflowStage(consultationId, "CLASSIFIED")
     if returnedBool:
         return {"status code": 200, "success": returnedBool, "message": message, "data": data}
     else:
@@ -146,6 +147,7 @@ def updateFindings() -> Dict[str, Union[str, int]]:
         "severityConfidence": request.json.get("severityConfidence")
     }
     returnedBool, message = Report.updateFindings(reportId, updatedFindings)
+    stageUpdated = Consultation.updateWorkflowStage(consultationId, "FIXED_PREDICTION")
     if returnedBool:
         return {"status code": 200, "success": returnedBool, "message": message}
     else:
@@ -167,6 +169,7 @@ def updateConsultation() -> Dict[str, Union[str, int]]:
         "consultationNotes": request.json.get("consultationNotes")
     }
     returnedBool, message = Consultation.updateConsultation(consultationId, consultationDetails)
+    stageUpdated = Consultation.updateWorkflowStage(consultationId, "LLM_PREDICTED")
     if returnedBool:
         return {"status code": 200, "success": returnedBool, "message": message}
     else:
@@ -216,6 +219,7 @@ def generateReport() -> Dict[str, Union[str, int]]:
     consultationId = request.json.get("consultationId")
     consultation = Consultation.queryConsultation(consultationId)
     returnedBool, message = Report.generateReport(consultation)
+    stageUpdated = Consultation.updateWorkflowStage(consultationId, "COMPLETED")
     if returnedBool:
         return {"status code": 200, "success": returnedBool, "message": message}
     else:
@@ -288,7 +292,8 @@ def getPatientConsultationHistory() -> Dict[str, Union[str, int, list]]:
             "doctorName": Doctor.queryDoctor(consultation.doctorId).name,
             "viewableToPatient": Report.queryReport(consultation.reportId).viewableToPatient,
             "consultationDate": consultation.consultationDate.strftime("%d/%m/%Y"),
-            "ConsultationNotes": consultation.consultationNotes
+            "ConsultationNotes": consultation.consultationNotes,
+            "workflowStage": consultation.workflowStage
         }) 
     return {"status code": 200, "success": True, "consultationHistory": consultationHistory}
 
@@ -344,6 +349,28 @@ def updatePatientState() -> Dict[str, Union[str, int]]:
         return {"status code": 200, "success": returnedBool, "message": message}
     else:
         return {"status code": 400, "success": returnedBool, "message": message}
+    
+@router.route("/getWorkflowItems", methods=["GET"])
+@jwt_required()
+@role_required(["Doctor"])
+def getWorkflowItems():
+    """Get workflow items depending on the stage"""
+    consultationId = request.args.get("consultationId")
+    if not consultationId:
+        return {"status code": 400, "message": "Consultation ID not provided"}
+    consultation = Consultation.queryConsultation(consultationId)
+    report = Report.queryReport(consultation.reportId)
+    if consultation.workflowStage in ["CLASSIFIED", "FIXED_PREDICTION", "LLM_PREDICTED"]:
+        data = {
+            'consultationId': consultationId,
+            'classification': report.classification,
+            'classificationConfidence': report.classificationConfidence,
+            'severity': report.severity,
+            'severityConfidence': report.severityConfidence
+        }
+        return {"status code": 200, "data": data}
+    else:
+        return {"status code": 400, "message": "Invalid workflow stage"}
     
 @router.route("/getClassificationsOverTimeData", methods=["GET"])
 @jwt_required()
