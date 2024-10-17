@@ -138,3 +138,28 @@ def queryConsultationsUnderPatient() -> Dict[str, Union[str, int, list]]:
             "consultationDate": consultation.consultationDate.strftime("%d/%m/%Y")
         }) 
     return {"status code": 200, "success": True, "consultationHistory": consultationHistory}
+
+@router.route("/viewReportPage", methods=["GET"])
+@jwt_required()
+@role_required(["Patient"])
+def viewReportPage() -> Dict[str, Union[str, int, list]]:
+    """Patient views a report page"""
+    consultationId = request.args.get("consultationId")
+    if not consultationId:
+        return {"status code": 400, "success": False, "message": "Consultation ID not provided"}
+    consultation = Consultation.queryConsultation(consultationId)
+    report = Report.queryReport(consultation.reportId)
+    if report.classification == "Healthy":
+        status = "Healthy"
+    else:
+        status = report.severity
+    data = {
+        "consultationId": consultation.id,
+        "consultationDate": consultation.consultationDate.strftime("%d/%m/%Y"),
+        "doctorName": Doctor.queryDoctor(consultation.doctorId).name,
+        "classification": report.classification,
+        "status": status,
+        "reportUrl": report.reportUrl
+    }
+    return {"status code": 200, "success": True, "data": data} # type: ignore
+    
