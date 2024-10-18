@@ -248,7 +248,11 @@ class Report(db.Model):
         return jsonString
 
     @classmethod
-    def generatePrescriptions(cls, chain: RetrievalQA, patientString: str, consultationString: str, classificationData: dict):
+    def generatePrescriptions(cls, chain: RetrievalQA, patientString: str, consultationString: str, classificationData: dict) -> Tuple[str, str | None]:
+        if classificationData["classification"] == "Healthy":
+            healthyString = "You are healthy. No prescriptions are needed."
+            return healthyString, None
+        
         prompt = f"""You are an assistant to a doctor, analyzing patient data to provide recommendations for both the patient and the treating doctor.
             The patient has been classified as having {classificationData['classification']} with a confidence level of {classificationData['classificationConfidence']}.
             Note that the severity of the condition is {classificationData['severity']} with a confidence level of {classificationData['severityConfidence']}.
@@ -289,7 +293,11 @@ class Report(db.Model):
         return cleanedStr, documentLink
     
     @classmethod
-    def generateLifestyle(cls, chain: RetrievalQA, patientString: str, consultationString: str, classificationData: dict):
+    def generateLifestyle(cls, chain: RetrievalQA, patientString: str, consultationString: str, classificationData: dict) -> Tuple[str, str | None]:
+        if classificationData["classification"] == "Healthy":
+            healthyString = "You are healthy. No lifestyle changes are needed."
+            return healthyString, None
+        
         prompt = f"""You are an assistant to a doctor, analyzing patient data to provide recommendations for both the patient and the treating doctor.
             The patient has been classified as having {classificationData['classification']} with a confidence level of {classificationData['classificationConfidence']}.
             Note that the severity of the condition is {classificationData['severity']} with a confidence level of {classificationData['severityConfidence']}.
@@ -358,6 +366,10 @@ class Report(db.Model):
             filterType = "covid"
         elif classificationData["classification"] == "Other Lung Infection":
             filterType = "other-lung-infection"
+        elif classificationData["classification"] == "Healthy":
+            filterType = "Healthy"
+        else:
+            filterType = "NA"
 
         # Set up retriever
         retriever = vector_store.as_retriever(
@@ -415,8 +427,12 @@ class Report(db.Model):
         patientData = patient.serialize()
 
         # Load the json from strings
-        prescriptions = json.loads(report.prescriptions)
-        lifestyleChanges = json.loads(report.lifestyleChanges)
+        if report.classification == "Healthy":
+            prescriptions = report.prescriptions
+            lifestyleChanges = report.lifestyleChanges
+        else:
+            prescriptions = json.loads(report.prescriptions)
+            lifestyleChanges = json.loads(report.lifestyleChanges)
         
         # Get the data for the report (according to report template)
         dataForReport = {
@@ -442,7 +458,7 @@ class Report(db.Model):
             "recentlyInIcu": consultation.recentlyInIcu,
             "recentlyNeededSupplementalO2": consultation.recentlyNeededSupplementalO2,
             "intubationPresent": consultation.intubationPresent,
-            "consultationNotes": consultation.consultationNotes,
+            "consultationNotes": consultation.consultationNotes if consultation.consultationNotes else "No notes provided.",
 
             "classification": report.classification,
             "classificationConfidence": report.classificationConfidence,

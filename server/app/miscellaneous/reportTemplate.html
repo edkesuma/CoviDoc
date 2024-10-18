@@ -380,20 +380,26 @@
                     <tr>
                         <td style="border:1px solid #000000;vertical-align:top;width:632.87px;"
                             colspan="2">
-                            <span style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
-                                <a href={{prescriptionsLink}} target="_blank">
-                                    Prescriptions Source Document
-                                </a> 
-                            </span>
-                            <ul>
-                                {% for prescription in prescriptions %}
-                                <li>
-                                    <span style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
-                                        <u>{{prescription.prescriptionName[0]}}</u>: {{prescription.prescriptionName[1]}}
-                                    </span>
-                                </li>
-                                {% endfor %}
-                            </ul>
+                            {% if classification == "Healthy" %}
+                                <p style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
+                                    {{ prescriptions }}
+                                </p>
+                            {% else %}
+                                <span style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
+                                    <a href={{prescriptionsLink}} target="_blank">
+                                        Prescriptions Source Document
+                                    </a> 
+                                </span>
+                                <ul>
+                                    {% for prescription in prescriptions %}
+                                    <li>
+                                        <span style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
+                                            <u>{{prescription.prescriptionName[0]}}</u>: {{prescription.prescriptionName[1]}}
+                                        </span>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
                         </td>
                     </tr>
                 </tbody>
@@ -417,20 +423,26 @@
                     <tr>
                         <td style="border:1px solid #000000;vertical-align:top;width:632.87px;"
                             colspan="2">
-                            <span style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
-                                <a href={{lifestyleLink}} target="_blank">
-                                    Lifestyle Changes Source Document
-                                </a> 
-                            </span>
-                            <ul>
-                                {% for change in lifestyleChanges %}
-                                <li>
-                                    <span style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
-                                        <u>{{change.lifestyleChange[0].strip(".")}}</u>: {{change.lifestyleChange[1]}}
-                                    </span>
-                                </li>
-                                {% endfor %}
-                            </ul>
+                            {% if classification == "Healthy" %}
+                                <p style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
+                                    {{ lifestyleChanges }}
+                                </p>
+                            {% else %}
+                                <span style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
+                                    <a href={{lifestyleLink}} target="_blank">
+                                        Lifestyle Changes Source Document
+                                    </a> 
+                                </span>
+                                <ul>
+                                    {% for change in lifestyleChanges %}
+                                    <li>
+                                        <span style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
+                                            <u>{{change.lifestyleChange[0].strip(".")}}</u>: {{change.lifestyleChange[1]}}
+                                        </span>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
                         </td>
                     </tr>
                 </tbody>
