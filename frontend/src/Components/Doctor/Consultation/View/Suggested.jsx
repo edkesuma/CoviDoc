@@ -6,9 +6,9 @@ import {FaFilePdf} from "react-icons/fa";
 import axios from "axios";
 
 function Suggested({consultationId}) {
-    const [prescriptions, setPrescriptions] = useState('');
+    const [prescriptions, setPrescriptions] = useState('Nothing');
     const [prescriptionsLink, setPrescriptionsLink] = useState('')
-    const [lifestyleChanges, setLifestyleChanges] = useState('');
+    const [lifestyleChanges, setLifestyleChanges] = useState('Nothing');
     const [lifestyleChangesLink, setLifestyleChangesLink] = useState('')
     const [lifestyleEditable, setLifestyleEditable] = useState(false);
     const [prescriptionEditable, setPrescriptionEditable] = useState(false);

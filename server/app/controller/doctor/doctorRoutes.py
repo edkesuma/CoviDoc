@@ -366,7 +366,16 @@ def getWorkflowItems():
             'classification': report.classification,
             'classificationConfidence': report.classificationConfidence,
             'severity': report.severity,
-            'severityConfidence': report.severityConfidence
+            'severityConfidence': report.severityConfidence,
+            'xrayImageUrl':consultation.xrayImageUrl,
+            'highlightedXrayImage':consultation.highlightedXrayImageUrl,
+            'consultationData':consultation.consultationDate,
+            'temperature':consultation.temperature,
+            'O2':consultation.o2Saturation,
+            'ICU':consultation.recentlyInIcu,
+            'supplemental':consultation.recentlyNeededSupplementalO2,
+            'intubation':consultation.intubationPresent,
+            'note':consultation.consultationNotes
         }
         return {"status code": 200, "data": data}
     else:

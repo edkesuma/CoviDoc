@@ -83,7 +83,7 @@ function DoctorViewPatientPage() {
             <Spinner aria-label="Extra large spinner example" size="xl"/>
         </div>
     ) : (
-        <div className="flex flex-col ">
+        <div className="flex flex-col mb-4">
             <ActorNavbar/>
             {/* Place the modal outside of other content */}
             <UploadXrayImage
@@ -156,7 +156,6 @@ function DoctorViewPatientPage() {
                     </div>
                 )}
             </div>
-
         </div>
     );
 }

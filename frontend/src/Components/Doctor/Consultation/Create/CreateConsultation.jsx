@@ -1,23 +1,48 @@
 "use client";
-import React, {useContext, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import { useLocation } from 'react-router-dom';
 import {Label, TextInput, Button} from "flowbite-react";
-import x from '../../../../assets/X-ray/before.jpg'
-import y from '../../../../assets/X-ray/after.jpg'
 import {AuthContext} from "../../../Authentication/AuthContext.jsx";
 import {useNavigate} from "react-router-dom";
 import axios from "axios";
 
 function CreateConsultation({patientId, consultationId}) {
-    const location = useLocation();
-    const formData = location.state?.formData;
-    const [classification, setClassification] = useState(formData.type_classification)
-    const [classificationCon, setClassificationCon] = useState(formData.type_confidence)
-    const [severity, setSeverity] = useState(formData.severity_classification)
-    const [severityCon, setSeverityCon] = useState(formData.severity_confidence)
+    const [classification, setClassification] = useState('')
+    const [classificationCon, setClassificationCon] = useState('')
+    const [severity, setSeverity] = useState('')
+    const [severityCon, setSeverityCon] = useState('')
+    const [XrayImage,setXrayImage] = useState('')
+    const [highlightImage,setHighlightImage] = useState('')
     const [change, setChange] = useState(false)
     const {token} = useContext(AuthContext);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        if (token && consultationId) {
+            const getItems = async () => {
+                try {
+                    const response = await axios.get(`/api/doctor/getWorkflowItems`, {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        },
+                        params: {
+                            consultationId: consultationId
+                        }
+                    });
+                    setClassification(response.data.data.classification);
+                    setClassificationCon(response.data.data.classificationConfidence)
+                    setSeverity(response.data.data.severity)
+                    setSeverityCon(response.data.data.severityConfidence)
+                    setXrayImage(response.data.data.xrayImageUrl)
+                    setHighlightImage(response.data.data.highlightedXrayImage)
+                } catch (error) {
+                    console.log("Error get consultation data: ", error);
+                }
+            };
+            getItems()
+        }
+    }, [token, consultationId]);
     const upload = () => {
         const data =
             {
@@ -36,8 +61,7 @@ function CreateConsultation({patientId, consultationId}) {
             })
             .then((response) => {
                 console.log("Consultation Created", response.data);
-                navigate(`/doctor/patient/${patientId}/${consultationId}/newClassification`,
-                    { state: { formData: data } });
+                navigate(`/doctor/patient/${patientId}/${consultationId}/newClassification`);
             })
             .catch((error) => {
                 console.log("Error creating consultation: ", error);
@@ -51,14 +75,14 @@ function CreateConsultation({patientId, consultationId}) {
                     <div className='flex flex-col w-1/3'>
                         <p className='text-cyan-400 text-2xl'>X-RAY IMAGE</p>
                         <div className='bg-gray-100 flex  my-4 py-8'>
-                            <img src={formData.xray_image_url} alt='before' className='w-64 h-64 max-w-full max-h-full'></img>
+                            <img src={XrayImage} alt='before' className='w-64 h-64 max-w-full max-h-full'></img>
                         </div>
                     </div>
                     <div className='flex flex-col w-1/3 mx-4'>
                         <p className='text-cyan-400 text-2xl'>AREAS OF INTEREST</p>
                         <div className='bg-gray-100 flex
                           my-4 py-8'>
-                            <img src={formData.gradcam_image_url} alt='before' className='w-64 h-64 max-w-full max-h-full'></img>
+                            <img src={highlightImage} alt='before' className='w-64 h-64 max-w-full max-h-full'></img>
                         </div>
                     </div>
                     <div className='flex flex-col w-1/3 mx-4'>
