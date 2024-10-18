@@ -1,19 +1,17 @@
 "use client";
-import React, {useContext, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {Label, TextInput, Button, Datepicker, Checkbox, Textarea} from "flowbite-react";
-import x from '../../../../assets/X-ray/before.jpg'
-import y from '../../../../assets/X-ray/after.jpg'
 import {AuthContext} from "../../../Authentication/AuthContext.jsx";
-import {useLocation, useNavigate} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import axios from "axios";
 
 function ModelPrediction({patientId, consultationId}) {
-    const location = useLocation();
-    const formData = location.state?.formData;
-    const Classification = formData.type_classification
-    const ClassificationCon = formData.type_confidence
-    const Severity = formData.severity_classification
-    const SeverityCon = formData.severity_confidence
+    const [Classification ,setClassification] = useState('')
+    const [ClassificationCon, setClassificationCon] = useState('')
+    const [Severity, setSeverity] = useState('')
+    const [SeverityCon, setSeverityCon] = useState('')
+    const [XrayImage,setXrayImage] = useState('')
+    const [highlightImage,setHighlightImage] = useState('')
     const [date, setDate] = useState(Date.now())
     const [temperature, setTemperature] = useState(null)
     const [O2, setO2] = useState(null)
@@ -23,6 +21,34 @@ function ModelPrediction({patientId, consultationId}) {
     const [note, setNote] = useState('')
     const {token} = useContext(AuthContext);
     const navigate = useNavigate();
+
+        useEffect(() => {
+        if (token && consultationId) {
+            const getItems = async () => {
+                try {
+                    const response = await axios.get(`/api/doctor/getWorkflowItems`, {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        },
+                        params: {
+                            consultationId: consultationId
+                        }
+                    });
+                    setClassification(response.data.data.classification);
+                    setClassificationCon(response.data.data.classificationConfidence)
+                    setSeverity(response.data.data.severity)
+                    setSeverityCon(response.data.data.severityConfidence)
+                    setXrayImage(response.data.data.xrayImageUrl)
+                    setHighlightImage(response.data.data.highlightedXrayImage)
+                } catch (error) {
+                    console.log("Error get consultation data: ", error);
+                }
+            };
+            getItems()
+        }
+    }, [token, consultationId]);
+
     const upload = () => {
         const formatDate = (date) => {
             const d = new Date(date)
@@ -53,12 +79,12 @@ function ModelPrediction({patientId, consultationId}) {
             .then((response) => {
                 console.log("Consultation Created", response.data);
                 const nextDate = {
-                    'gradcam_image_url': formData.gradcam_image_url,
+                    'gradcam_image_url': XrayImage,
                     'severity_classification': Severity,
                     'severity_confidence': SeverityCon,
                     'type_classification': Classification,
                     'type_confidence': ClassificationCon,
-                    'xray_image_url': formData.xray_image_url,
+                    'xray_image_url': highlightImage,
                     'consultationDate': formatDate(date),
                     'temperature': temperature,
                     'o2Saturation': O2,
@@ -85,11 +111,11 @@ function ModelPrediction({patientId, consultationId}) {
                             <p className='text-xl text-cyan-400'>X-RAY IMAGE AND AREAS OF INTEREST</p>
                             <div className='flex flex-row bg-gray-100 w-full'>
                                 <div className='flex w-1/2'>
-                                    <img src={formData.xray_image_url} alt='x'
+                                    <img src={XrayImage} alt='x'
                                          className='px-4 py-4 max-w-full max-h-full'/>
                                 </div>
                                 <div className='flex w-1/2'>
-                                    <img src={formData.gradcam_image_url} alt='y'
+                                    <img src={highlightImage} alt='y'
                                          className='px-4 py-4 max-w-full max-h-full'/>
                                 </div>
                             </div>
