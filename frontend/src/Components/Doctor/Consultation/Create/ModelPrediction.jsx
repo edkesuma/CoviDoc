@@ -6,23 +6,23 @@ import {useNavigate} from "react-router-dom";
 import axios from "axios";
 
 function ModelPrediction({patientId, consultationId}) {
-    const [Classification ,setClassification] = useState('')
+    const [Classification, setClassification] = useState('')
     const [ClassificationCon, setClassificationCon] = useState('')
     const [Severity, setSeverity] = useState('')
     const [SeverityCon, setSeverityCon] = useState('')
-    const [XrayImage,setXrayImage] = useState('')
-    const [highlightImage,setHighlightImage] = useState('')
+    const [XrayImage, setXrayImage] = useState('')
+    const [highlightImage, setHighlightImage] = useState('')
     const [date, setDate] = useState(Date.now())
-    const [temperature, setTemperature] = useState(null)
-    const [O2, setO2] = useState(null)
+    const [temperature, setTemperature] = useState(37)
+    const [O2, setO2] = useState(95)
     const [ICU, setICU] = useState(false)
     const [supplemental, setSupplemental] = useState(false)
     const [intubation, setIntubation] = useState(false)
-    const [note, setNote] = useState('')
+    const [note, setNote] = useState('NA')
     const {token} = useContext(AuthContext);
     const navigate = useNavigate();
 
-        useEffect(() => {
+    useEffect(() => {
         if (token && consultationId) {
             const getItems = async () => {
                 try {
@@ -94,7 +94,7 @@ function ModelPrediction({patientId, consultationId}) {
                     'consultationNotes': note
                 }
                 navigate(`/doctor/patient/${patientId}/${consultationId}/additionalInfo`,
-                    { state: { formData: nextDate } });
+                    {state: {formData: nextDate}});
             })
             .catch((error) => {
                 console.log("Error creating consultation: ", error);
@@ -152,13 +152,25 @@ function ModelPrediction({patientId, consultationId}) {
                                 </div>
                                 <div className='px-4'>
                                     <Label className='font-bold'>Temperature </Label>
-                                    <TextInput id="classificationCon" required value={temperature}
-                                               onChange={(e) => setTemperature(e.target.value)}/>
+                                    <TextInput id="classificationCon" required type="number" min="20" max="50"
+                                               value={temperature}
+                                               onChange={(e) => {
+                                                   if (e.target.value >= 20 && e.target.value <= 50) {
+                                                       setTemperature(e.target.value)
+                                                   }
+                                               }}
+                                    />
                                 </div>
                                 <div className='px-4'>
                                     <Label className='font-bold'>O2 saturation </Label>
-                                    <TextInput id="severity" required value={O2}
-                                               onChange={(e) => setO2(e.target.value)}/>
+                                    <TextInput id="severity" required type="number" min="20" max="100"
+                                               value={O2}
+                                               onChange={(e) => {
+                                                   if (e.target.value >= 20 && e.target.value <= 100) {
+                                                       setO2(e.target.value)
+                                                   }
+                                               }}
+                                    />
                                 </div>
                                 <div className='px-4 flex justify-between items-center'>
                                     <Label>Recently been in ICU</Label>

@@ -15,6 +15,27 @@ function Suggested({consultationId}) {
     const [isLoading, setIsLoading] = useState(true)
     const {token} = useContext(AuthContext);
 
+     const upload = () => {
+        var formData ={
+            "consultationId":consultationId,
+            "prescriptions":prescriptions,
+            "lifestyleChanges":lifestyleChanges
+        }
+        axios
+            .patch(`/api/doctor/updatePrescriptionsLifestyleChanges`, formData, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then((response) => {
+                console.log("Suggest changed: ", response.data);
+            })
+            .catch((error) => {
+                console.log("Error change: ", error);
+            });
+    }
+
     function analysisPrescriptions(str) {
         let jsonString = str.replace(/\\"/g, '"');
         let jsonArray = JSON.parse(jsonString);
@@ -104,7 +125,10 @@ function Suggested({consultationId}) {
                     />
                     <div className='flex justify-center my-4'>
                         <Button type="submit" className='bg-white text-cyan-400 border-2 border-cyan-400 w-full'
-                                onClick={() => setPrescriptionEditable(!prescriptionEditable)}
+                                onClick={() => {
+                                    setPrescriptionEditable(!prescriptionEditable);
+                                    upload()
+                                }}
                         >{prescriptionEditable ? ('Save') : ('Modify Prescriptions')}</Button>
                     </div>
                 </div>
@@ -127,7 +151,11 @@ function Suggested({consultationId}) {
                     />
                     <div className='flex justify-center my-4'>
                         <Button type="submit" className='bg-white text-cyan-400 border-2 border-cyan-400 w-full'
-                                onClick={() => setLifestyleEditable(!lifestyleEditable)}
+                                onClick={() => {
+                                    setLifestyleEditable(!lifestyleEditable);
+                                    upload()
+                                }
+                        }
                         >{lifestyleEditable ? ('Save') : ('Modify Lifestyle Changes')}</Button>
                     </div>
                 </div>

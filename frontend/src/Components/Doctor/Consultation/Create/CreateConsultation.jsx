@@ -1,7 +1,7 @@
 "use client";
 import React, {useContext, useEffect, useState} from "react";
-import { useLocation } from 'react-router-dom';
-import {Label, TextInput, Button} from "flowbite-react";
+import {useLocation} from 'react-router-dom';
+import {Label, TextInput, Button, Select, Kbd} from "flowbite-react";
 import {AuthContext} from "../../../Authentication/AuthContext.jsx";
 import {useNavigate} from "react-router-dom";
 import axios from "axios";
@@ -11,8 +11,8 @@ function CreateConsultation({patientId, consultationId}) {
     const [classificationCon, setClassificationCon] = useState('')
     const [severity, setSeverity] = useState('')
     const [severityCon, setSeverityCon] = useState('')
-    const [XrayImage,setXrayImage] = useState('')
-    const [highlightImage,setHighlightImage] = useState('')
+    const [XrayImage, setXrayImage] = useState('')
+    const [highlightImage, setHighlightImage] = useState('')
     const [change, setChange] = useState(false)
     const {token} = useContext(AuthContext);
     const navigate = useNavigate();
@@ -90,23 +90,46 @@ function CreateConsultation({patientId, consultationId}) {
                         <div className='flex flex-col border-2 border-cyan-400 rounded-lg my-4 space-y-4'>
                             <div className='px-4'>
                                 <Label className='font-bold'>Classification: </Label>
-                                <TextInput id="classification" required readOnly={!change} value={classification}
-                                           onChange={(e) => setClassification(e.target.value)}/>
+                                <Select id="classification" required value={classification}
+                                        disabled={!change}
+                                        onChange={(e) => setClassification(e.target.value)}
+                                >
+                                    <option value="Healthy">Healthy</option>
+                                    <option value="Covid-19">Covid-19</option>
+                                    <option value="Other Lung Infection">Other Lung Infection</option>
+                                </Select>
                             </div>
                             <div className='px-4'>
                                 <Label className='font-bold'>Classification Confidence: </Label>
-                                <TextInput id="classificationCon" required readOnly={!change} value={classificationCon}
-                                           onChange={(e) => setClassificationCon(e.target.value)}/>
+                                <TextInput id="classificationCon" required type="number" min="0" max="100"
+                                           readOnly={!change} value={classificationCon}
+                                           onChange={(e) => {
+                                               if (e.target.value >= 0 && e.target.value <= 100) {
+                                                   setClassificationCon(e.target.value)
+                                               }
+                                           }}/>
                             </div>
                             <div className='px-4'>
                                 <Label className='font-bold'>Severity: </Label>
-                                <TextInput id="severity" required readOnly={!change} value={severity}
-                                           onChange={(e) => setSeverity(e.target.value)}/>
+                                <Select id="severity" required value={severity}
+                                        disabled={!change}
+                                        onChange={(e) => setSeverity(e.target.value)}
+                                >
+                                    <option value="NA">NA</option>
+                                    <option value="Mild">Mild</option>
+                                    <option value="Moderate to Severe">Moderate to Severe</option>
+                                </Select>
                             </div>
                             <div className='px-4'>
-                                <Label className='font-bold'>Severity: </Label>
-                                <TextInput id="severityCon" required readOnly={!change} value={severityCon}
-                                           onChange={(e) => setSeverityCon(e.target.value)}/>
+                                <Label className='font-bold'>Severity Confidence: </Label>
+                                <TextInput id="severityCon" required type="number" min="0" max="100"
+                                           readOnly={!change} value={severityCon}
+                                           onChange={(e) => {
+                                               if (e.target.value >= 0 && e.target.value <= 100) {
+                                                   setSeverityCon(e.target.value)
+                                               }
+                                           }}
+                                />
                             </div>
                             <div className='px-4 pb-4 flex justify-center items-center'>
                                 {change ? (

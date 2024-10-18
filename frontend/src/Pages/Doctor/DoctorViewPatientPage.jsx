@@ -106,7 +106,7 @@ function DoctorViewPatientPage() {
             </div>
             <div className="mx-20">
                 {patient ? (
-                    <PatientDetail patientDetails={patient}/>
+                    <PatientDetail patientDetails={patient} card={true}/>
                 ) : (
                     <p>No patient details available</p>
                 )}
