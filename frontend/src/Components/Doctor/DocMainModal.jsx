@@ -16,13 +16,13 @@ function DocMainModal({ doctorProfile }) {
 
   return (
     <div className="flex">
-      <div className="bg-white rounded-lg shadow-md p-10 w-full max-w-screen-md flex justify-between">
+      <div className="bg-white rounded-lg shadow-md p-10 w-full max-w-screen-lg flex space-x-16 relative">
         {/* Profile Image */}
         <div className="flex-shrink-0">
           <img
             className="w-52 h-52 object-cover"
             src={doctorProfile.profilePictureUrl || "https://via.placeholder.com/150"}  // Placeholder if no image URL
-            alt="Profile"
+            alt="No profile picture set."
           />
         </div>
 
@@ -49,7 +49,7 @@ function DocMainModal({ doctorProfile }) {
         </div>
 
         {/* Edit Button */}
-        <div>
+        <div className='absolute top-10 right-10'>
           <button 
             className="px-6 py-2 border border-cyan-400 bg-cyan-400 text-white rounded hover:bg-cyan-600 hover:border-cyan-600 transition duration-300"
             onClick={handleEditClick} // Open the modal when clicked

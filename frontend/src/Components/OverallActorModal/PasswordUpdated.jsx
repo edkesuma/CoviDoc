@@ -15,7 +15,7 @@ function PasswordUpdated({ show, onClose }) {
                 <div className="flex justify-center">
                     <div className="p-6 text-center">
                         {/* Message */}
-                        <p className="text-lg text-black mb-4">Password successfully reset.</p>
+                        <p className="text-lg text-black mb-4">Password successfully changed.</p>
                         {/* Exit Button */}
                         <button
                             className="bg-cyan-400 text-white py-2 px-4 rounded cursor-pointer font-bold hover:bg-cyan-500"

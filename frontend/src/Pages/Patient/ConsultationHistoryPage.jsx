@@ -10,6 +10,7 @@ function ConsultationHistoryPage() {
     const [isLoading, setIsLoading] = useState(true);
     const [consultations, setConsultations] = useState([]);
     const [patientName,setPatientName] = useState('');
+
     useEffect(() => {
         if (token) {
             axios
@@ -52,15 +53,18 @@ function ConsultationHistoryPage() {
                 </p>
             </div>
             {isLoading ? (
-                <div className="mt-20  text-center ">
-                    <Spinner aria-label="Loading patients" size="xl" />
+                <div className="flex justify-center">
+                    <Spinner aria-label="Center-aligned spinner" size="xl" />
+                </div>
+            ) : consultations.length === 0 ? (
+                <div className="flex justify-center">
+                    <span className="text-lg font-semibold">
+                        You don't have any consultation history.
+                    </span>
                 </div>
             ) : (
                 <ViewConsultation consultations={consultations} token={token}/>
             )}
-            <div className='flex justify-center mt-10'>
-                <Button onClick={() => logout()}>LOGOUT</Button>
-            </div>
         </div>
     );
 }

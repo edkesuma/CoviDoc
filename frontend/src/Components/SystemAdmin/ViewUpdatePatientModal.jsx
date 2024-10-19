@@ -451,7 +451,7 @@ function ViewUpdatePatientModal({ show, onClose, data }) {
                                     ) : (
                                         <input
                                             type="password"
-                                            value={password}
+                                            value="●●●●●●●●"
                                             readOnly
                                             className="ml-2 w-4/5 border rounded-lg border-[#6EE0FA]"
                                         />

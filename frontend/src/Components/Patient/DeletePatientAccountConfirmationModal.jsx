@@ -1,74 +1,132 @@
-"use client";
-
+import React, { useState, useContext } from "react";
+import axios from "axios";
+import { AuthContext } from "../../Components/Authentication/AuthContext";
 import { Button, Label, TextInput, Modal } from "flowbite-react";
-import { useState } from "react";
+// component
+import DeleteAccountPrompt from "./DeletePatientAccountALertModal";
 
-function DeletePatientAccountConfirmationModal({ isOpen, onClose, onConfirm }) {
-  const [password, setPassword] = useState(""); // Store the entered password
-  const [errorMessage, setErrorMessage] = useState(null); // Handle error messages
+function DeletePatientAccountConfirmationModal({ isOpen, onClose }) {
+  const { token } = useContext(AuthContext);
 
-  // Handle input change for password
-  const handleChange = (e) => {
-    setPassword(e.target.value);
-  };
+  const [currentPassword, setCurrentPassword] = useState(""); // Store the entered password
+  const [currentPasswordError, setCurrentPasswordError] = useState(null); // Handle error messages
+
+  const [confirmDeleteShow, setConfirmDeleteShow] = useState(false);
+
 
   // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setErrorMessage(null);
-    if (password === "") {
-      setErrorMessage("Please enter your current password.");
+    let valid = true;
+
+    if (!currentPassword) {
+      setCurrentPasswordError("Please fill in this field.");
       return;
     }
-    onConfirm(password); // Trigger the confirm action with entered password
+
+    try {
+      const response = await axios.delete(
+        "/api/patient/deleteOwnPatientAccount", 
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          data: {
+            password: currentPassword,  // Send password in the data field
+          },
+        }
+      );      
+
+      // split api response
+      const { success, message, status } = response.data;
+  
+      // if current password is wrong
+      if (!success) {
+        setCurrentPasswordError("Password does not match.");
+        valid = false;
+        return;
+      } else {
+        setCurrentPasswordError(null);  // current password correct = no error message
+      }
+
+    } catch (error) {
+      setCurrentPasswordError("Error verifying current password.");
+      valid = false;
+      return;
+    }
+
+    if (!valid) return;
+
+
+    // success modal only if everything ok
+    setConfirmDeleteShow(true);
   };
 
+
+  function handleConfirmDelete() {
+    setConfirmDeleteShow(false);
+    onClose();
+  }
+
+
   return (
-    <Modal show={isOpen} size="md" onClose={onClose} popup>
-      <Modal.Header>
-        <p className="text-xl font-medium text-cyan-400">Delete Your Account</p>
-      </Modal.Header>
-      <Modal.Body>
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Instruction */}
-          <p className="text-center mb-4 text-gray-500">
-            Enter your current password to confirm account deletion.
-          </p>
+    <>
+      <Modal show={isOpen} size="lg" onClose={onClose} popup>
+        <Modal.Header />
 
-          {/* Current Password Input */}
+        <Modal.Body>
           <div>
-            <Label htmlFor="password" value="Enter current password" />
-            <TextInput
-              id="password"
-              type="password"
-              value={password}
-              onChange={handleChange}
-              required
-            />
+            <p className="text-2xl text-center font-bold text-black">
+              Delete Your Patient Account
+            </p>
+            <p className="text-center text-gray-500">
+              Please note that there is no option to restore the account or its data once it is deleted.
+            </p>
           </div>
 
-          {/* Error Message */}
-          {errorMessage && <p className="text-red-500 text-sm">{errorMessage}</p>}
+          <div className="p-4"></div>
 
-          {/* Buttons for Confirm and Cancel */}
-          <div className="flex justify-between gap-4">
-            <Button
-              type="button"
-              className="w-full bg-white border-2 border-red-500 text-red-500 hover:bg-red-500 hover:text-white"
-              onClick={onClose}
-            >
-              Cancel
-            </Button>
-            <Button
-              type="submit"
-              className="w-full bg-red-500 text-white hover:bg-red-600"
-            >
-              Confirm Delete
-            </Button>
+          <div>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Current Password Input */}
+              <div className="mb-4">
+                <Label htmlFor="password" value="Enter current password" />
+                <TextInput
+                  id="currentPassword"
+                  type="password"
+                  value={currentPassword}
+                  onChange={(e) => setCurrentPassword(e.target.value)}
+                  required
+                  color={currentPasswordError ? "failure" : "gray"}
+                />
+                {currentPasswordError && <p className="text-red-500">{currentPasswordError}</p>}
+              </div>
+
+              <div className="pt-1"></div>
+
+              {/* Buttons for Confirm and Cancel */}
+              <div className="flex justify-center space-x-4 w-full">
+                <button
+                  type="submit"
+                  className="w-5/12 py-2 border border-red-600 text-red-600 rounded hover:bg-red-600 hover:text-white transition duration-300"
+                >
+                  Confirm Delete
+                </button>
+                <button
+                  onClick={onClose}
+                  className="w-5/12 py-2 border border-gray-300 text-gray-500 rounded hover:bg-gray-300 hover:text-white transition duration-300"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
           </div>
-        </form>
-      </Modal.Body>
-    </Modal>
+        </Modal.Body>
+      </Modal>
+
+      {/* delete account success */}
+      <DeleteAccountPrompt show={confirmDeleteShow} onClose={handleConfirmDelete} />
+    </>
   );
 }
 
