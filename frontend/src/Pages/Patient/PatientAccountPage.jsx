@@ -3,7 +3,7 @@ import { AuthContext } from "../../Components/Authentication/AuthContext";
 import { Button, Spinner } from "flowbite-react";
 import ActorNavbar from "../../Components/ActorNavbar";
 import axios from "axios";
-import PatientDetail from "../../Components/Doctor/Consultation/PatientDetail";
+import ViewAccountDetails from "../../Components/Patient/ViewAccountDetails";
 import ChangePatientPasswordModal from "../../Components/Patient/ChangePatientPasswordModal";
 import DeletePatientAccountConfirmationModal from "../../Components/Patient/DeletePatientAccountConfirmationModal"; // Import the DeleteAccountModal
 
@@ -37,25 +37,6 @@ function PatientAccountPage() {
     }
   }, [token]);
 
-  // Function to handle account deletion
-  const handleDeleteAccount = async (password) => {
-    try {
-      const response = await axios.delete("/api/patient/deleteOwnPatientAccount", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        data: { password }, // Send the password to validate before deleting the account
-      });
-      if (response.status === 200) {
-        console.log("Account deleted successfully");
-        logout(); // Log out the user after deletion
-      }
-    } catch (error) {
-      setErrorMessage("Failed to delete account. Please check your password.");
-      console.error("Error deleting account:", error);
-    }
-  };
-
   // If the page is still loading, show a spinner
   if (isLoading) {
     return (
@@ -68,21 +49,29 @@ function PatientAccountPage() {
   return (
     <div>
       <ActorNavbar />
-      <div className="container mx-auto px-4 py-10">
+      <div className="mx-20 px-4 py-10">
         <h1 className="text-3xl font-bold mb-8">Your Account</h1>
 
-        {/* Profile Section */}
-        {patientProfile && <PatientDetail patientDetails={patientProfile} />} {/* Pass the profile data to PatientDetail */}
+        {/* spinner when loading */}
+        {isLoading ? (
+          <div className="flex">
+            <Spinner aria-label="Center-aligned spinner" size="xl" />
+          </div>
+        ) : (
+          patientProfile && <ViewAccountDetails patientDetails={patientProfile} />
+        )}
+
+        <div className="p-7"></div>
 
         {/* Password Section */}
-        <div className="mt-10">
+        <div>
           <h2 className="text-2xl font-semibold mb-4">Password and Authentication</h2>
-          <Button
-            className="bg-cyan-400 text-white"
-            onClick={() => setIsPasswordModalOpen(true)} // Open modal on button click
+          <button 
+            className="px-6 py-2 border border-cyan-400 bg-cyan-400 text-white rounded hover:bg-cyan-600 hover:border-cyan-600 transition duration-300"
+            onClick={() => setIsPasswordModalOpen(true)} // Open password modal
           >
             Change Password
-          </Button>
+          </button>
         </div>
 
         {/* Render Change Password Modal */}
@@ -93,20 +82,20 @@ function PatientAccountPage() {
           />
         )}
 
+        <div className="p-7"></div>
+
         {/* Account Removal Section */}
-        <div className="mt-9 space-y-4">
-          <div className="mt-10 space-y-4">
-            <h2 className="font-bold text-xl text-gray-400">ACCOUNT REMOVAL</h2>
-          </div>
-          <h1 className="text-gray-400">
+        <div>
+          <p className="font-semibold text-2xl mb-1">ACCOUNT REMOVAL</p>
+          <p className="text-gray-600 mb-4">
             Deleting your account means that you will lose all data stored in your current account after taking this action.
-          </h1>
-          <Button
+          </p>
+          <button
             onClick={() => setIsDeletePromptOpen(true)} // Open delete account prompt
-            className="bg-red-500 text-white"
+            className="px-8 py-2 border border-red-500 bg-red-500 text-white rounded hover:bg-red-700 hover:border-red-700 transition duration-300"
           >
             Delete Account
-          </Button>
+          </button>
         </div>
       </div>
 
@@ -114,10 +103,6 @@ function PatientAccountPage() {
       {isDeletePromptOpen && (
         <DeletePatientAccountConfirmationModal
           isOpen={isDeletePromptOpen}
-          onConfirm={(password) => {
-            handleDeleteAccount(password); // Handle account deletion with entered password
-            setIsDeletePromptOpen(false); // Close the modal after action
-          }}
           onClose={() => setIsDeletePromptOpen(false)} // Close the modal if cancel is clicked
         />
       )}
