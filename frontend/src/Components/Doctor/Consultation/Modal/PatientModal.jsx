@@ -8,7 +8,7 @@ function PatientModal({isShow,onClose, patient}) {
 
     return (
         <div>
-            <Modal show={isShow} size="2xl" onClose={onClose} popup>
+            <Modal show={isShow} size="6xl" onClose={onClose} popup>
                 <Modal.Header>
                     <p className="text-xl font-medium text-cyan-400 dark:text-white"></p>
                 </Modal.Header>

@@ -3,21 +3,21 @@ import { MdEmail } from "react-icons/md";
 import React, { useState } from "react";
 import EditPatientAccountModal from "../../Patient/EditPatientAccountModal.jsx";
 
-function PatientDetail({ patientDetails }) {
+function PatientDetail({ patientDetails, card }) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false); // State to control modal visibility
 
   return (
     <>
-      <div className="p-7 bg-white border border-gray-300 rounded-lg shadow-lg relative">
+      <div className={`p-7 bg-white ${card ? 'border border-gray-300 shadow-lg' : ''} rounded-lg relative`}>
         <div className='flex flex-col md:flex-row'>
           {/* Left Side: Image and Basic Info */}
           <div className='md:w-1/3 flex justify-center items-center'>
-            {patientDetails.profilePictureUrl?(
+            {patientDetails.profilePictureUrl ? (
                 <img
-                src={patientDetails.profilePictureUrl}
-                className='mb-3 w-52 h-52 object-cover '
-                alt="Patient profile"
-            />):(
+                    src={patientDetails.profilePictureUrl}
+                    className='mb-3 w-52 h-52 object-cover '
+                    alt="Patient profile"
+                />) : (
                 <FaUser className='mb-3 w-52 h-52 object-cover'/>
             )}
 
@@ -72,7 +72,7 @@ function PatientDetail({ patientDetails }) {
 
       {/* EditAccountFormModal to be shown on clicking Edit Account */}
       {isEditModalOpen && (
-        <>
+          <>
           {console.log(patientDetails)} {/* Log the patient details */}
           <EditPatientAccountModal 
             isOpen={isEditModalOpen} 
