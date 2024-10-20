@@ -34,9 +34,9 @@ function ViewConsultations({consultations}) {
             <div className='flex flex-row mx-8 font-bold'>
                 <div className="w-1/5">Status</div>
                 <div className="w-3/5 text-left">Consultation ID</div>
-                <div className="w-1/5">Doctor</div>
-                <div className="w-1/5">Patient View</div>
-                <div className="w-1/5">Date</div>
+                <div className="w-1/5 hidden md:flex">Doctor</div>
+                <div className="w-3/5 text-center md:w-1/5 md:text-left">Patient View</div>
+                <div className="w-1/5 hidden md:flex">Date</div>
             </div>
             {sortedConsultations.length !== 0 ? (
                 sortedConsultations.map((consultation, index) => (
@@ -53,7 +53,9 @@ function ViewConsultations({consultations}) {
                                 navigate(`/doctor/patient/${patientId}/${consultation.consultationId}/classification`);
                             }
                         }}
-                        className={`cursor-pointer transition-colors duration-200 ${consultation.workflowStage === "COMPLETED" ? "hover:bg-gray-200" : "bg-gray-200"}`}
+                        className={
+                            `cursor-pointer  transition-colors duration-200  ${consultation.workflowStage === "COMPLETED" ? "hover:bg-gray-200" : "bg-gray-200 border-2 border-red-500"}`
+                        }
                     >
                         <div className="flex flex-row">
                             <div className="w-1/5">
@@ -65,20 +67,27 @@ function ViewConsultations({consultations}) {
                                     <FaBriefcaseMedical color="red" className="w-8 h-8 text-red-500"/>
                                 ) : null}
                             </div>
-                            <div className="w-3/5 text-left">Consultation #{consultation.consultationId}</div>
+                            <div className="w-3/5 text-left truncate">Consultation #{consultation.consultationId}</div>
                             {consultation.workflowStage === "COMPLETED" ? (
                                 <div className='w-3/5 flex flex-row'>
-                                    <div className="w-1/3">{consultation.doctorName}</div>
+                                    <div className="w-1/3 hidden md:flex">{consultation.doctorName}</div>
                                     {consultation.viewableToPatient ? (
-                                        <div className="w-1/3 text-green-500">Enabled</div>
+                                        <div
+                                            className="w-full text-center md:text-left md:w-1/3 text-green-500">Enabled</div>
                                     ) : (
-                                        <div className="w-1/3 text-red-500">Disabled</div>
+                                        <div
+                                            className="w-full text-center md:text-left md:w-1/3 justify-center text-red-500">Disabled</div>
                                     )}
-                                    <div className="w-1/3">{consultation.consultationDate}</div>
+                                    <div className="w-1/3 hidden md:flex">{consultation.consultationDate}</div>
                                 </div>
                             ) : (
-                                <div className="w-3/5 text-red-500 ">
-                                    Workflow not completed yet.. Click here to continue.
+                                <div className='w-3/5'>
+                                    <div className="hidden md:flex text-red-500 ">
+                                        Workflow not completed yet.. Click here to continue.
+                                    </div>
+                                    <div className="md:hidden text-red-500 ">
+                                        Workflow not completed.
+                                    </div>
                                 </div>
                             )}
 

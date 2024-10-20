@@ -119,10 +119,10 @@ function Results({patientId, consultationId}) {
     ) : (
         <div className='px-20'>
             <p className='text-3xl font-bold my-4'>Classification Results</p>
-            <div className='flex flex-row'>
-                <div className='w-2/3 pr-16'>
+            <div className='flex flex-col md:flex-row'>
+                <div className=' w-full md:w-2/3 pr-16'>
                     <p className='text-xl text-cyan-400'>X-RAY IMAGE AND AREAS OF INTEREST</p>
-                    <div className='flex flex-row bg-gray-100 w-full py-20'>
+                    <div className='flex flex-row md:bg-gray-100 w-full py-10 md:py-20'>
                         <div className='flex w-1/2'>
                             <img src={XrayImage} alt='x'
                                  className='px-4 py-4 max-w-full max-h-full'/>
@@ -133,7 +133,7 @@ function Results({patientId, consultationId}) {
                         </div>
                     </div>
                 </div>
-                <div className='w-1/3 pr-16'>
+                <div className='w-full md:w-1/3 pr-16'>
                     <p className='text-xl text-cyan-400'>FINDINGS</p>
                     <div className='border-2 border-cyan-400 rounded-lg px-8 py-4 mb-8'
                          style={{whiteSpace: 'pre-wrap'}}>

@@ -136,8 +136,8 @@ function Suggested({consultationId}) {
         </div>
     ) : (
         <div className='px-20'>
-            <div className='flex flex-row'>
-                <div className='w-1/2 pr-16'>
+            <div className='flex flex-col md:flex-row'>
+                <div className='w-full md:w-1/2 pr-16'>
                     <div className='flex flex-row items-center'>
                         <p className='text-xl text-cyan-400'>SUGGESTED PRESCRIPTIONS</p>
                         <a href={prescriptionsLink} className='mx-2' title='View Prescription PDF'>
@@ -163,7 +163,7 @@ function Suggested({consultationId}) {
                         >{prescriptionEditable ? ('Save') : ('Modify Prescriptions')}</Button>
                     </div>
                 </div>
-                <div className='w-1/2 pr-16'>
+                <div className='w-full md:w-1/2 pr-16'>
                     <div className='flex flex-row items-center'>
                         <p className='text-xl text-cyan-400'>SUGGESTED LIFESTYLE CHANGES</p>
                         <a href={lifestyleChangesLink} className='mx-2' title='View Suggestion PDF'>

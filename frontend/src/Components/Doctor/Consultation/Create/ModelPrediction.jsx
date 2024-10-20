@@ -105,8 +105,8 @@ function ModelPrediction({patientId, consultationId}) {
         <div className='flex justify-center'>
             <div className='w-4/5 flex flex-col'>
                 <p className='text-3xl font-bold my-6'>X-Ray Model Predictions</p>
-                <div className='flex flex-row'>
-                    <div className='flex flex-col w-1/2 px-4'>
+                <div className='flex flex-col md:flex-row'>
+                    <div className='flex flex-col w-full md:w-1/2 px-4'>
                         <div className='flex flex-col'>
                             <p className='text-xl text-cyan-400'>X-RAY IMAGE AND AREAS OF INTEREST</p>
                             <div className='flex flex-row bg-gray-100 w-full'>
@@ -120,7 +120,7 @@ function ModelPrediction({patientId, consultationId}) {
                                 </div>
                             </div>
                         </div>
-                        <div className='flex flex-col mt-6'>
+                        <div className='flex flex-col mt-6 md:mb-0 mb-12'>
                             <p className='text-xl text-cyan-400  mt-4'>FINDINGS</p>
                             <div className='flex flex-col rounded-lg border-2 border-cyan-400 px-4 py-4'>
                                 <p>Classification: {Classification}</p>
@@ -130,7 +130,7 @@ function ModelPrediction({patientId, consultationId}) {
                             </div>
                         </div>
                     </div>
-                    <div className='flex flex-col w-1/2'>
+                    <div className='flex flex-col w-full md:w-1/2'>
                         <div className='flex flex-col'>
                             <p className='text-xl text-cyan-400'>CONSULTATION INFORMATION</p>
                             <div className='flex flex-col rounded-lg border-2 border-cyan-400 space-y-2 pb-4'>
