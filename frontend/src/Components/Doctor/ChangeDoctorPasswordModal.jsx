@@ -11,30 +11,41 @@ function ChangeDoctorPasswordModal({ isOpen, onClose }) {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const [resetPasswordSuccess, setResetPasswordSuccess] = useState(false);
-  const [errorMessage, setErrorMessage] = useState(""); // To store any error messages
-  // const [successMessage, setSuccessMessage] = useState(""); // To store success messages
+  const [currentPasswordError, setCurrentPasswordError] = useState(null);
+  const [newPasswordError, setNewPasswordError] = useState(null);
+  const [confirmPasswordError, setConfirmPasswordError] = useState(null);
+  const [isPasswordUpdatedModalOpen, setIsPasswordUpdatedModalOpen] = useState(false);
 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    let valid = true;
     
-    if (newPassword !== confirmPassword) {
-      setErrorMessage("Passwords do not match.");
+    if (!currentPassword) {
+      setCurrentPasswordError("Please fill in this field.");
+      setNewPasswordError("");
+      setConfirmPasswordError("");
       return;
     }
-    
-    // Clear any previous messages
-    setErrorMessage("");
-    // setSuccessMessage("");
+    if (!newPassword) {
+      setCurrentPasswordError("");
+      setNewPasswordError("Please fill in this field.");
+      setConfirmPasswordError("");
+      return;
+    }
+    if (!confirmPassword) {
+      setCurrentPasswordError("");
+      setNewPasswordError("");
+      setConfirmPasswordError("Please fill in this field.");
+      return;
+    }
 
-    // Make API request to change password
     try {
       const response = await axios.patch(
         "/api/doctor/changeDoctorPassword",
         {
-          currentPassword,
-          newPassword,
+          currentPassword: currentPassword,
+          newPassword: newPassword,
         },
         {
           headers: {
@@ -42,20 +53,60 @@ function ChangeDoctorPasswordModal({ isOpen, onClose }) {
           },
         }
       );
-
-      // Assuming a successful response
-      if (response.status === 200) {
-        // setSuccessMessage("Password changed successfully!");
-        setResetPasswordSuccess(true);
+  
+      // split api response
+      const { success, message, status } = response.data;
+  
+      // reset password is unsuccessful
+      if (!success) {
+        // new password doesnt follow the correct format
+        if (!validatePassword(newPassword)) {
+          setCurrentPasswordError("");
+          setNewPasswordError("Password must be at least 8 characters long and contain a number and a special character.");
+          setConfirmPasswordError("");
+        // new password doesnt match with the confirm password
+        } else if (newPassword !== confirmPassword) {
+          setCurrentPasswordError("");
+          setNewPasswordError("");
+          setConfirmPasswordError("Passwords do not match.");
+        // current password is incorrect
+        } else {
+          setCurrentPasswordError("Current password does not match.");
+          setNewPasswordError("");
+          setConfirmPasswordError("");
+        }
+        valid = false;
+        return;
+      // reset password is successful
+      } else {
+        setCurrentPasswordError(null);
+        setNewPasswordError("");
+        setConfirmPasswordError("");
       }
+
     } catch (error) {
-      setErrorMessage("Error changing password. Please try again.");
-      console.error("Error changing password:", error);
+      setCurrentPasswordError("Error verifying current password.");
+      setNewPasswordError("");
+      setConfirmPasswordError("");
+      valid = false;
+      return;
     }
+
+    if (!valid) return;
+
+
+    // success modal only if everything ok
+    setIsPasswordUpdatedModalOpen(true);
   };
 
+  // make sure password is of valid format
+  function validatePassword(password) {
+    const passwordRegex = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,}$/;
+    return passwordRegex.test(password);
+  }
+
   function handleResetPasswordSuccess() {
-    setResetPasswordSuccess(false);
+    setIsPasswordUpdatedModalOpen(false);
     onClose();
   }
 
@@ -89,8 +140,9 @@ function ChangeDoctorPasswordModal({ isOpen, onClose }) {
                   type="password"
                   value={currentPassword}
                   onChange={(e) => setCurrentPassword(e.target.value)}
-                  required
+                  color={currentPasswordError ? "failure" : "gray"}
                 />
+                {currentPasswordError && <p className="text-red-500">{currentPasswordError}</p>}
               </div>
 
               {/* New Password */}
@@ -103,8 +155,9 @@ function ChangeDoctorPasswordModal({ isOpen, onClose }) {
                   type="password"
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
-                  required
+                  color={newPasswordError ? "failure" : "gray"}
                 />
+                {newPasswordError && <p className="text-red-500">{newPasswordError}</p>}
               </div>
 
               {/* Confirm Password */}
@@ -117,8 +170,9 @@ function ChangeDoctorPasswordModal({ isOpen, onClose }) {
                   type="password"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  required
+                  color={confirmPasswordError ? "failure" : "gray"}
                 />
+                {confirmPasswordError && <p className="text-red-500">{confirmPasswordError}</p>}
               </div>
 
               <div className="pt-1"></div>
@@ -138,8 +192,6 @@ function ChangeDoctorPasswordModal({ isOpen, onClose }) {
                   Done
                 </button>
               </div>
-              {/* Display Error Message */}
-              {errorMessage && <p className="text-red-500 text-center">{errorMessage}</p>}
             </form>
           </div>
           
@@ -147,7 +199,7 @@ function ChangeDoctorPasswordModal({ isOpen, onClose }) {
       </Modal>
 
       {/* reset password success */}
-      <PasswordUpdated show={resetPasswordSuccess} onClose={handleResetPasswordSuccess} />
+      <PasswordUpdated show={isPasswordUpdatedModalOpen} onClose={handleResetPasswordSuccess} />
     </>
   );
 }

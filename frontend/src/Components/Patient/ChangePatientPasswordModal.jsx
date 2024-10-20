@@ -16,6 +16,7 @@ function ChangePatientPasswordModal({ isOpen, onClose }) {
   const [confirmPasswordError, setConfirmPasswordError] = useState(null);
   const [isPasswordUpdatedModalOpen, setIsPasswordUpdatedModalOpen] = useState(false); // Control the PasswordUpdated modal
 
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     let valid = true;
@@ -56,27 +57,29 @@ function ChangePatientPasswordModal({ isOpen, onClose }) {
       // split api response
       const { success, message, status } = response.data;
   
-      // if current password is wrong
+      // reset password is unsuccessful
       if (!success) {
+        // new password doesnt follow the correct format
         if (!validatePassword(newPassword)) {
           setCurrentPasswordError("");
           setNewPasswordError("Password must be at least 8 characters long and contain a number and a special character.");
           setConfirmPasswordError("");
+        // new password doesnt match with the confirm password
         } else if (newPassword !== confirmPassword) {
-          console.log("harusnya ini")
           setCurrentPasswordError("");
           setNewPasswordError("");
           setConfirmPasswordError("Passwords do not match.");
+        // current password is incorrect
         } else {
-          console.log("kok muncul ini")
           setCurrentPasswordError("Current password does not match.");
           setNewPasswordError("");
           setConfirmPasswordError("");
         }
         valid = false;
         return;
+      // reset password is successful
       } else {
-        setCurrentPasswordError(null);  // current password correct = no error message
+        setCurrentPasswordError(null);
         setNewPasswordError("");
         setConfirmPasswordError("");
       }
@@ -96,7 +99,7 @@ function ChangePatientPasswordModal({ isOpen, onClose }) {
     setIsPasswordUpdatedModalOpen(true);
   };
 
-  // Password validation function
+  // make sure password is of valid format
   function validatePassword(password) {
     const passwordRegex = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,}$/;
     return passwordRegex.test(password);
