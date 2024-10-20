@@ -114,7 +114,7 @@ function DoctorViewPatientPage() {
             <div className="mb-24"/>
             <div className='flex flex-col'>
                 <div className='flex flex-row'>
-                    <div className='flex w-1/2 justify-center'>
+                    <div className='flex w-1/2 justify-center ml-10'>
                         <button onClick={() => setDetail(false)}
                                 className='text-3xl text-black bg-transparent border-none cursor-pointer'>
                             Consultation Record
@@ -141,8 +141,8 @@ function DoctorViewPatientPage() {
                     </div>
                 ) : (
                     <div>
-                        <div className="flex flex-row">
-                            <div className="ml-20 my-10 font-bold text-3xl">
+                        <div className="md:flex-row hidden md:flex">
+                            <div className=" ml-20 my-10 font-bold text-3xl">
                                 {patient?.name || "Patient"}'s Consultation Records
                             </div>
                             <Button
@@ -150,6 +150,17 @@ function DoctorViewPatientPage() {
                                 onClick={() => setConsultationModalOpen(true)}
                             >
                                 Create Consultation Record
+                            </Button>
+                        </div>
+                        <div className="flex flex-row md:hidden">
+                            <div className=" ml-20 my-10 font-bold text-3xl">
+                                Consultation
+                            </div>
+                            <Button
+                                className="bg-cyan-400 my-10 ml-auto mr-20"
+                                onClick={() => setConsultationModalOpen(true)}
+                            >
+                                Create Consultation
                             </Button>
                         </div>
                         <ViewConsultations consultations={consultations}/>

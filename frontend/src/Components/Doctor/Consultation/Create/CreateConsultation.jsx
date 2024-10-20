@@ -71,21 +71,21 @@ function CreateConsultation({patientId, consultationId}) {
         <div className='flex justify-center'>
             <div className='w-4/5 flex flex-col'>
                 <p className='text-3xl font-bold'>Creating Consultation</p>
-                <div className='flex flex-row mt-8'>
-                    <div className='flex flex-col w-1/3'>
+                <div className='flex flex-col md:flex-row mt-8'>
+                    <div className='flex flex-col md:items-start items-center w-full md:w-1/3'>
                         <p className='text-cyan-400 text-2xl'>X-RAY IMAGE</p>
                         <div className='bg-gray-100 flex  my-4 py-8'>
                             <img src={XrayImage} alt='before' className='w-64 h-64 max-w-full max-h-full'></img>
                         </div>
                     </div>
-                    <div className='flex flex-col w-1/3 mx-4'>
+                    <div className='flex flex-col md:items-start items-center w-full md:w-1/3 mx-4'>
                         <p className='text-cyan-400 text-2xl'>AREAS OF INTEREST</p>
                         <div className='bg-gray-100 flex
                           my-4 py-8'>
                             <img src={highlightImage} alt='before' className='w-64 h-64 max-w-full max-h-full'></img>
                         </div>
                     </div>
-                    <div className='flex flex-col w-1/3 mx-4'>
+                    <div className='flex flex-col w-full md:w-1/3 mx-4'>
                         <p className='text-cyan-400 text-2xl'>FINDINGS</p>
                         <div className='flex flex-col border-2 border-cyan-400 rounded-lg my-4 space-y-4'>
                             <div className='px-4'>

@@ -8,16 +8,10 @@ import { AuthContext } from "../../../Authentication/AuthContext.jsx";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 
-
-
 function ViewPDF({ viewData }) {
     const { token } = useContext(AuthContext);
     const { patientId, consultationId } = useParams();
-    const id = '6'
-    const date = '26 October 2023'
-    const doctor = 'Dr. John Doe'
     const infected = false
-    const address = "https://media.geeksforgeeks.org/wp-content/cdn-uploads/20210101201653/PDF.pdf"
     const [patientView, setPatientView] = useState(viewData.patientView)
     const navigate = useNavigate();
 
@@ -40,33 +34,37 @@ function ViewPDF({ viewData }) {
 
     return (
         <div>
-            <div className='mx-20 py-20 px-20 border-2 border-cyan-400 rounded-xl'>
-                <div className='flex flex-row'>
-                    <p className='text-2xl font-bold'>Consultation #{consultationId} Results</p>
+            <div className='mx-20 py-10 md:py-20 px-20 border-2 border-cyan-400 rounded-xl'>
+                <div className='flex flex-col md:flex-row'>
+                    <p className='text-2xl font-bold hidden md:flex'>Consultation #{consultationId}</p>
+                    <p className='text-2xl flex flex-col font-bold md:hidden'>
+                        Consultation:
+                        <p>{consultationId}</p>
+                    </p>
                     {patientView ? (
-                        <p className="ml-4 bg-cyan-400 text-white text-center py-2 px-8 rounded-full">
+                        <p className="my-10 md:my-0 ml-4 bg-cyan-400 text-white text-center py-2 px-8 rounded-full">
                             Patient View Enabled
                         </p>
                     ) : (
-                        <p className="ml-4 bg-gray-400 text-white text-center py-2 px-8 rounded-full">
+                        <p className="my-10 md:my-0 ml-4 bg-gray-400 text-white text-center py-2 px-8 rounded-full">
                             Patient View Disabled
                         </p>
                     )}
                 </div>
-                <p>
+                <p className='hidden md:flex'>
                     Consultation on {viewData.consultationDate}
                 </p>
-                <p>
+                <p className='hidden md:flex'>
                     Consulted with {viewData.doctorName}
                 </p>
                 <div className='flex flex-row'>
                     {infected ? (
-                        <div className='flex flex-row'>
+                        <div className='hidden md:flex flex-row'>
                             <FaBriefcaseMedical color='red' className='w-8 h-8'/>
                             Patient is &nbsp; <p className='text-red-500'>infected</p> &nbsp; with COVID-19.
                         </div>
                     ) : (
-                        <div className='flex flex-row items-center'>
+                        <div className='hidden md:flex flex-row items-center'>
                             {viewData.status === "Healthy" ? (
                                 <AiFillSafetyCertificate className="w-8 h-8 text-green-500"/>
                             ) : viewData.status === "Mild" ? (
@@ -96,7 +94,7 @@ function ViewPDF({ viewData }) {
                             ) : null}
                         </div>
                     )}
-                    <Button className='bg-white text-cyan-400 border-2 border-cyan-400 ml-auto'
+                    <Button className='bg-white text-cyan-400 border-2 border-cyan-400 w-full md:w-1/5 md:ml-auto'
                             onClick={() => updateViewableToPatient()}
                     >{patientView ? ('Disable Patient View') : ('Enable Patient View')}</Button>
                 </div>
