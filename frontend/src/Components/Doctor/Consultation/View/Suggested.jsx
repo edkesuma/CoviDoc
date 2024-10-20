@@ -16,10 +16,14 @@ function Suggested({consultationId}) {
     const {token} = useContext(AuthContext);
 
      const upload = () => {
+         const prescriptionsData = jsonPrescriptions(prescriptions)
+         console.log("Prescriptions: ", prescriptionsData);
+         const lifestyleChangesData = jsonLifestyle(lifestyleChanges)
+         console.log("lifestyleChanges: ", lifestyleChangesData);
         var formData ={
             "consultationId":consultationId,
-            "prescriptions":prescriptions,
-            "lifestyleChanges":lifestyleChanges
+            "prescriptions":prescriptionsData,
+            "lifestyleChanges":lifestyleChangesData
         }
         axios
             .patch(`/api/doctor/updatePrescriptionsLifestyleChanges`, formData, {
@@ -44,6 +48,19 @@ function Suggested({consultationId}) {
         return resultString
     }
 
+    function jsonPrescriptions(str) {
+    let lines = str.split('\n');
+    let jsonArray = [];
+    lines.forEach(line => {
+        let name = line.replace('• ', '').replace('.', '');
+        jsonArray.push({
+            prescriptionName: [name]
+        });
+    });
+    const jsonS = JSON.stringify(jsonArray)
+    return jsonS;
+}
+
     function analysislifestyle(str) {
         let jsonString = str.replace(/\\"/g, '"');
         const lifestyleChanges = JSON.parse(jsonString);
@@ -54,6 +71,20 @@ function Suggested({consultationId}) {
         });
         return lifestyleChangesString
     }
+
+    function jsonLifestyle(str) {
+    let lines = str.split('\n').filter(line => line.trim() !== '');
+    let jsonArray = [];
+    for (let i = 0; i < lines.length; i += 2) {
+        let title = lines[i].replace('•', '').trim();
+        let description = lines[i + 1].trim();
+        jsonArray.push({
+            lifestyleChange: [title, description]
+        });
+    }
+    const jsonS = JSON.stringify(jsonArray)
+    return jsonS;
+}
 
     useEffect(() => {
         if (token && consultationId) {

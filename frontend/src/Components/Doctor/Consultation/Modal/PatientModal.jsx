@@ -7,7 +7,7 @@ import PatientDetail from "../PatientDetail.jsx";
 function PatientModal({isShow,onClose, patient}) {
 
     return (
-        <div>
+        <div>  
             <Modal show={isShow} size="6xl" onClose={onClose} popup>
                 <Modal.Header>
                     <p className="text-xl font-medium text-cyan-400 dark:text-white"></p>
