@@ -18,7 +18,7 @@ function ViewXrays({xRays}) {
         }
         const dateA = new Date(formatDateString(a.consultationDate));
         const dateB = new Date(formatDateString(b.consultationDate));
-        return dateB - dateA; // Sort from new to old
+        return dateB - dateA;
     });
 
     function analysisPrescriptions(str) {
