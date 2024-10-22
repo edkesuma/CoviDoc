@@ -1,30 +1,94 @@
 "use client";
 import {Card} from "flowbite-react";
 import React from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import x from '../../../../assets/X-ray/before.jpg'
-import y from '../../../../assets/X-ray/after.jpg'
 
 function ViewXrays({xRays}) {
-    const { patientId } = useParams();
-    const navigate = useNavigate();
+
+    function formatDateString(dateString) {
+        const [day, month, year] = dateString.split('/');
+        return `${year}-${month}-${day}`;
+    }
+
+    const sortedXrays = [...xRays].sort((a, b) => {
+        if (a.prescriptions != null && b.prescriptions == null) {
+            return -1;
+        }
+        if (a.prescriptions == null && b.prescriptions != null) {
+            return 1;
+        }
+        const dateA = new Date(formatDateString(a.consultationDate));
+        const dateB = new Date(formatDateString(b.consultationDate));
+        return dateB - dateA; // Sort from new to old
+    });
+
+    function analysisPrescriptions(str) {
+        let jsonString = str.replace(/\\"/g, '"');
+        let jsonArray = JSON.parse(jsonString);
+        let resultArray = jsonArray.map(item => '• ' + item.prescriptionName[0] + '.');
+        let resultString = resultArray.join('\n');
+        console.log(resultString);
+        return resultString
+    }
     return (
         <div className="mx-20 space-y-4">
-            { xRays.length != 0 ? (
-                xRays.map((xRay, index) => (
+            {sortedXrays.length != 0 ? (
+                sortedXrays.map((xRay, index) => (
                     <Card
                         key={index}
-                        onClick={() => navigate(`/doctor/patient/${patientId}/${xRay.consultationId}/pdf`)}
-                        className="cursor-pointer hover:bg-gray-200 transition-colors duration-200"
+                        className="transition-colors duration-200"
                     >
                         <div className='flex flex-col'>
-                            <p className='text-xl font-bold'>Consultation #{xRay.consultationId} - {xRay.date}</p>
+                            {xRay.prescriptions != null ? (
+                                <p className='text-xl font-bold'>Consultation
+                                    #{xRay.consultationId} - {xRay.consultationDate}</p>
+                            ) : (
+                                <p className='text-xl font-bold'>Consultation #{xRay.consultationId} </p>
+                            )}
+
                             <div className='flex flex-row my-4'>
                                 <div className='w-3/5 bg-gray-400 flex flex-row justify-center mx-4'>
-                                    <img src={x} alt='x' className='mx-4'/>
-                                    <img src={y} alt='y' className='mx-4'/>
+                                    <div className='w-1/2 flex justify-center'>
+                                        <img src={xRay.xrayImageUrl} alt='x'/>
+                                    </div>
+                                    <div className='w-1/2 flex justify-center'>
+                                        <img src={xRay.highlightedXrayImageUrl} alt='y' className='h-full'/>
+                                    </div>
                                 </div>
-                                <div className='w-2/5 border-2 border-cyan-400 rounded-lg mx-4'></div>
+                                <div className='w-2/5'>
+                                    {xRay.prescriptions == null ? (
+                                        <div
+                                            className='flex justify-center items-center border-2 border-cyan-400 rounded-lg px-4 py-4 mx-4 h-64 overflow-y-auto'>
+                                            <p className='text-2xl'>Workflow not completed yet..</p>
+                                        </div>
+                                    ) : (
+                                        <div>
+                                            {
+                                                xRay.classification == 'Healthy' ? (
+                                                    <div
+                                                        className='border-2 border-cyan-400 rounded-lg px-4 py-4 mx-4 h-64 overflow-y-auto'>
+                                                        <p>Classification: {xRay.classification}</p>
+                                                        <p>Classification
+                                                            Confidence: {xRay.classificationConfidence}%</p>
+                                                        <p>Severity: {xRay.severity}</p>
+                                                        <p>Severity Confidence: {xRay.severityConfidence}%</p>
+                                                        <br/>
+                                                        {xRay.prescriptions}
+                                                    </div>
+                                                ) : (
+                                                    <div
+                                                        className='border-2 border-cyan-400 rounded-lg px-4 py-4 mx-4 h-64 overflow-y-auto whitespace-pre-wrap'>
+                                                        <p>Classification: {xRay.classification}</p>
+                                                        <p>Classification Confidence: {xRay.classificationConfidence}%</p>
+                                                        <p>Severity: {xRay.severity}</p>
+                                                        <p>Severity Confidence: {xRay.severityConfidence}%</p>
+                                                        <br/>
+                                                        {analysisPrescriptions(xRay.prescriptions)}
+                                                    </div>
+                                                )
+                                            }
+                                        </div>
+                                    )}
+                                </div>
                             </div>
                         </div>
                     </Card>
