@@ -10,17 +10,17 @@ import {useNavigate, useParams} from "react-router-dom";
 import axios from "axios";
 import ViewXrays from "../../Components/Doctor/Consultation/View/ViewXRays.jsx";
 import UploadXrayImage from "../../Components/Doctor/Consultation/Create/UploadXrayImage.jsx";
+
 function DoctorViewPatientPage() {
     const {token} = useContext(AuthContext);
     const {patientId} = useParams();
     const [patient, setPatient] = useState(null);
     const [consultations, setConsultations] = useState([]);
+    const [xRays, setXRays] = useState([])
     const [isLoading, setIsLoading] = useState(true);
     const [consultationModalOpen, setConsultationModalOpen] = useState(false);
     const navigate = useNavigate();
     const [detail, setDetail] = useState(false)
-    const xRays = [{consultationId: '1',date:'15/08/2024',x:'E:/CoviDoc/frontend/src/assets/X-ray/before.jpg',y:'E:/CoviDoc/frontend/src/assets/X-ray/after.jpg'},
-        {consultationId: '2',date:'11/04/2024',x:'E:/CoviDoc/frontend/src/assets/X-ray/before.jpg',y:'E:/CoviDoc/frontend/src/assets/X-ray/after.jpg'}]
 
     useEffect(() => {
         if (token && patientId) {
@@ -55,8 +55,23 @@ function DoctorViewPatientPage() {
                     console.log("Error fetching consultation history: ", error);
                 }
             };
-
-            Promise.all([fetchPatientDetails(), fetchConsultationHistory()])
+            const fetchXrayHistory = async () => {
+                try {
+                    const response = await axios.get(`/api/doctor/getXrayHistory`, {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        },
+                        params: {
+                            patientId: patientId
+                        }
+                    });
+                    setXRays(response.data.data);
+                } catch (error) {
+                    console.log("Error get XRays: ", error);
+                }
+            };
+            Promise.all([fetchPatientDetails(), fetchConsultationHistory(), fetchXrayHistory()])
                 .then(() => setIsLoading(false))
                 .catch((error) => {
                     console.log("Error fetching patient details and consultation history: ", error);
@@ -66,12 +81,16 @@ function DoctorViewPatientPage() {
     }, [token, patientId]);
 
     useEffect(() => {
+        console.log("Patient", patient);
+    }, [patient]);
+
+    useEffect(() => {
         console.log("Consultations", consultations);
     }, [consultations]);
 
     useEffect(() => {
-        console.log("Patient", patient);
-    }, [patient]);
+        console.log("xRays", xRays);
+    }, [xRays]);
 
     useEffect(() => {
         console.log("Is loading", isLoading);
