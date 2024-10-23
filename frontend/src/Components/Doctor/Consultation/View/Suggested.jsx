@@ -43,47 +43,45 @@ function Suggested({consultationId}) {
     function analysisPrescriptions(str) {
         let jsonString = str.replace(/\\"/g, '"');
         let jsonArray = JSON.parse(jsonString);
-        let resultArray = jsonArray.map(item => '• ' + item.prescriptionName[0] + '.');
-        let resultString = resultArray.join('\n');
+        let resultArray = jsonArray.map(item => '• ' + item.prescriptionName[0] + ': ' + item.prescriptionName[1]);
+        let resultString = resultArray.join('\n\n');
         return resultString
     }
 
     function jsonPrescriptions(str) {
-    let lines = str.split('\n');
-    let jsonArray = [];
-    lines.forEach(line => {
-        let name = line.replace('• ', '').replace('.', '');
-        jsonArray.push({
-            prescriptionName: [name]
+        let lines = str.split('\n\n');
+        let jsonArray = [];
+        lines.forEach(line => {
+            line = line.replace('• ', '').replace('.', '')
+            let [name, reason] = line.split(':').map(item => item.trim());
+            jsonArray.push({
+                prescriptionName: [name, reason]
+            });
         });
-    });
-    const jsonS = JSON.stringify(jsonArray)
-    return jsonS;
-}
+        const jsonS = JSON.stringify(jsonArray)
+        return jsonS;
+    }
 
     function analysislifestyle(str) {
         let jsonString = str.replace(/\\"/g, '"');
-        const lifestyleChanges = JSON.parse(jsonString);
-        let lifestyleChangesString = '';
-        lifestyleChanges.forEach((item) => {
-            lifestyleChangesString += `•  ${item.lifestyleChange[0]}\n`;
-            lifestyleChangesString += `${item.lifestyleChange[1]}\n\n`; // 两行换行以便美观
-        });
-        return lifestyleChangesString
+        let jsonArray = JSON.parse(jsonString);
+        let resultArray = jsonArray.map(item => '•  ' + item.lifestyleChange[0].replace('.', '') + ': ' + item.lifestyleChange[1]);
+        let resultString = resultArray.join('\n\n');
+        return resultString
     }
 
     function jsonLifestyle(str) {
-    let lines = str.split('\n').filter(line => line.trim() !== '');
-    let jsonArray = [];
-    for (let i = 0; i < lines.length; i += 2) {
-        let title = lines[i].replace('•', '').trim();
-        let description = lines[i + 1].trim();
-        jsonArray.push({
-            lifestyleChange: [title, description]
+        let lines = str.split('\n\n');
+        let jsonArray = [];
+        lines.forEach(line => {
+            line = line.replace('•  ', '').replace('.', '')
+            let [name, reason] = line.split(':').map(item => item.trim());
+            jsonArray.push({
+                lifestyleChange: [name, reason]
+            });
         });
-    }
-    const jsonS = JSON.stringify(jsonArray)
-    return jsonS;
+        const jsonS = JSON.stringify(jsonArray)
+        return jsonS;
 }
 
     useEffect(() => {
@@ -122,7 +120,7 @@ function Suggested({consultationId}) {
         if (e.key === 'Enter') {
             e.preventDefault();
             const {selectionStart, selectionEnd} = e.target;
-            const newValue = value.substring(0, selectionStart) + '\n• ' + value.substring(selectionEnd);
+            const newValue = value.substring(0, selectionStart) + '\n\n• ' + value.substring(selectionEnd);
             setValue(newValue);
             setTimeout(() => {
                 e.target.selectionStart = e.target.selectionEnd = selectionStart + 3; // Move cursor after the bullet point

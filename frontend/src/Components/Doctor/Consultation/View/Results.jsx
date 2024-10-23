@@ -105,8 +105,8 @@ function Results({patientId, consultationId}) {
 
     const consultationInfoText =
         'Consulted on: ' + formatDate(date) + '\n' +
-        'Temperature' + temperature + '\n' +
-        'O2 saturation: ' + O2 + '\n' +
+        'Temperature: ' + temperature + '°C' + '\n' +
+        'O2 saturation: ' + O2 + '%' + '\n' +
         'Recently been in ICU: ' + ICU + '\n' +
         'Recently needed supplemental O2: ' + supplemental + '\n' +
         'Intubation present: ' + intubation

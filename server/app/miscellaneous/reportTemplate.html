@@ -386,7 +386,7 @@
                                 </p>
                             {% else %}
                                 <span style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
-                                    <a href={{prescriptionsLink}} target="_blank">
+                                    <a href="{{prescriptionsLink | safe }}" target="_blank">
                                         Prescriptions Source Document
                                     </a> 
                                 </span>
@@ -429,7 +429,7 @@
                                 </p>
                             {% else %}
                                 <span style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
-                                    <a href={{lifestyleLink}} target="_blank">
+                                    <a href="{{lifestyleLink | safe}}" target="_blank">
                                         Lifestyle Changes Source Document
                                     </a> 
                                 </span>
