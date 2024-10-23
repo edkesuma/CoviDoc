@@ -388,3 +388,238 @@ def getClassificationsOverTimeData() -> Dict[str, Union[str, int, dict]]:
     """Get classification data over time"""
     data = Consultation.getClassificationsOverTimeData() # type: ignore
     return {"status code": 200, "data": data}
+
+
+# @router.route("/getDoctorStatistics", methods=["GET"])
+# @jwt_required()
+# @role_required(["Doctor"])
+# def getDoctorStatistics() -> Dict[str, Union[str, int, dict]]:
+#     """Get statistics for the doctor"""
+#     doctorId = get_jwt_identity()
+#     statistics = Doctor.getStatistics(doctorId)  # Assuming this method exists in the Doctor model
+#     if statistics:
+#         return {"status code": 200, "success": True, "data": statistics}
+#     else:
+#         return {"status code": 400, "success": False, "message": "Statistics not found"}
+
+
+# Visualization
+
+@router.route("/getSymptomPrevalence", methods=["GET"])
+@jwt_required()
+@role_required(["Doctor"])
+def getSymptomPrevalence() -> Dict[str, Union[str, int, list]]:
+    """Get symptom prevalence matrix for all patients"""
+    try:
+        # Fetch all patients
+        patients = Patient.queryAllPatients()
+        patientsArray = [patient.serialize() for patient in patients]
+        
+        # Fetch consultation history for all patients
+        consultationPromises = []
+        for patient in patients:
+            consultations = Consultation.queryAllPatientConsultations(patient.id)
+            consultationPromises.append({
+                "patientId": patient.id,
+                "consultations": [consultation.serialize() for consultation in consultations]
+            })
+        
+        # Extract all unique symptoms
+        uniqueSymptomsSet = set()
+        for consultationData in consultationPromises:
+            consultations = consultationData["consultations"]
+            for consultation in consultations:
+                if consultation["consultationNotes"]:
+                    symptoms = consultation["consultationNotes"].split(", ")
+                    uniqueSymptomsSet.update([symptom.strip() for symptom in symptoms])
+        
+        uniqueSymptoms = sorted(uniqueSymptomsSet)
+        
+        # Build the symptom matrix for each patient
+        symptomMatrix = []
+        for consultationData in consultationPromises:
+            consultations = consultationData["consultations"]
+            patientSymptoms = set()
+            
+            for consultation in consultations:
+                if consultation["consultationNotes"]:
+                    symptoms = consultation["consultationNotes"].split(", ")
+                    patientSymptoms.update([symptom.strip() for symptom in symptoms])
+            
+            # Create a binary vector for symptom presence
+            symptomPresence = [1 if symptom in patientSymptoms else 0 for symptom in uniqueSymptoms]
+            symptomMatrix.append(symptomPresence)
+
+        return {
+            "status code": 200,
+            "success": True,
+            "patients": patientsArray,
+            "symptomCategories": uniqueSymptoms,
+            "symptomData": symptomMatrix
+        }
+    
+    except Exception as e:
+        return {"status code": 500, "success": False, "message": str(e)}
+
+
+
+
+
+@router.route("/getAgeDistribution", methods=["GET"])
+@jwt_required()
+@role_required(["Doctor"])
+def getAgeDistribution() -> Dict[str, Union[str, int, dict]]:
+    """Get age distribution of all patients"""
+    try:
+        # Fetch all patients
+        patients = Patient.queryAllPatients()
+        
+        # Initialize age group counters
+        ageGroups = {
+            "0-18": 0,
+            "19-35": 0,
+            "36-50": 0,
+            "51-65": 0,
+            "66-80": 0,
+            "81-100": 0,
+        }
+
+        # Process age distribution
+        for patient in patients:
+            patient_data = patient.serialize()  # Serialize the patient data to get 'age'
+            age = patient_data.get('age')  # Access the serialized 'age' field
+            
+            if age is not None:  # Ensure age is available
+                if age <= 18:
+                    ageGroups["0-18"] += 1
+                elif age <= 35:
+                    ageGroups["19-35"] += 1
+                elif age <= 50:
+                    ageGroups["36-50"] += 1
+                elif age <= 65:
+                    ageGroups["51-65"] += 1
+                elif age <= 80:
+                    ageGroups["66-80"] += 1
+                else:
+                    ageGroups["81-100"] += 1
+
+        # Return the age group distribution
+        return {"status code": 200, "success": True, "ageGroups": ageGroups}
+    
+    except Exception as e:
+        return {"status code": 500, "success": False, "message": str(e)}
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+@router.route("/getClassificationConfidenceCounts", methods=["GET"])
+@jwt_required()
+@role_required(["Doctor"])
+def getClassificationConfidenceCounts() -> Dict[str, Union[str, int, dict]]:
+    """Get classification confidence counts for all consultations"""
+    try:
+        # Fetch all patients
+        patients = Patient.queryAllPatients()
+
+        # Initialize a dictionary to hold classification confidence counts
+        confidenceCounts = {}
+
+        # Process each patient's consultation history
+        for patient in patients:
+            consultations = Consultation.queryAllPatientConsultations(patient.id)
+            
+            for consultation in consultations:
+                # Fetch the associated report for each consultation
+                report = Report.queryReport(consultation.reportId)
+                
+                if report:
+                    classification_confidence = report.severity  # Assuming classificationConfidence is a field in the report
+
+                    if classification_confidence in confidenceCounts:
+                        confidenceCounts[classification_confidence] += 1
+                    else:
+                        confidenceCounts[classification_confidence] = 1
+
+        # Return the classification confidence counts
+        return {"status code": 200, "success": True, "confidenceCounts": confidenceCounts}
+    
+    except Exception as e:
+        return {"status code": 500, "success": False, "message": str(e)}
+
+
+@router.route("/getConsultationsByDate", methods=["GET"])
+@jwt_required()
+@role_required(["Doctor"])
+def getConsultationsByDate() -> Dict[str, Union[str, int, dict]]:
+    """Get the number of consultations grouped by date"""
+    try:
+        # Fetch all patients
+        patients = Patient.queryAllPatients()
+
+        # Initialize a dictionary to hold consultation counts per date
+        consultationDateCounts = {}
+
+        # Process each patient's consultation history
+        for patient in patients:
+            consultations = Consultation.queryAllPatientConsultations(patient.id)
+            
+            for consultation in consultations:
+                consultation_date = consultation.consultationDate.strftime("%d-%m-%Y")
+                
+                # Increment the count for that date
+                if consultation_date in consultationDateCounts:
+                    consultationDateCounts[consultation_date] += 1
+                else:
+                    consultationDateCounts[consultation_date] = 1
+
+        # Return the consultation counts by date
+        return {"status code": 200, "success": True, "consultationsByDate": consultationDateCounts}
+    
+    except Exception as e:
+        return {"status code": 500, "success": False, "message": str(e)}
+
+
+
+
+@router.route("/getGenderDistribution", methods=["GET"])
+@jwt_required()
+@role_required(["Doctor"])
+def getGenderDistribution() -> Dict[str, Union[str, int, dict]]:
+    """Get gender distribution of all patients"""
+    try:
+        # Fetch all patients
+        patients = Patient.queryAllPatients()
+
+        # Initialize counts for each gender
+        genderCounts = {"Male": 0, "Female": 0}
+
+        # Count the genders after serializing the patient data
+        for patient in patients:
+            patient_data = patient.serialize()  # Ensure patient data is serialized
+            gender = patient_data.get('gender')  # Get the gender field
+
+            if gender == "Male":
+                genderCounts["Male"] += 1
+            elif gender == "Female":
+                genderCounts["Female"] += 1
+
+        # Return the gender distribution
+        return {"status code": 200, "success": True, "genderCounts": genderCounts}
+    
+    except Exception as e:
+        return {"status code": 500, "success": False, "message": str(e)}
+# 
+
+
+
+
