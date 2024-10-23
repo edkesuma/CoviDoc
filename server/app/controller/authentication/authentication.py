@@ -49,7 +49,8 @@ def login() -> Dict[str, Union[str, int]]:
     # Generate access token
     access_token = create_access_token(
         identity=user.id, 
-        additional_claims=additionalClaims)
+        additional_claims=additionalClaims, 
+        expires_delta=datetime.timedelta(hours=6))
     
     return {"token": access_token}
 

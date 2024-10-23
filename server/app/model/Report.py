@@ -132,7 +132,7 @@ class Report(db.Model):
         xray_image_url = consultation.xrayImageUrl
 
         # Load the type classification model
-        type_clf_model = load_model(current_app.config["COVIDNEXT50_MODEL_PATH"], current_app.config["DEVICE"], n_classes=3)
+        type_clf_model = load_model(os.path.abspath("app/ml_models/covidnext50_clf.pth"), current_app.config["DEVICE"], n_classes=3)
 
         # Get image from URL
         response = requests.get(xray_image_url)
@@ -181,7 +181,7 @@ class Report(db.Model):
             predicted_severity = "NA"
             severity_confidence = 100
         else:
-            severity_clf_model = load_model(current_app.config["COVIDNEXT50SEV_MODEL_PATH"], current_app.config["DEVICE"], n_classes=2)
+            severity_clf_model = load_model(os.path.abspath("app/ml_models/covidnext50sev_clf.pth"), current_app.config["DEVICE"], n_classes=2)
             predicted_severity_idx, severity_confidence = severity_clf_model.classify_image(image)
             predicted_severity_idx = int(predicted_severity_idx)
             idx_to_severity_mapping = {0: "Mild", 1: "Moderate to Severe"}
@@ -395,6 +395,15 @@ class Report(db.Model):
         # Generate prescriptions, lifestyle suggestions
         prescriptions, prescriptionsLink = cls.generatePrescriptions(qa_chain, patientString, consultationString, classificationData)
         lifestyleChanges, lifestyleLink = cls.generateLifestyle(qa_chain, patientString, consultationString, classificationData)
+
+        # Clean URL encoding
+        if classificationData["classification"] != "Healthy":
+            prescriptionsLink = prescriptionsLink.replace("%20", " ")
+            prescriptionsLink = prescriptionsLink.replace("%28", "(")
+            prescriptionsLink = prescriptionsLink.replace("%29", ")")
+            lifestyleLink = lifestyleLink.replace("%20", " ")
+            lifestyleLink = lifestyleLink.replace("%28", "(")
+            lifestyleLink = lifestyleLink.replace("%29", ")")
         
         # Store prescriptions and lifestyle changes
         report.prescriptions = prescriptions
