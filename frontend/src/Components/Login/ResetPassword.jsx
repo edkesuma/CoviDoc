@@ -1,25 +1,72 @@
 "use client";
-import {Button, Card, Label, TextInput} from "flowbite-react";
-import {useNavigate, Link, useLocation} from 'react-router-dom';
-import React, {useState} from "react";
+import {Button, Card, Label, TextInput, Modal} from "flowbite-react";
+import {useNavigate, Link, useParams} from 'react-router-dom';
+import React, {useEffect, useState} from "react";
+import axios from "axios";
 
 function ResetPassword() {
-    const location = useLocation();
-    const {email} = location.state;
+    const {token} = useParams();
     const [password, setPassword] = useState('');
     const [rePassword, setRePassword] = useState('');
     const navigate = useNavigate();
     const [message,setMessage] = useState('\u00A0');
+    const [showErrorModal, setShowErrorModal] = useState(false);
+    const [modalMessage, setModalMessage] = useState('');
+
+    useEffect(() => {
+        const verifyToken = async () => {
+            await axios.post("/api/authentication/verifyResetPasswordToken", { "resetToken": token })
+            .then((res) => {
+                if (!res.data.success) {
+                    // Create popup for error with message and redirect back to login
+                    setModalMessage(res.data.message);
+                    setShowErrorModal(true);
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+                setModalMessage('Token is invalid or expired.');
+                setShowErrorModal(true);
+            })
+        };
+        verifyToken();
+        }, []);
+
+    const handleCloseModal = () => {
+        setShowErrorModal(false);
+        navigate("/login/forget");
+    }
+
+    const resetPassword = async () => {
+        await axios.patch("/api/authentication/resetPassword", 
+            { "newPassword": password },
+            { headers: { "Authorization": `Bearer ${token}` } }
+        )
+            .then((res) => {
+                if (res.data.success) {
+                    navigate('/login/resetPasswordSuccess');
+                } else {
+                    setMessage(res.data.message);
+                }
+            })
+        };
+
+    const validatePassword = (password) => {
+        // Password must be at least 8 characters long and contain at least one number and one special character
+        const re = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,}$/;
+        return re.test(String(password));
+    };
 
     const handleClick = () => {
-        if (!password) {
-            setMessage('\u00A0')
-        }
-        else if (password == rePassword){
-            navigate('/login/setSucc');
-        }else {
-            setMessage('The confirmation password does not match.')
-        }
+        if (!validatePassword(password)){
+            setMessage('Password must be at least 8 characters long and contain at least one number and one special character.');
+            return;
+        } else if (password != rePassword) {
+            setMessage('The confirmation password does not match. Try again.');
+            return;
+        } else {
+            resetPassword();
+        } 
     };
 
     return (
@@ -40,9 +87,9 @@ function ResetPassword() {
                         </div>
                         <div>
                             <div className="block text-left">
-                                <Label htmlFor="rePasswrod" value="Confirm new password" className="text-xl"/>
+                                <Label htmlFor="rePassword" value="Confirm new password" className="text-xl"/>
                             </div>
-                            <TextInput id="rePasswrod" type="password" required value={rePassword}
+                            <TextInput id="rePassword" type="password" required value={rePassword}
                                        onChange={(e) => setRePassword(e.target.value)}/>
                         </div>
                         <div className="text-left mb-8 text-red-400 text-xl">{message}</div>
@@ -51,6 +98,17 @@ function ResetPassword() {
                     </div>
                 </div>
             </Card>
+            <Modal size="xl" show={showErrorModal} onClose={handleCloseModal}>
+                <Modal.Header>
+                    <p className="text-xl font-medium text-cyan-400 dark:text-white">Error Occured</p>
+                </Modal.Header>
+                <Modal.Body>
+                    <div className="space-y-6">
+                        <p className="text-lg text-gray-600 dark:text-gray-300 flex justify-center">{modalMessage}</p>
+                        <Button className="w-full" onClick={handleCloseModal}>Return</Button>
+                    </div>
+                </Modal.Body>
+            </Modal>
         </div>
     )
 }

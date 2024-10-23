@@ -3,13 +3,15 @@ import {Button, Card, Label, TextInput,} from "flowbite-react";
 import {useNavigate} from 'react-router-dom';
 import {Link} from 'react-router-dom';
 import React, {useState} from "react";
+import axios from "axios";
 
 function ForgetPassword() {
     const [email, setEmail] = useState('');
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
-    const handleClick = () => {
+    const handleClick = async (e) => {
+        e.preventDefault();
         // Custom email validation
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
@@ -17,8 +19,16 @@ function ForgetPassword() {
             return;
         }
         setError('');
-        // Navigate to reset password page with email
-        navigate('/login/reset', { state: { email } });
+
+        await axios.post("/api/authentication/resetPasswordEmail", { "email": email })
+        .then((res) => {
+            if (res.data.success) {
+                navigate('/login/resetPassword/checkEmail', { state: { email } });
+            } else {
+                setError(res.data.message);
+                return;
+            }
+        })
     };
 
     return (
