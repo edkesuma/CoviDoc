@@ -187,4 +187,19 @@ class Patient(db.Model):
             print(e)
             return (False, "Failed to delete account")
 
-            
+    @classmethod
+    def resetPassword(cls, email: str, newPassword: str) -> Tuple[bool, str]:
+        """Reset a patient's password"""
+        try:
+            with current_app.app_context():
+                # Query patient account
+                patient = Patient.query.filter_by(email=email).first()
+                if not patient:
+                    return (False, "Patient not found")
+                # Update password
+                patient.password = bcrypt.generate_password_hash(newPassword)
+                db.session.commit()
+                return (True, "Reset password successfully")
+        except Exception as e:
+            print(e)
+            return (False, "Failed to reset password")

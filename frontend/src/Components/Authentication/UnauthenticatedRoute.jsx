@@ -6,7 +6,6 @@ import { jwtDecode } from "jwt-decode";
 import { Spinner } from "flowbite-react";
 
 function UnauthenticatedRoute({ children }) {
-    console.log("UnauthenticatedRoute rendered");
     const { token, logout } = useContext(AuthContext);
     const [authenticated, setAuthenticated] = useState(false);
     const [loading, setLoading] = useState(true);
@@ -21,7 +20,6 @@ function UnauthenticatedRoute({ children }) {
             .then((res) => {
                 if (res.data.success) {
                     const user = jwtDecode(token);
-                    console.log("Decoded user on unauthenticated route", user); // Debugging log
                     setAuthenticated(true);
                 }
                 else {
@@ -30,7 +28,6 @@ function UnauthenticatedRoute({ children }) {
                 setLoading(false);
             })
             .catch((err) => {
-                console.log(err);
                 logout();
                 setLoading(false);
             });
@@ -48,7 +45,6 @@ function UnauthenticatedRoute({ children }) {
     } 
     if (authenticated) {
         const user = jwtDecode(token);
-        console.log("Decoded user on unauthenticated route", user);
         if (user.role == "System Admin") {
             return <Navigate to="/systemAdmin/doctorManagement" />;
         } else if (user.role == "Doctor") {

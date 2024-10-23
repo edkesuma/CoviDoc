@@ -44,6 +44,8 @@ import DoctorEditAccountModal from "./Components/Doctor/DoctorEditAccountModal.j
 import CreateConsultationPage from "./Pages/Doctor/CreateConsultationPage.jsx";
 import ModelPredictionPage from "./Pages/Doctor/ModelPredictionPage.jsx";
 import LLMResultPage from "./Pages/Doctor/LLMResultPage.jsx";
+import CheckEmailPage from "./Pages/Login/CheckEmailPage.jsx";
+import ResetFailPage from "./Pages/Login/ResetFailPage.jsx";
 
 
 // App entry point
@@ -78,6 +80,27 @@ ReactDOM.createRoot(document.getElementById("root")).render(
                         </UnauthenticatedRoute>
                     }
                 />
+                <Route
+                    path="/login/forget"
+                    element={<ForgetPage />}
+                />
+                <Route
+                    path="/login/resetPassword/checkEmail"
+                    element={<CheckEmailPage />}
+                />
+                <Route
+                    path="/login/resetPassword/:token"
+                    element={<ResetPage />}
+                />
+                <Route
+                    path="/login/resetPasswordSuccess"
+                    element={<ResetSuccPage />}
+                />
+                <Route
+                    path="login/resetPasswordFail"
+                    element={<ResetFailPage />}
+                />
+
                 <Route
                     path="/signup/*"
                     element={
@@ -202,7 +225,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
 
                 {/* to be deleted */}
                 <Route path="/test" element={<CreateConsultationPage/>}/>
-                <Route path="/login/forget" element={<ForgetPage />} />
+                {/* <Route path="/login/forget" element={<ForgetPage />} /> */}
                 <Route path="/login/reset" element={<ResetPage />} />
                 <Route path="/login/setSucc" element={<ResetSuccPage />} /> 
                 

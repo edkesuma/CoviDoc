@@ -6,7 +6,6 @@ import { jwtDecode } from "jwt-decode";
 import { Spinner } from "flowbite-react";
 
 function PrivateRoute({ systemAdmin = false, doctor = false, patient = false, children }) {
-    console.log("PrivateRoute rendered")
     const { token, logout } = useContext(AuthContext);
     const [authenticated, setAuthenticated] = useState(false);
     const [loading, setLoading] = useState(true);
@@ -28,7 +27,6 @@ function PrivateRoute({ systemAdmin = false, doctor = false, patient = false, ch
                 setLoading(false);
             })
             .catch((err) => {
-                console.log(err);
                 logout();
                 setLoading(false);
             });
@@ -45,12 +43,9 @@ function PrivateRoute({ systemAdmin = false, doctor = false, patient = false, ch
         );
     } 
     if (!authenticated || !token) {
-        console.log("Authenticated state", authenticated);
         return <Navigate to="/login" />;
     } else {
-        console.log("token", token);
         const user = jwtDecode(token);
-        console.log("Decoded user on private route", user);
         if (user.role == "System Admin" && systemAdmin) {
             return children;
         } else if (user.role == "Doctor" && doctor) {
