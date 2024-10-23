@@ -45,11 +45,11 @@ function VisualizationsPage() {
 
                 {/* Render the selected chart */}
                 <Card className='mx-20'>
-                    {selectedChart === "Age Distribution" && <AgeDistributionChart token={token} />}
-                    {selectedChart === "Classification Confidence" && <ClassificationConfidenceChart token={token} />}
+                    {selectedChart === "Age Distribution" && <AgeDistributionChart token={token} />} {/* done */}
+                    {selectedChart === "Classification Confidence" && <ClassificationConfidenceChart token={token} />} {/* done */}
                     {selectedChart === "Consultation over time" && <ConsultationOverTime token={token} />}
                     {selectedChart === "Patient Consultation by Gender" && <PatientConsultationByGender token={token} />}
-                    {selectedChart === "Symptom Prevalence Heatmap" && <SymptomPrevalenceHM token={token} />}
+                    {selectedChart === "Symptom Prevalence Heatmap" && <SymptomPrevalenceHM token={token} />} {/* done */}
                 </Card>
             </div>
         </div>
