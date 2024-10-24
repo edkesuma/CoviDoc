@@ -25,11 +25,11 @@ function OverView() {
     }, []);
 
     return (
-        <div className='flex justify-center'>
-            <div className='w-11/12 h-full'>
-                <p className='text-xl text-cyan-400 ml-4'>OVERVIEW</p>
+        <div className='flex justify-center mx-20'>
+            <div className='w-full h-full'>
+                <p className='text-lg text-cyan-400 ml-4'>OVERVIEW</p>
                 <br />
-                <p className="font-bold text-6xl ml-4">COVID-19 at a Glance</p>
+                <p className="font-bold text-5xl ml-4">COVID-19 at a Glance</p>
                 <br />
                 <br />
                 <div className='flex md:flex-row flex-col justify-center items-center'>
