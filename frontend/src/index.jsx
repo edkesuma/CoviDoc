@@ -18,34 +18,43 @@ import ForgetPage from "./Pages/Login/ForgetPage.jsx";
 import ResetPage from "./Pages/Login/ResetPage.jsx";
 import ResetSuccPage from "./Pages/Login/ResetSuccPage.jsx";
 import SignUpFlow from "./Pages/SignUp/SignUpFlow.jsx";
+import CheckEmailPage from "./Pages/Login/CheckEmailPage.jsx";
+import ResetFailPage from "./Pages/Login/ResetFailPage.jsx";
 
 // Auth Wrappers
 import UnauthenticatedRoute from "./Components/Authentication/UnauthenticatedRoute.jsx";
 import PrivateRoute from "./Components/Authentication/PrivateRoute.jsx";
 
 // Pages for actors
-import DoctorManagement from "./Pages/SystemAdmin/DoctorManagement.jsx";
-import PatientManagement from "./Pages/SystemAdmin/PatientManagement.jsx";
-import DoctorAccountPage from "./Pages/Doctor/DoctorAccountPage.jsx";
-import PatientDetailsPage from "./Pages/Doctor/PatientDetailsPage.jsx";
+// doctor pages
 import PatientListPage from "./Pages/Doctor/PatientListPage.jsx";
-import ViewConsultationDetailsPage from "./Pages/Doctor/ViewConsultationDetailsPage.jsx";
-import VisualizationsPage from "./Pages/Doctor/VisualizationsPage.jsx";
-import ConsultationHistoryPage from "./Pages/Patient/ConsultationHistoryPage.jsx";
-import PatientAccountPage from "./Pages/Patient/PatientAccountPage.jsx";
-import ConsultationDetailsPage from "./Pages/Patient/ConsultationDetailsPage.jsx";
-import AboutPage from "./Pages/Landing/AboutPage.jsx";
-import ContactPage from "./Pages/Landing/ContactPage.jsx";
-import HomePage from "./Pages/Landing/HomePage.jsx";
-import ViewFindingPage from "./Pages/Doctor/ViewFindingPage.jsx";
-import ViewPDFPage from "./Pages/Doctor/ViewPDFPage.jsx";
-import DoctorViewPatientPage from "./Pages/Doctor/DoctorViewPatientPage.jsx";
-import DoctorEditAccountModal from "./Components/Doctor/DoctorEditAccountModal.jsx";
 import CreateConsultationPage from "./Pages/Doctor/CreateConsultationPage.jsx";
 import ModelPredictionPage from "./Pages/Doctor/ModelPredictionPage.jsx";
 import LLMResultPage from "./Pages/Doctor/LLMResultPage.jsx";
-import CheckEmailPage from "./Pages/Login/CheckEmailPage.jsx";
-import ResetFailPage from "./Pages/Login/ResetFailPage.jsx";
+import DoctorViewPatientPage from "./Pages/Doctor/DoctorViewPatientPage.jsx";
+import PatientDetailsPage from "./Pages/Doctor/PatientDetailsPage.jsx";
+import ViewConsultationDetailsPage from "./Pages/Doctor/ViewConsultationDetailsPage.jsx";
+import ViewPDFPage from "./Pages/Doctor/ViewPDFPage.jsx";
+import ViewFindingPage from "./Pages/Doctor/ViewFindingPage.jsx";
+import DoctorAccountPage from "./Pages/Doctor/DoctorAccountPage.jsx";
+import DoctorEditAccountModal from "./Components/Doctor/DoctorEditAccountModal.jsx";
+import VisualizationsPage from "./Pages/Doctor/VisualizationsPage.jsx";
+
+// patient pages
+import ConsultationHistoryPage from "./Pages/Patient/ConsultationHistoryPage.jsx";
+import ConsultationDetailsPage from "./Pages/Patient/ConsultationDetailsPage.jsx";
+import PatientAccountPage from "./Pages/Patient/PatientAccountPage.jsx";
+
+// system admin pages
+import DoctorManagement from "./Pages/SystemAdmin/DoctorManagement.jsx";
+import PatientManagement from "./Pages/SystemAdmin/PatientManagement.jsx";
+
+// landing pages
+import HomePage from "./Pages/Landing/HomePage.jsx";
+import ProductPage from "./Pages/Landing/ProductPage.jsx";
+import PricingPage from "./Pages/Landing/PricingPage.jsx";
+import AboutPage from "./Pages/Landing/AboutPage.jsx";
+import ContactPage from "./Pages/Landing/ContactPage.jsx";
 
 
 // App entry point
@@ -62,6 +71,14 @@ ReactDOM.createRoot(document.getElementById("root")).render(
                 <Route
                     path="/"
                     element={<HomePage/>}
+                />
+                <Route
+                    path="/product"
+                    element={<ProductPage/>}
+                />
+                <Route
+                    path="/pricing"
+                    element={<PricingPage/>}
                 />
                 <Route
                     path="/about"

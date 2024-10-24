@@ -9,13 +9,13 @@ function HomePage() {
     return (
         <div>
             <PageNavbar/>
-            <div className='mb-5'/>
+            <div className='p-5'/>
             <HealthCare/>
-            <div className='mb-5'/>
+            <div className='p-10'/>
             <Features/>
-            <div className='mb-16'/>
+            <div className='p-10'/>
             <OverView/>
-            <div className='mb-10'/>
+            <div className='p-10'/>
             <PageFooter/>
         </div>
     );

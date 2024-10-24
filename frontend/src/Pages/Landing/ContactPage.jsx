@@ -7,9 +7,9 @@ function ContactPage() {
     return (
         <div>
             <PageNavbar/>
-            <div className='mb-5'/>
+            <div className='p-5'/>
             <Contact/>
-            <div className='mb-36'/>
+            <div className='p-10'/>
             <PageFooter/>
         </div>
     );

@@ -1,34 +1,34 @@
 "use client";
 import React from "react";
-import {FaMapMarkerAlt} from "react-icons/fa";
-import { FaPhoneAlt } from "react-icons/fa";
-import { IoIosMail } from "react-icons/io";
+import { FaMapMarkerAlt, FaPhoneAlt, FaEnvelope } from "react-icons/fa";
 
 function Contact() {
     return (
         <div>
-            <div className='ml-20'>
-                <p className='text-xl text-cyan-400'>CONTACT</p>
+            <div className='mx-20'>
+                <p className='text-lg text-cyan-400'>CONTACT</p>
                 <br/>
-                <p className="font-bold text-6xl">Reach Out to Us</p>
+                <p className="font-bold text-5xl">Reach Out to Us</p>
                 <br/>
-                <p className="text-2xl">Want to get in touch? We’d love to hear from you. </p>
-                <p className="text-2xl">Here’s how you can reach us!</p>
-                <br/>
-                <br/>
+                <p className="text-xl">
+                    Want to get in touch? We’d love to hear from you.<br/>
+                    Here’s how you can reach us!
+                </p>
             </div>
+
+            <div className="p-5"></div>
+
             <div className='flex justify-center'>
-                <div className='w-11/12 flex flex-col md:flex-row justify-between items-center'>
-                    <div
-                        className='rounded-xl w-80 h-80 flex mx-3 my-3 flex-col justify-center items-center border-2 border-cyan-400'>
+                <div className='w-11/12 flex flex-col md:flex-row items-center mt-5'>
+                    <div className='w-96 h-64 flex flex-col items-center'>
                         <FaMapMarkerAlt color='cyan' size='80'/>
                         <br/>
-                        <p className='text-2xl font-bold '>OUR MAIN OFFICE</p>
+                        <p className='text-2xl font-bold'>OUR MAIN OFFICE</p>
                         <br/>
-                        <p className='text-2xl text-center '>461 Clementi Rd, Singapore 599491</p>
+                        <p className='text-2xl text-center'>461 Clementi Rd, <br/>Singapore 599491</p>
                     </div>
                     <div
-                        className='rounded-xl w-80 h-80 flex mx-3 my-3 flex-col justify-center items-center border-2 border-cyan-400'>
+                        className='w-96 h-64 flex flex-col items-center'>
                         <FaPhoneAlt color='cyan' size='80'/>
                         <br/>
                         <p className='text-2xl font-bold '>PHONE NUMBER</p>
@@ -36,8 +36,8 @@ function Contact() {
                         <p className='text-2xl text-center '>6248 9746</p>
                     </div>
                     <div
-                        className='rounded-xl w-80 h-80 flex mx-3 my-3 flex-col justify-center items-center border-2 border-cyan-400'>
-                        <IoIosMail color='cyan' size='96'/>
+                        className='w-96 h-64 flex flex-col items-center'>
+                        <FaEnvelope color='cyan' size='80'/>
                         <br/>
                         <p className='text-2xl font-bold '>EMAIL</p>
                         <br/>

@@ -7,9 +7,9 @@ function AboutPage() {
     return (
         <div>
             <PageNavbar/>
-            <div className='mb-5'/>
+            <div className='p-5'/>
             <AboutUs/>
-            <div className='mb-36'/>
+            <div className='p-10'/>
             <PageFooter/>
         </div>
     );
