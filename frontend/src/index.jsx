@@ -35,7 +35,6 @@ import DoctorViewPatientPage from "./Pages/Doctor/DoctorViewPatientPage.jsx";
 import PatientDetailsPage from "./Pages/Doctor/PatientDetailsPage.jsx";
 import ViewConsultationDetailsPage from "./Pages/Doctor/ViewConsultationDetailsPage.jsx";
 import ViewPDFPage from "./Pages/Doctor/ViewPDFPage.jsx";
-import ViewFindingPage from "./Pages/Doctor/ViewFindingPage.jsx";
 import DoctorAccountPage from "./Pages/Doctor/DoctorAccountPage.jsx";
 import DoctorEditAccountModal from "./Components/Doctor/DoctorEditAccountModal.jsx";
 import VisualizationsPage from "./Pages/Doctor/VisualizationsPage.jsx";

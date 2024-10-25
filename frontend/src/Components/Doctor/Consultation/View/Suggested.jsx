@@ -6,24 +6,34 @@ import {FaFilePdf} from "react-icons/fa";
 import axios from "axios";
 
 function Suggested({consultationId}) {
-    const [prescriptions, setPrescriptions] = useState('Nothing');
+    const [Classification, setClassification] = useState('')
+    const [prescriptions, setPrescriptions] = useState('You are healthy. No prescriptions are needed.');
     const [prescriptionsLink, setPrescriptionsLink] = useState('')
-    const [lifestyleChanges, setLifestyleChanges] = useState('Nothing');
+    const [lifestyleChanges, setLifestyleChanges] = useState('You are healthy. No lifestyle changes are needed.');
     const [lifestyleChangesLink, setLifestyleChangesLink] = useState('')
     const [lifestyleEditable, setLifestyleEditable] = useState(false);
     const [prescriptionEditable, setPrescriptionEditable] = useState(false);
     const [isLoading, setIsLoading] = useState(true)
     const {token} = useContext(AuthContext);
 
-     const upload = () => {
-         const prescriptionsData = jsonPrescriptions(prescriptions)
-         console.log("Prescriptions: ", prescriptionsData);
-         const lifestyleChangesData = jsonLifestyle(lifestyleChanges)
-         console.log("lifestyleChanges: ", lifestyleChangesData);
-        var formData ={
-            "consultationId":consultationId,
-            "prescriptions":prescriptionsData,
-            "lifestyleChanges":lifestyleChangesData
+    const upload = () => {
+        let formData;
+        if(Classification!='Healthy') {
+            const prescriptionsData = jsonPrescriptions(prescriptions)
+            console.log("Prescriptions: ", prescriptionsData);
+            const lifestyleChangesData = jsonLifestyle(lifestyleChanges)
+            console.log("lifestyleChanges: ", lifestyleChangesData);
+            formData = {
+                "consultationId": consultationId,
+                "prescriptions": prescriptionsData,
+                "lifestyleChanges": lifestyleChangesData
+            };
+        }else {
+            formData = {
+                "consultationId": consultationId,
+                "prescriptions": prescriptions,
+                "lifestyleChanges": lifestyleChanges
+            }
         }
         axios
             .patch(`/api/doctor/updatePrescriptionsLifestyleChanges`, formData, {
@@ -82,7 +92,7 @@ function Suggested({consultationId}) {
         });
         const jsonS = JSON.stringify(jsonArray)
         return jsonS;
-}
+    }
 
     useEffect(() => {
         if (token && consultationId) {
@@ -101,10 +111,31 @@ function Suggested({consultationId}) {
 
                 } catch (error) {
                     console.log("Error fetching patient details: ", error);
-                    setIsLoading(false);
                 }
             }
-            fetchSuggest()
+            const fetchClassification = async () => {
+                try {
+                    const response = await axios.get(`/api/doctor/getWorkflowItems`, {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        },
+                        params: {
+                            consultationId: consultationId
+                        }
+                    });
+                    console.log(response.data.data.classification)
+                    setClassification(response.data.data.classification);
+                } catch (error) {
+                    console.log("Error get consultation data: ", error);
+                }
+            }
+            Promise.all([fetchSuggest(), fetchClassification()])
+                .then(() => setIsLoading(false))
+                .catch((error) => {
+                    console.log("Error fetching suggestion ", error);
+                    setIsLoading(false);
+                });
         }
     }, [token, consultationId]);
 
@@ -184,7 +215,7 @@ function Suggested({consultationId}) {
                                     setLifestyleEditable(!lifestyleEditable);
                                     upload()
                                 }
-                        }
+                                }
                         >{lifestyleEditable ? ('Save') : ('Modify Lifestyle Changes')}</Button>
                     </div>
                 </div>
