@@ -1,6 +1,7 @@
 # Libraries
 from datetime import datetime
 from typing import Dict, Union
+from collections import OrderedDict
 import uuid
 from flask import Blueprint, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
@@ -508,19 +509,6 @@ def getAgeDistribution() -> Dict[str, Union[str, int, dict]]:
     
     except Exception as e:
         return {"status code": 500, "success": False, "message": str(e)}
-    
-
-
-
-
-
-
-
-
-
-
-
-
 
 @router.route("/getClassificationConfidenceCounts", methods=["GET"])
 @jwt_required()
@@ -556,7 +544,6 @@ def getClassificationConfidenceCounts() -> Dict[str, Union[str, int, dict]]:
     except Exception as e:
         return {"status code": 500, "success": False, "message": str(e)}
 
-
 @router.route("/getConsultationsByDate", methods=["GET"])
 @jwt_required()
 @role_required(["Doctor"])
@@ -582,13 +569,16 @@ def getConsultationsByDate() -> Dict[str, Union[str, int, dict]]:
                 else:
                     consultationDateCounts[consultation_date] = 1
 
-        # Return the consultation counts by date
-        return {"status code": 200, "success": True, "consultationsByDate": consultationDateCounts}
+        # Sort the dictionary by date keys in ascending order (dd-mm-yyyy)
+        sortedConsultationDateCounts = OrderedDict(
+            sorted(consultationDateCounts.items(), key=lambda x: datetime.strptime(x[0], "%d-%m-%Y"))
+        )
+
+        # Return the sorted consultation counts by date
+        return {"status code": 200, "success": True, "consultationsByDate": sortedConsultationDateCounts}
     
     except Exception as e:
         return {"status code": 500, "success": False, "message": str(e)}
-
-
 
 
 @router.route("/getGenderDistribution", methods=["GET"])
@@ -618,8 +608,3 @@ def getGenderDistribution() -> Dict[str, Union[str, int, dict]]:
     
     except Exception as e:
         return {"status code": 500, "success": False, "message": str(e)}
-# 
-
-
-
-

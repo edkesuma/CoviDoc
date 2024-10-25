@@ -1,107 +1,3 @@
-// import React, { useEffect, useState } from "react";
-// import ApexCharts from "react-apexcharts";
-// import axios from "axios";
-
-// function ConsultationsByDateChart({ token }) {
-//   const [consultationsByDate, setConsultationsByDate] = useState({}); // To store the number of consultations per date
-
-//   useEffect(() => {
-//     const fetchConsultationsByDate = async () => {
-//       try {
-//         // Step 1: Fetch all patients to get their IDs
-//         const response = await axios.get('/api/doctor/getPatientList', {
-//           headers: {
-//             Authorization: `Bearer ${token}`,
-//           },
-//         });
-
-//         const patientsArray = response.data.patients; // Patients is an array
-//         console.log("Patients:", patientsArray);
-//         const consultationDateCounts = {}; // Object to hold consultation counts per date
-
-//         // Step 2: Loop through each patient and fetch their consultation history
-//         for (const patient of patientsArray) {
-//           const patientId = patient.patientId;
-//           console.log(`Fetching consultation history for patient ${patientId}`);
-
-//           try {
-//             // Fetch consultation history for each patientId
-//             const consultationResponse = await axios.get(
-//               `/api/doctor/getPatientConsultationHistory`,
-//               {
-//                 headers: {
-//                   Authorization: `Bearer ${token}`,
-//                 },
-//                 params: { patientId }, // Send patientId as a parameter
-//               }
-//             );
-
-//             const consultations = consultationResponse.data.consultationHistory;
-//             console.log(`Consultations for patient ${patientId}:`, consultations);
-
-//             // Step 3: Count the number of consultations by date
-//             consultations.forEach((consultation) => {
-//               const date = consultation.consultationDate;
-//               if (consultationDateCounts[date]) {
-//                 consultationDateCounts[date]++;
-//               } else {
-//                 consultationDateCounts[date] = 1;
-//               }
-//             });
-
-//           } catch (error) {
-//             console.error(`Error fetching consultation history for patient ${patientId}:`, error);
-//           }
-//         }
-
-//         setConsultationsByDate(consultationDateCounts); // Update state with consultation counts by date
-//       } catch (error) {
-//         console.error("Error fetching patient list:", error);
-//       }
-//     };
-
-//     fetchConsultationsByDate();
-//   }, [token]);
-
-//   // Extracting the dates and counts
-//   const dates = Object.keys(consultationsByDate);
-//   const counts = Object.values(consultationsByDate);
-
-//   // Sort the dates in ascending order
-//   const sortedDates = dates.sort((a, b) => new Date(a) - new Date(b));
-
-//   // Reorder the counts array to match the sorted dates
-//   const sortedCounts = sortedDates.map(date => consultationsByDate[date]);
-
-//   return (
-//     <ApexCharts
-//       options={{
-//         chart: {
-//           type: "line",
-//         },
-//         xaxis: {
-//           categories: sortedDates, // X-axis will be the sorted consultation dates
-//         },
-//         title: {
-//           text: "Consultations Over Time",
-//         },
-//       }}
-//       series={[
-//         {
-//           name: "Number of Consultations",
-//           data: sortedCounts, // The data points (number of consultations per date)
-//         },
-//       ]}
-//       type="line"
-//       width="700"
-//     />
-//   );
-// }
-
-// export default ConsultationsByDateChart;
-
-
-
 import React, { useEffect, useState } from "react";
 import ApexCharts from "react-apexcharts";
 import axios from "axios";
@@ -132,15 +28,25 @@ function ConsultationsByDateChart({ token }) {
     fetchConsultationsByDate();
   }, [token]);
 
+  // Function to convert a "dd-mm-yyyy" date string to a JavaScript Date object
+  const convertToDate = (dateString) => {
+    const [day, month, year] = dateString.split("-").map(Number);
+    return new Date(year, month - 1, day); // JavaScript months are 0-indexed
+  };
+
   // Extracting the dates and counts
   const dates = Object.keys(consultationsByDate);
   const counts = Object.values(consultationsByDate);
 
-  // Sort the dates in ascending order
-  const sortedDates = dates.sort((a, b) => new Date(a) - new Date(b));
+  // Sort the dates in ascending order using convertToDate for correct date comparison
+  const sortedDates = dates.sort((a, b) => convertToDate(a) - convertToDate(b));
 
   // Reorder the counts array to match the sorted dates
   const sortedCounts = sortedDates.map((date) => consultationsByDate[date]);
+
+  // Log sorted dates and counts to inspect
+  console.log("Sorted Dates:", sortedDates);
+  console.log("Sorted Counts:", sortedCounts);
 
   return (
     <ApexCharts
