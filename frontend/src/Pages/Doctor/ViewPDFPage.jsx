@@ -9,9 +9,13 @@ import { Spinner } from "flowbite-react";
 
 function ViewPDFPage() {
     const { token } = useContext(AuthContext);
-    const { consultationId } = useParams();
+    const { patientId,consultationId } = useParams();
     const [viewData, setViewData] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
+
+    window.addEventListener('popstate', function(event) {
+    window.location.href = `/doctor/patient/${patientId}`;
+});
 
     const generateReportAndFetchData = () => {
         if (token && consultationId) {
