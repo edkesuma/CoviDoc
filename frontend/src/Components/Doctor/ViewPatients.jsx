@@ -2,17 +2,31 @@ import {FaUser} from "react-icons/fa";
 import {Card, Dropdown} from "flowbite-react";
 import React from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 
 function ViewPatients({patients, token, onUpdate}) {
     const navigate = useNavigate();
+
+    const sortedPatients = [...patients].sort((a, b) => {
+        // First, prioritize consultations that are not completed
+        if (a.currentState !== "Open" && b.currentState === "Open") {
+            return 1;
+        }
+        if (a.currentState === "Open" && b.currentState !== "Open") {
+            return -1;
+        }
+    });
+
+
     const updatePatientState = (patientId, newState) => {
         console.log("newSAtate:", newState);
         axios
             .patch(
                 '/api/doctor/updatePatientState',
-                { 'patientId':patientId,
-                    'currentState':newState },
+                {
+                    'patientId': patientId,
+                    'currentState': newState
+                },
                 {
                     headers: {
                         Authorization: `Bearer ${token}`
@@ -37,11 +51,13 @@ function ViewPatients({patients, token, onUpdate}) {
                 <div className="w-2/12 text-center">Current State</div>
             </div>
 
-            {patients.map((patient) => (
-                <Card 
-                    key={patient.patientId} 
-                    onClick={() => navigate(`/doctor/patient/${patient.patientId}`)} 
-                    className="hover:bg-gray-100 transition duration-300 ease-in-out"
+            {sortedPatients.map((patient) => (
+                <Card
+                    key={patient.patientId}
+                    onClick={() => navigate(`/doctor/patient/${patient.patientId}`)}
+                    className={`hover:bg-gray-100 transition duration-300 ease-in-out
+                    ${patient.currentState === 'Closed' ? 'bg-gray-200' : ''}
+                    `}
                 >
                     <div className="flex flex-row items-center">
                         <div className="w-2/12">
