@@ -1,0 +1,13 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    image: covidoc-fyp-api
+  client:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    image: covidoc-fyp-client
+    ports:
+      - "3000:80"

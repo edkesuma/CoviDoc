@@ -5,18 +5,16 @@ import uuid
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from config import Config
-from flask_jwt_extended import verify_jwt_in_request, get_jwt, JWTManager
 
 
 # Local dependencies
-from app.model import db, SystemAdmin, Doctor, Patient, Consultation, Report
+from app.model import db, SystemAdmin
 from app.routes import router as mainRouter
 from app.controller.systemAdmin import router as systemAdminRouter
 from app.controller.authentication import router as authenticationRouter
 from app.controller.patient import router as patientRouter
 from app.controller.doctor import router as doctorRouter
 from .extensions import bcrypt, jwt, mail
-# from app.controller.authentication.utils import mail
 from app.model_loader import init_models
 
 # Initialize Flask App

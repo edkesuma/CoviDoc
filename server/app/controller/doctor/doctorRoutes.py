@@ -390,20 +390,6 @@ def getClassificationsOverTimeData() -> Dict[str, Union[str, int, dict]]:
     data = Consultation.getClassificationsOverTimeData() # type: ignore
     return {"status code": 200, "data": data}
 
-
-# @router.route("/getDoctorStatistics", methods=["GET"])
-# @jwt_required()
-# @role_required(["Doctor"])
-# def getDoctorStatistics() -> Dict[str, Union[str, int, dict]]:
-#     """Get statistics for the doctor"""
-#     doctorId = get_jwt_identity()
-#     statistics = Doctor.getStatistics(doctorId)  # Assuming this method exists in the Doctor model
-#     if statistics:
-#         return {"status code": 200, "success": True, "data": statistics}
-#     else:
-#         return {"status code": 400, "success": False, "message": "Statistics not found"}
-
-
 # Visualization
 
 @router.route("/getSymptomPrevalence", methods=["GET"])

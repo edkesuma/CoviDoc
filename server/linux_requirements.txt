@@ -1,0 +1,29 @@
+Flask
+Flask_Bcrypt
+Flask_JWT_Extended
+flask_mail
+flask_sqlalchemy
+Jinja2
+langchain
+langchain_community
+langchain_core
+langchain_google_genai
+lightning
+numpy
+opencv_python_headless
+pandas
+pdfkit
+Pillow
+protobuf
+python-dotenv
+PyYAML
+PyYAML
+Requests
+torch --index-url https://download.pytorch.org/whl/cu118
+torchvision --index-url https://download.pytorch.org/whl/cu118
+torchmetrics
+typing_extensions
+Werkzeug
+google_cloud_storage
+chromadb==0.5.0
+gunicorn
