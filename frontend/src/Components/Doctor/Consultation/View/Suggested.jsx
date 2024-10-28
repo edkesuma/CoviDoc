@@ -62,7 +62,7 @@ function Suggested({consultationId}) {
         let lines = str.split('\n\n');
         let jsonArray = [];
         lines.forEach(line => {
-            line = line.replace('• ', '').replace('.', '')
+            line = line.replace('•', '').replace('.', '')
             let [name, reason] = line.split(':').map(item => item.trim());
             jsonArray.push({
                 prescriptionName: [name, reason]
@@ -75,7 +75,7 @@ function Suggested({consultationId}) {
     function analysislifestyle(str) {
         let jsonString = str.replace(/\\"/g, '"');
         let jsonArray = JSON.parse(jsonString);
-        let resultArray = jsonArray.map(item => '•  ' + item.lifestyleChange[0].replace('.', '') + ': ' + item.lifestyleChange[1]);
+        let resultArray = jsonArray.map(item => '• ' + item.lifestyleChange[0].replace('.', '') + ': ' + item.lifestyleChange[1]);
         let resultString = resultArray.join('\n\n');
         return resultString
     }
@@ -84,7 +84,7 @@ function Suggested({consultationId}) {
         let lines = str.split('\n\n');
         let jsonArray = [];
         lines.forEach(line => {
-            line = line.replace('•  ', '').replace('.', '')
+            line = line.replace('•', '').replace('.', '')
             let [name, reason] = line.split(':').map(item => item.trim());
             jsonArray.push({
                 lifestyleChange: [name, reason]
