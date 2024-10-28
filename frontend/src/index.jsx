@@ -8,10 +8,6 @@ import {
 } from "react-router-dom";
 import AuthProvider from "./Components/Authentication/AuthContext.jsx";
 
-// Development/Example only
-// import TestPage from "./Pages/Examples/TestPage";
-// import SearchPage from "./Pages/Examples/SearchPage.jsx";
-
 // Login/Sign up pages
 import LoginPage from "./Pages/Login/LoginPage.jsx";
 import ForgetPage from "./Pages/Login/ForgetPage.jsx";
@@ -61,10 +57,6 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     <AuthProvider>
         <BrowserRouter>
             <Routes>
-                {/* DEVELOPMENT/EXAMPLE ONLY routes */}
-                {/* <Route path="/test" element={<TestPage />} />
-                <Route path="/search" element={<SearchPage />} /> */}
-
                 {/* Public routes */}
                 {/* Landing pages */}
                 <Route
@@ -88,6 +80,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
                     element={<ContactPage/>}
                 />
 
+                {/* Login, sign up pages */}
                 <Route
                     path="/login"
                     element={
@@ -151,7 +144,6 @@ ReactDOM.createRoot(document.getElementById("root")).render(
                         </PrivateRoute>
                     }
                 />
-                {/* this ones to be done */}
                 <Route
                     path="/doctor/account"
                     element={
@@ -194,8 +186,6 @@ ReactDOM.createRoot(document.getElementById("root")).render(
                         </PrivateRoute>
                     }
                 />
-
-
                 <Route
                     path="/doctor/patient/:patientId/:consultationId/pdf"
                     element={
@@ -221,7 +211,6 @@ ReactDOM.createRoot(document.getElementById("root")).render(
                         </PrivateRoute>
                     }
                 />
-                {/* this one to be done */}
                 <Route
                     path="/patient/account"
                     element={
@@ -238,24 +227,6 @@ ReactDOM.createRoot(document.getElementById("root")).render(
                         </PrivateRoute>
                     }
                 />
-
-                {/* to be deleted */}
-                <Route path="/test" element={<CreateConsultationPage/>}/>
-                {/* <Route path="/login/forget" element={<ForgetPage />} /> */}
-                <Route path="/login/reset" element={<ResetPage />} />
-                <Route path="/login/setSucc" element={<ResetSuccPage />} /> 
-                
-
-                {/* <Route path="/test/doc/viewfinding" element={} /> */}
-                <Route path="/test/doc/viewpdf" element={<ViewPDFPage/>}/>
-                <Route path="/test/doc/consultationPage" element={<DoctorViewPatientPage/>}/>
-                <Route path="/test/doc/editAccountModal" element={<DoctorEditAccountModal/>}/>
-
-                <Route path="/test/doc/account" element={<DoctorAccountPage/>}/>
-                <Route path="/test/doc/patientdetails" element={<PatientDetailsPage/>}/>
-                <Route path="/test/doc/patientlist" element={<PatientListPage/>}/>
-                <Route path="/test/doc/consultationdetails" element={<ViewConsultationDetailsPage/>}/>
-                <Route path="/test/doc/visualizations" element={<VisualizationsPage/>}/>
             </Routes>
         </BrowserRouter>
     </AuthProvider>
