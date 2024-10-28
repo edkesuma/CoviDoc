@@ -19,7 +19,6 @@ function ViewPatients({patients, token, onUpdate}) {
 
 
     const updatePatientState = (patientId, newState) => {
-        console.log("newSAtate:", newState);
         axios
             .patch(
                 '/api/doctor/updatePatientState',
@@ -34,7 +33,6 @@ function ViewPatients({patients, token, onUpdate}) {
                 }
             )
             .then((response) => {
-                console.log(response);
                 onUpdate(patientId, newState);
             })
             .catch(error => {

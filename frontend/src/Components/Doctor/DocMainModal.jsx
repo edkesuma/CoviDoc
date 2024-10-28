@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { IoPerson } from 'react-icons/io5';
 import { FaUser, FaStethoscope, FaVenusMars, FaBirthdayCake, FaEnvelope, FaPhoneAlt } from 'react-icons/fa';
 import DoctorEditAccountModal from './DoctorEditAccountModal'; // Ensure the correct path to the modal
 
