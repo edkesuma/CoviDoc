@@ -22,7 +22,6 @@ function DocMainModal({ doctorProfile }) {
           <img
             className="w-52 h-52 object-cover"
             src={doctorProfile.profilePictureUrl || "https://via.placeholder.com/150"}  // Placeholder if no image URL
-            alt="No profile picture set."
           />
         </div>
 

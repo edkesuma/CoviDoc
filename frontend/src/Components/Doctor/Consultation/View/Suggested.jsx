@@ -164,14 +164,19 @@ function Suggested({consultationId}) {
             <Spinner aria-label="Extra large spinner example" size="xl"/>
         </div>
     ) : (
-        <div className='px-20'>
-            <div className='flex flex-col md:flex-row'>
-                <div className='w-full md:w-1/2 pr-16'>
+        <div className='mt-12 mx-20 px-6 sm:px-8 md:px-10 lg:px-12'>
+            <div className='flex flex-col md:flex-row space-x-10'>
+                <div className='w-full md:w-1/2'>
                     <div className='flex flex-row items-center'>
                         <p className='text-xl text-cyan-400'>SUGGESTED PRESCRIPTIONS</p>
-                        <a href={prescriptionsLink} className='mx-2' title='View Prescription PDF'>
-                            <FaFilePdf color='cyan'/>
-                        </a>
+                        {Classification !== 'Healthy' && (
+                            <a href={prescriptionsLink} className="mx-2" title="View Prescription PDF">
+                                <FaFilePdf color="cyan" />
+                            </a>
+                        )}
+                        {Classification === 'Healthy' && (
+                            <FaFilePdf color="gray" />
+                        )}
                     </div>
                     <Textarea
                         id="prescriptionText"
@@ -192,12 +197,17 @@ function Suggested({consultationId}) {
                         >{prescriptionEditable ? ('Save') : ('Modify Prescriptions')}</Button>
                     </div>
                 </div>
-                <div className='w-full md:w-1/2 pr-16'>
+                <div className='w-full md:w-1/2'>
                     <div className='flex flex-row items-center'>
                         <p className='text-xl text-cyan-400'>SUGGESTED LIFESTYLE CHANGES</p>
-                        <a href={lifestyleChangesLink} className='mx-2' title='View Suggestion PDF'>
-                            <FaFilePdf color='cyan'/>
-                        </a>
+                        {Classification !== 'Healthy' && (
+                            <a href={lifestyleChangesLink} className="mx-2" title="View Suggestion PDF">
+                                <FaFilePdf color="cyan" />
+                            </a>
+                        )}
+                        {Classification === 'Healthy' && (
+                            <FaFilePdf color="gray" />
+                        )}
                     </div>
                     <Textarea
                         id="prescriptionText"

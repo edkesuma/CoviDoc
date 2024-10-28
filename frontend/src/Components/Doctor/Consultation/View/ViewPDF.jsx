@@ -6,6 +6,7 @@ import {Button} from "flowbite-react";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../../Authentication/AuthContext.jsx";
 import { useNavigate, useParams } from "react-router-dom";
+import {IoArrowBackCircleOutline} from "react-icons/io5";
 import axios from "axios";
 
 function ViewPDF({ viewData }) {
@@ -34,7 +35,19 @@ function ViewPDF({ viewData }) {
 
     return (
         <div>
-            <div className='mx-20 py-10 md:py-20 px-20 border-2 border-cyan-400 rounded-xl'>
+            <div
+                onClick={() => navigate(`/doctor/patient/${patientId}`)}
+                className="flex flex-row ml-20 items-center cursor-pointer"
+            >
+                <IoArrowBackCircleOutline color="cyan" className="h-8 w-8"/>
+                <button className="text-3xl ml-2 text-cyan-300 bg-transparent border-none cursor-pointer hover:font-bold hover:text-cyan-400 transition duration-300">
+                    Back
+                </button>
+            </div>
+
+            <div className="p-5"></div>
+
+            <div className='mx-20 py-20 px-20 border-2 border-cyan-400 rounded-xl'>
                 <div className='flex flex-col md:flex-row'>
                     <p className='text-2xl font-bold hidden md:flex'>Consultation #{consultationId}</p>
                     <p className='text-2xl flex flex-col font-bold md:hidden'>
@@ -52,10 +65,10 @@ function ViewPDF({ viewData }) {
                     )}
                 </div>
                 <p className='hidden md:flex'>
-                    Consultation on {viewData.consultationDate}
+                    Consultation on &nbsp;<b>{viewData.consultationDate}</b>
                 </p>
                 <p className='hidden md:flex'>
-                    Consulted with {viewData.doctorName}
+                    Consulted with &nbsp;<b>{viewData.doctorName}</b>
                 </p>
                 <div className='flex flex-row'>
                     {infected ? (
@@ -106,9 +119,7 @@ function ViewPDF({ viewData }) {
                     </object>
                 </div>
             </div>
-            <div className='flex justify-center'>
-                <Button onClick={() => navigate(`/doctor/patient/${patientId}`)} className='bg-cyan-400 w-3/4 mt-8'>Back to patient page</Button>
-            </div>
+            <div className="p-10"></div>
         </div>
     )
 }

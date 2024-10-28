@@ -19,10 +19,10 @@ function ViewPDF({ viewData }) {
         <div>
             <div
                 onClick={() => navigate("/patient")}
-                className="flex flex-row ml-20 hover:font-bold hover:text-cyan-500 items-center cursor-pointer"
+                className="flex flex-row ml-20 items-center cursor-pointer"
             >
                 <IoArrowBackCircleOutline color="cyan" className="h-8 w-8"/>
-                <button className="text-3xl ml-2 text-cyan-300 bg-transparent border-none cursor-pointer transition duration-300">
+                <button className="text-3xl ml-2 text-cyan-300 bg-transparent border-none cursor-pointer hover:font-bold hover:text-cyan-400 transition duration-300">
                     Back
                 </button>
             </div>
@@ -30,7 +30,7 @@ function ViewPDF({ viewData }) {
             <div className="p-5"></div>
 
             <div className='mx-20 py-20 px-20 border-2 border-cyan-400 rounded-xl'>
-                <p className='text-2xl font-bold'>Consultation #{consultationId} Results</p>
+                <p className='text-2xl font-bold'>Consultation #{consultationId}</p>
 
                 <div className="p-1"></div>
 

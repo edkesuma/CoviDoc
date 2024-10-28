@@ -109,10 +109,10 @@ function ModelPrediction({patientId, consultationId}) {
                     <div className='flex flex-col w-full md:w-1/2 px-4'>
                         <div className='flex flex-col'>
                             <p className='text-xl text-cyan-400'>X-RAY IMAGE AND AREAS OF INTEREST</p>
-                            <div className='flex flex-row bg-gray-100 w-full'>
+                            <div className='flex flex-row w-full'>
                                 <div className='flex w-1/2'>
                                     <img src={XrayImage} alt='x'
-                                         className='px-4 py-4 max-w-full max-h-full'/>
+                                         className='pr-4 py-4 max-w-full max-h-full'/>
                                 </div>
                                 <div className='flex w-1/2'>
                                     <img src={highlightImage} alt='y'
@@ -122,7 +122,7 @@ function ModelPrediction({patientId, consultationId}) {
                         </div>
                         <div className='flex flex-col mt-6 md:mb-0 mb-12'>
                             <p className='text-xl text-cyan-400  mt-4'>FINDINGS</p>
-                            <div className='flex flex-col rounded-lg border-2 border-cyan-400 px-4 py-4'>
+                            <div className='flex flex-col rounded-lg border-2 border-cyan-400 px-4 py-4 mr-5'>
                                 <p>Classification: {Classification}</p>
                                 <p>Classification Confidence: {ClassificationCon + '%'}</p>
                                 <p>Severity: {Severity}</p>
@@ -134,7 +134,7 @@ function ModelPrediction({patientId, consultationId}) {
                         <div className='flex flex-col'>
                             <p className='text-xl text-cyan-400'>CONSULTATION INFORMATION</p>
                             <div className='flex flex-col rounded-lg border-2 border-cyan-400 space-y-2 pb-4'>
-                                <div className='px-4'>
+                                <div className='px-4 pt-2'>
                                     <Label className='font-bold'>Consultation date</Label>
                                     <Datepicker
                                         id="date"

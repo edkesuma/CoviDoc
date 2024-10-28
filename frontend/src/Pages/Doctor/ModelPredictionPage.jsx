@@ -8,9 +8,7 @@ function ModelPredictionPage(){
     return (
         <div>
             <ActorNavbar/>
-            <div className='bg-gray-100'>
-                <ModelPrediction patientId={patientId} consultationId={consultationId}/>
-            </div>
+            <ModelPrediction patientId={patientId} consultationId={consultationId}/>
         </div>
     )
 }

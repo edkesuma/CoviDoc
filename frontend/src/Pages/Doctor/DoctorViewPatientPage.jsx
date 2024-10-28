@@ -112,36 +112,38 @@ function DoctorViewPatientPage() {
             />
             <div
                 onClick={() => navigate("/doctor")}
-                className="flex flex-row ml-20 items-center cursor-pointer"
+                className="flex flex-row mx-20 px-6 sm:px-8 md:px-10 lg:px-12 items-center cursor-pointer"
             >
                 <IoArrowBackCircleOutline color="cyan" className="h-8 w-8"/>
-                <button className="text-3xl ml-2 text-cyan-300 bg-transparent border-none cursor-pointer">
+                <button className="text-3xl ml-2 text-cyan-300 bg-transparent border-none cursor-pointer hover:font-bold hover:text-cyan-400 transition duration-300">
                     Back
                 </button>
             </div>
 
-            <div className="ml-20 my-10 font-bold text-3xl">
-                {patient?.name || "Patient"}'s Account
+            <div className="mt-12 mx-20 px-6 sm:px-8 md:px-10 lg:px-12">
+                <h1 className="text-4xl font-bold text-gray-900">{patient?.name || "Patient"}'s Account</h1>
             </div>
-            <div className="mx-20">
+            <div className="mt-12 mx-20 px-6 sm:px-8 md:px-10 lg:px-12">
                 {patient ? (
                     <PatientDetail patientDetails={patient} card={true}/>
                 ) : (
                     <p>No patient details available</p>
                 )}
             </div>
+
             <div className="mb-24"/>
-            <div className='flex flex-col'>
+
+            <div className='flex flex-col mx-16'>
                 <div className='flex flex-row'>
-                    <div className='flex w-1/2 justify-center ml-10'>
+                    <div className='flex w-1/2 justify-center'>
                         <button onClick={() => setDetail(false)}
-                                className='text-3xl text-black bg-transparent border-none cursor-pointer'>
+                                className='text-2xl text-gray-600 hover:font-semibold hover:text-cyan-500 bg-transparent border-none cursor-pointer'>
                             Consultation Record
                         </button>
                     </div>
                     <div className='flex w-1/2 justify-center'>
                         <button onClick={() => setDetail(true)}
-                                className='text-3xl text-black bg-transparent border-none cursor-pointer'>
+                                className='text-2xl text-gray-600 hover:font-semibold hover:text-cyan-500 bg-transparent border-none cursor-pointer'>
                             X-Ray History
                         </button>
                     </div>
@@ -152,14 +154,14 @@ function DoctorViewPatientPage() {
                 {detail ? (
                     <div>
                         <div className="flex flex-row">
-                            <div className="ml-20 my-10 font-bold text-3xl">
+                            <div className="mx-20 my-10 font-bold text-3xl">
                                 {patient?.name || "Patient"}'s Consultation Records
                             </div>
                         </div>
                         <ViewXrays xRays={xRays}/>
                     </div>
                 ) : (
-                    <div>
+                    <div className="mx-16">
                         <div className="md:flex-row hidden md:flex">
                             <div className=" ml-20 my-10 font-bold text-3xl">
                                 {patient?.name || "Patient"}'s Consultation Records

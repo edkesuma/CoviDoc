@@ -19,7 +19,7 @@ function ViewConsultations({consultations}) {
 
 
     return (
-        <div className="mx-20 space-y-4">
+        <div className="space-y-4">
             <div className="flex flex-row mx-6 font-bold">
                 <div className="w-1/12">Status</div>
                 <div className="w-6/12 text-left">Consultation ID</div>
