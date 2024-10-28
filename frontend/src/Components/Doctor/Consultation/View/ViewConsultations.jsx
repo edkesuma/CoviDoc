@@ -54,7 +54,7 @@ function ViewConsultations({consultations}) {
                             }
                         }}
                         className={
-                            `cursor-pointer  transition-colors duration-200  ${consultation.workflowStage === "COMPLETED" ? "hover:bg-gray-200" : "bg-gray-200 border-2 border-red-500"}`
+                            `cursor-pointer transition-colors duration-300  ${consultation.workflowStage === "COMPLETED" ? "hover:bg-gray-200" : "bg-gray-200 hover:bg-gray-300 border-2 border-red-500"}`
                         }
                     >
                         <div className="flex flex-row">
@@ -83,7 +83,7 @@ function ViewConsultations({consultations}) {
                             ) : (
                                 <div className='w-3/5'>
                                     <div className="hidden md:flex text-red-500 ">
-                                        Workflow not completed yet.. Click here to continue.
+                                        Workflow not completed yet.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Click to continue.</b>
                                     </div>
                                     <div className="md:hidden text-red-500 ">
                                         Workflow not completed.
