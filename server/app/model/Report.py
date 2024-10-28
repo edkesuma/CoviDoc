@@ -279,17 +279,19 @@ class Report(db.Model):
             Return a list of JSON in this format:
             Return a `List[{{"prescriptionName": List[name (dosage), reason]]}}]` with your responses."""
         
-        response = chain({"query": prompt})
-        print(f"Response from prescription chain: {response}")
-        while response.get("finish_reason") == "RECITATION":
-            response = chain({"query": prompt})
-            print(f"Repeated response from prescription chain: {response}")
-        
-        documentLink = response['source_documents'][0].metadata['link']
-        responseStr = response['result']
-        cleanedStr = cls.cleanJsonString(responseStr)
-        print(f"Cleaned string: {cleanedStr}")
-
+        # In case no response generated, keep generating
+        while True:
+            try:
+                response = chain({"query": prompt})
+                print(f"Response from prescription chain: {response}")
+                documentLink = response['source_documents'][0].metadata['link']
+                responseStr = response['result']
+                cleanedStr = cls.cleanJsonString(responseStr)
+                print(f"Cleaned string: {cleanedStr}")
+                break
+            except:
+                print("Error in generating prescriptions. Trying again.")
+                continue
         return cleanedStr, documentLink
     
     @classmethod
@@ -324,16 +326,19 @@ class Report(db.Model):
             Return a list of JSON in this format:
             Return a `List[{{"lifestyleChange": List[lifestyleChange, reason]]}}]` with your responses."""
         
-        response = chain({"query": prompt})
-        print(f"Response from lifestyle chain: {response}")
-        while response.get("finish_reason") == "RECITATION":
-            response = chain({"query": prompt})
-            print(f"Repeated response from lifestyle chain: {response}")
-        
-        documentLink = response['source_documents'][0].metadata['link']
-        responseStr = response['result']
-        cleanedStr = cls.cleanJsonString(responseStr)
-
+        # In case no response generated, keep generating
+        while True:
+            try:
+                response = chain({"query": prompt})
+                print(f"Response from lifestyle chain: {response}")
+                documentLink = response['source_documents'][0].metadata['link']
+                responseStr = response['result']
+                cleanedStr = cls.cleanJsonString(responseStr)
+                print(f"Cleaned string: {cleanedStr}")
+                break
+            except:
+                print("Error in generating lifestyle changes. Trying again.")
+                continue
         return cleanedStr, documentLink
 
     @classmethod
