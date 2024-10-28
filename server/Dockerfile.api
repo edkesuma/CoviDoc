@@ -1,0 +1,40 @@
+# This Dockerfile builds the API only
+
+FROM python:3.11-slim
+
+# Set the working directory
+WORKDIR /app
+
+# Install utility functions and wkhtmltopdf
+RUN apt-get update && apt-get install -y \
+    wget \
+    nano \
+    procps \
+    curl \
+    wkhtmltopdf \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install wkhtmltopdf separately 
+# All download links: https://wkhtmltopdf.org/downloads.html
+# Download correct version of wkhtml according to architecture
+# RUN ARCH=$(dpkg --print-architecture) \
+#     && if ["$ARCH" = "amd64"]; then \
+#         wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.bullseye_amd64.deb \
+#     elif ["$ARCH" = "arm64"]; then \
+#         wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.bullseye_arm64.deb \
+#     fi \
+#     && mkdir wkhtml \
+#     && dpkg-deb -R wkhtmltox_0.12.6.1-2.bullseye_${ARCH}.deb wkhtml \
+#     && rm wkhtmltox_0.12.6.1-2.bullseye_${ARCH}.deb
+
+# Copy current directory contents to /app
+COPY . /app
+
+# Install any needed packages specified in requirements.txt
+RUN pip install --no-cache-dir -r linux_requirements.txt
+
+ENV FLASK_ENV=production
+
+# Run the application
+EXPOSE 5000
+CMD ["gunicorn", "-b", ":5000", "application:flask_app"]

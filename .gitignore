@@ -131,6 +131,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+wsl_env/
 
 # Spyder project settings
 .spyderproject
@@ -168,6 +169,7 @@ cython_debug/
 *.ipynb
 .vscode/
 servicekey*
+wkhtml/
 
 # Assets
 /server/profilePicture

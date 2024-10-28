@@ -1,0 +1,7 @@
+# instance/
+__pycache__
+env/
+wkhtml/
+wsl_env/
+requirements.txt
+requirements2.txt
