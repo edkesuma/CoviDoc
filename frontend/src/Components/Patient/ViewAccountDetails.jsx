@@ -16,7 +16,7 @@ function ViewAccountDetails({ patientDetails }) {
 
   return (
     <>
-      <div className="p-10 bg-white rounded-lg shadow-lg relative w-full space-x-16">
+      <div className="p-10 bg-white rounded-lg shadow-lg relative w-full space-x-16 hover:shadow-xl transition duration-300">
         <div className='flex flex-col md:flex-row'>
           {/* Left Side: Image and Basic Info */}
           <div className="w-5/12">
@@ -24,7 +24,6 @@ function ViewAccountDetails({ patientDetails }) {
               <img
                 src={patientDetails.profilePictureUrl || "https://via.placeholder.com/150"}
                 className='mb-3 w-52 h-52 object-cover '
-                alt="No profile picture set." 
               />
             </div>
 

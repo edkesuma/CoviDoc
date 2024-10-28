@@ -16,6 +16,7 @@ function CreateConsultation({patientId, consultationId}) {
     const [change, setChange] = useState(false)
     const {token} = useContext(AuthContext);
     const navigate = useNavigate();
+    const [errorMessage, setErrorMessage] = useState("");
 
     useEffect(() => {
         if (token && consultationId) {
@@ -44,6 +45,13 @@ function CreateConsultation({patientId, consultationId}) {
         }
     }, [token, consultationId]);
     const upload = () => {
+        // validation
+        setErrorMessage("");
+        if (!classification || !classificationCon || !severity || !severityCon) {
+            setErrorMessage("Please fill in all the fields.");
+            return;
+        }
+
         const data =
             {
                 'consultationId': consultationId,
@@ -68,27 +76,26 @@ function CreateConsultation({patientId, consultationId}) {
             });
     }
     return (
-        <div className='flex justify-center'>
-            <div className='w-4/5 flex flex-col'>
+        <div className='mt-12 mx-20 px-6 sm:px-8 md:px-10 lg:px-12'>
+            <div className='flex flex-col'>
                 <p className='text-3xl font-bold'>Creating Consultation</p>
                 <div className='flex flex-col md:flex-row mt-8'>
                     <div className='flex flex-col md:items-start items-center w-full md:w-1/3'>
-                        <p className='text-cyan-400 text-2xl'>X-RAY IMAGE</p>
-                        <div className='bg-gray-100 flex  my-4 py-8'>
+                        <p className='text-cyan-400 text-xl'>X-RAY IMAGE</p>
+                        <div className='flex py-8'>
                             <img src={XrayImage} alt='before' className='w-64 h-64 max-w-full max-h-full'></img>
                         </div>
                     </div>
                     <div className='flex flex-col md:items-start items-center w-full md:w-1/3 mx-4'>
-                        <p className='text-cyan-400 text-2xl'>AREAS OF INTEREST</p>
-                        <div className='bg-gray-100 flex
-                          my-4 py-8'>
+                        <p className='text-cyan-400 text-xl'>AREAS OF INTEREST</p>
+                        <div className='flex py-8'>
                             <img src={highlightImage} alt='before' className='w-64 h-64 max-w-full max-h-full'></img>
                         </div>
                     </div>
                     <div className='flex flex-col w-full md:w-1/3 mx-4'>
-                        <p className='text-cyan-400 text-2xl'>FINDINGS</p>
+                        <p className='text-cyan-400 text-xl'>FINDINGS</p>
                         <div className='flex flex-col border-2 border-cyan-400 rounded-lg my-4 space-y-4'>
-                            <div className='px-4'>
+                            <div className='px-4 pt-3'>
                                 <Label className='font-bold'>Classification: </Label>
                                 <Select id="classification" required value={classification}
                                         disabled={!change}
@@ -143,11 +150,16 @@ function CreateConsultation({patientId, consultationId}) {
                         </div>
                     </div>
                 </div>
-                <div className='flex justify-center my-10'>
+                <div className='flex justify-center mt-10'>
                     <Button color='cyan' type={"submit"} onClick={upload}
                             className='text-cyan-400 w-3/4'>Continue</Button>
                 </div>
+                {/* error message */}
+                {errorMessage && (
+                    <p className="text-red-500 text-center mt-4">{errorMessage}</p>
+                )}
             </div>
+            <div className="p-5" />
         </div>
     );
 }

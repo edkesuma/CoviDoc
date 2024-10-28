@@ -47,24 +47,29 @@ function ConsultationHistoryPage() {
     return (
         <div>
             <ActorNavbar />
-            <div className='ml-20 mb-10 font-bold text-4xl flex flex-row'>Greetings, &nbsp;
-                <p className='text-cyan-400'>
-                    {patientName}
-                </p>
+            <div className='mt-12 mx-20 px-6 sm:px-8 md:px-10 lg:px-12 xl:max-w-[rem]'>
+                <h1 className="text-4xl font-bold text-gray-900">
+                    Greetings, &nbsp; <span className='text-cyan-400'>{patientName}</span>
+                </h1>
             </div>
-            {isLoading ? (
-                <div className="flex justify-center">
-                    <Spinner aria-label="Center-aligned spinner" size="xl" />
-                </div>
-            ) : consultations.length === 0 ? (
-                <div className="flex justify-center">
-                    <span className="text-lg font-semibold">
-                        You don't have any consultation history.
-                    </span>
-                </div>
-            ) : (
-                <ViewConsultation consultations={consultations} token={token}/>
-            )}
+
+            <div className='p-5'></div>
+
+            <div className="mx-20 px-6 sm:px-8 md:px-10 lg:px-12">
+                {isLoading ? (
+                    <div className="flex justify-center">
+                        <Spinner aria-label="Center-aligned spinner" size="xl" />
+                    </div>
+                ) : consultations.length === 0 ? (
+                    <div className="flex justify-center">
+                        <span className="text-lg font-semibold">
+                            You don't have any consultation history.
+                        </span>
+                    </div>
+                ) : (
+                    <ViewConsultation consultations={consultations} token={token}/>
+                )}
+            </div>
         </div>
     );
 }

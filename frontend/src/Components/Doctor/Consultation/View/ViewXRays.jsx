@@ -35,7 +35,7 @@ function ViewXrays({xRays}) {
                 sortedXrays.map((xRay, index) => (
                     <Card
                         key={index}
-                        className="transition-colors duration-200"
+                        className="hover:bg-gray-100 hover:shadow-md transition duration-300"
                     >
                         <div className='flex flex-col'>
                             {xRay.prescriptions != null ? (
@@ -64,8 +64,7 @@ function ViewXrays({xRays}) {
                                         <div>
                                             {
                                                 xRay.classification == 'Healthy' ? (
-                                                    <div
-                                                        className='border-2 border-cyan-400 rounded-lg px-4 py-4 mx-4 h-64 overflow-y-auto'>
+                                                    <div className='border-2 border-cyan-400 rounded-lg px-4 py-4 mx-4 h-64 overflow-y-auto bg-white'>
                                                         <p>Classification: {xRay.classification}</p>
                                                         <p>Classification
                                                             Confidence: {xRay.classificationConfidence}%</p>
@@ -75,8 +74,7 @@ function ViewXrays({xRays}) {
                                                         {xRay.prescriptions}
                                                     </div>
                                                 ) : (
-                                                    <div
-                                                        className='border-2 border-cyan-400 rounded-lg px-4 py-4 mx-4 h-64 overflow-y-auto whitespace-pre-wrap'>
+                                                    <div className='border-2 border-cyan-400 rounded-lg px-4 py-4 mx-4 h-64 overflow-y-auto whitespace-pre-wrap bg-white'>
                                                         <p>Classification: {xRay.classification}</p>
                                                         <p>Classification Confidence: {xRay.classificationConfidence}%</p>
                                                         <p>Severity: {xRay.severity}</p>

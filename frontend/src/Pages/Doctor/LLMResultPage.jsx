@@ -35,7 +35,7 @@ function LLMResultPage() {
     return (
         <div>
             <ActorNavbar/>
-            <Modal show={modalOpen} size="4xl" popup>
+            <Modal show={modalOpen} size="xl" popup>
                 <Modal.Header>
                     Report Generating
                 </Modal.Header>
@@ -48,7 +48,7 @@ function LLMResultPage() {
             <Results patientId={patientId} consultationId={consultationId}/>
             <Suggested consultationId={consultationId}></Suggested>
             <div className='flex justify-center my-8'>
-                <Button type="submit" className='bg-cyan-400 text-white border-2 border-cyan-400 mx-20 w-full'
+                <Button type="submit" className='bg-cyan-400 text-white border-2 border-cyan-400 mx-20 w-10/12'
                         onClick={() => {
                             setModalOpen(true);
                             upload();

@@ -10,9 +10,7 @@ function CreateConsultationPage(){
     return(
         <div>
             <ActorNavbar/>
-            <div className='bg-gray-100'>
-                <CreateConsultation patientId={patientId} consultationId={consultationId}/>
-            </div>
+            <CreateConsultation patientId={patientId} consultationId={consultationId}/>
         </div>
     )
 }

@@ -13,7 +13,7 @@ function PatientModal({isShow,onClose, patient}) {
                     <p className="text-xl font-medium text-cyan-400 dark:text-white"></p>
                 </Modal.Header>
                 <Modal.Body>
-                    <div className='mx-4 text-2xl'>{patient.name}</div>
+                    <div className='mx-4 text-2xl font-bold'>{patient.name}</div>
                     <PatientDetail patientDetails={patient}/>
                 </Modal.Body>
             </Modal>

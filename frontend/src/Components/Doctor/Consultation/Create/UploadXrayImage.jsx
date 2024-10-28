@@ -41,13 +41,13 @@ function UploadXrayImage({patientId, modalOpen, setModalOpen}) {
 
     return (
         <div>
-            <Modal show={modalOpen} size="4xl" onClose={() => setModalOpen(false)} popup>
+            <Modal show={modalOpen} size="2xl" onClose={() => setModalOpen(false)} popup>
                 <Modal.Header>
                     <div className='flex flex-row items-center'>
                         <div>
-                            <LuStethoscope color='cyan' className='w-6 h-6 mr-2'/>
+                            <LuStethoscope color='cyan' className='w-7 h-7 ml-8'/>
                         </div>
-                        <p className="text-xl font-medium text-cyan-300 dark:text-white">Create New Consultation</p>
+                        <p className="text-2xl font-bold text-cyan-300 ml-3 py-8">Create New Consultation</p>
                     </div>
 
                 </Modal.Header>
