@@ -49,7 +49,6 @@ function SignUpFlow() {
         const updatedFormData = {...formData, ...data};
         setFormData(updatedFormData);
         const formDataToSend = convertToFormDataFormat(updatedFormData);
-        console.log(formDataToSend);
         // Send data to backend
         await axios
             .put("/api/patient/registerPatient", formDataToSend,
@@ -60,12 +59,9 @@ function SignUpFlow() {
                 }
             )
             .then((res) => {
-                console.log(res.data);
                 if (res.data.success) {
-                    console.log("Account created successfully");
                     navigate("/signUp/success");
                 } else {
-                    console.log("Account creation failed");
                     navigate("/signUp/fail", {state: {message: res.data.message}});
                 }
                 

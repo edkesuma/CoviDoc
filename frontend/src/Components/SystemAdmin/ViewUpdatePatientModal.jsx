@@ -103,7 +103,6 @@ function ViewUpdatePatientModal({ show, onClose, data }) {
                 const { success, message, status } = response.data;
 
                 if (success) {
-                    console.log("Patient account updated successfully: ", response.data);
                     setUpdatePatientSuccess(true);
                     setIsEditable(false);
                     onClose();

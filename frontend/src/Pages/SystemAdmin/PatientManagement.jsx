@@ -44,14 +44,6 @@ function PatientManagement({}) {
         fetchPatients();
     }, [token]);
 
-    useEffect(() => {
-    console.log("List of patients", listOfPatients);
-    }, [listOfPatients]);
-
-    useEffect(() => {
-    console.log("Is loading", isLoading);
-    }, [isLoading]);
-
 
     // calculate age
     const calculateAge = (dob) => {
@@ -67,8 +59,6 @@ function PatientManagement({}) {
             age--;
         }
 
-        console.log("bday: ", dob);
-        console.log("age: ", age);
         return age;
     };
 

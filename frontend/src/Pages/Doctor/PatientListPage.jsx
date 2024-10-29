@@ -55,8 +55,6 @@ function PatientListPage() {
             age--;
         }
 
-        console.log("bday: ", dob);
-        console.log("age: ", age);
         return age;
     };
 
@@ -70,7 +68,6 @@ function PatientListPage() {
         const patientAge = calculateAge(patient.dob);
         const matchesAgeRange = patientAge >= filteredAge.min && patientAge <= filteredAge.max;
         const matchesStatus = filteredStatus ? patient.currentState === filteredStatus : true;
-        console.log("this is the status: ", matchesStatus)
 
         return matchesSearch && matchesGender && matchesAgeRange && matchesStatus;
     });

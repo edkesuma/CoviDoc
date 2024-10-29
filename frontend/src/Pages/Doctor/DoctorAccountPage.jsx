@@ -34,10 +34,6 @@ function DoctorAccountPage() {
     fetchDoctorProfile();
   }, [token]);
 
-  useEffect(() => {
-    console.log("Is loading", isLoading);
-  }, [isLoading]);
-
 
   return (
     <div>

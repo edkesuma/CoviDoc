@@ -77,7 +77,6 @@ function CreateDoctorModal(props) {
                 
                 // check account creation
                 if (success) {
-                    console.log("Doctor account created successfully: ", response.data);
                     setCreateDoctorSuccess(true);
                     props.onClose();
                 } else {

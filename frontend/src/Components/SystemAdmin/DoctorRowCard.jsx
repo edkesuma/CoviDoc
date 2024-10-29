@@ -13,13 +13,11 @@ function DoctorRowCard({ data }) {
     // handle delete doctor account
     const handleDeleteDoctor = (doctor) => {
         setSelectedDoctor(doctor); // set the selected doctor to be deleted
-        console.log(doctor);
         setDeleteDoctorShow(true); // show delete modal
     };
 
     // handle view doctor account
     const handleViewDoctor = (doctor) => {
-        console.log("handle view doctor: ", doctor)
         setSelectedDoctor(doctor);
         setViewDoctorShow(true);  // Show the view modal when a row is clicked
     };

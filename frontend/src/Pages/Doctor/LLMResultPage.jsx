@@ -24,7 +24,6 @@ function LLMResultPage() {
                 }
             })
             .then((response) => {
-                console.log("Got Report: ", response.data);
                 navigate(`/doctor/patient/${patientId}/${consultationId}/pdf`);
             })
             .catch((error) => {

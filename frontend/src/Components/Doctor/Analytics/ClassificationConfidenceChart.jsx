@@ -15,9 +15,6 @@ function ClassificationConfidenceChart({ token }) {
           },
         });
 
-        // Log the response to inspect the data structure
-        console.log("Classification Confidence Counts:", response.data.confidenceCounts);
-
         // Update state with the confidence counts
         setConfidenceCounts(response.data.confidenceCounts);
       } catch (error) {

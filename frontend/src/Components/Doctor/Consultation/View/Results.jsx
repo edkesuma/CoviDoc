@@ -72,7 +72,6 @@ function Results({patientId, consultationId}) {
                             patientId: patientId
                         }
                     });
-                    console.log(response.data.patient)
                     setPatient(response.data.patient);
                     setIsLoading(false);
                 } catch (error) {

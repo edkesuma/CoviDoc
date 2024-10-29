@@ -79,7 +79,6 @@ function DoctorEditAccountModal({ isOpen, onClose, doctorDetails }) {
         }
       })
       .then((response) => {
-        console.log("Doctor account updated successfully: ", response.data);
         setEditDoctorSuccess(true);
       })
       .catch((error) => {

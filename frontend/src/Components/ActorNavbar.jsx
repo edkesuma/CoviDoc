@@ -14,8 +14,6 @@ function ActorNavbar() {
     const user = jwtDecode(token);
     const [imageError, setImageError] = useState(false);
 
-    console.log("User profile pic: ", user);
-
     const handleLogout = () => {
         logout();
         navigate('/login');

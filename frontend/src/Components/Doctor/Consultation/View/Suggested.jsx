@@ -20,9 +20,7 @@ function Suggested({consultationId}) {
         let formData;
         if(Classification!='Healthy') {
             const prescriptionsData = jsonPrescriptions(prescriptions)
-            console.log("Prescriptions: ", prescriptionsData);
             const lifestyleChangesData = jsonLifestyle(lifestyleChanges)
-            console.log("lifestyleChanges: ", lifestyleChangesData);
             formData = {
                 "consultationId": consultationId,
                 "prescriptions": prescriptionsData,
@@ -41,9 +39,6 @@ function Suggested({consultationId}) {
                     Authorization: `Bearer ${token}`,
                     'Content-Type': 'application/json'
                 }
-            })
-            .then((response) => {
-                console.log("Suggest changed: ", response.data);
             })
             .catch((error) => {
                 console.log("Error change: ", error);
@@ -124,7 +119,6 @@ function Suggested({consultationId}) {
                             consultationId: consultationId
                         }
                     });
-                    console.log(response.data.data.classification)
                     setClassification(response.data.data.classification);
                 } catch (error) {
                     console.log("Error get consultation data: ", error);
@@ -139,13 +133,6 @@ function Suggested({consultationId}) {
         }
     }, [token, consultationId]);
 
-    useEffect(() => {
-        console.log(lifestyleChanges);
-    }, [lifestyleChanges]);
-
-    useEffect(() => {
-        console.log(prescriptions);
-    }, [prescriptions]);
 
     const handleKeyDown = (e, value, setValue) => {
         if (e.key === 'Enter') {
