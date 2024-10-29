@@ -360,31 +360,37 @@
                     <tr>
                         <td style="background-color:#00b0f0;border:1px solid #000000;vertical-align:top;width:632.87px;"
                             colspan="2">
-                            <p style="line-height:1;margin-bottom:0px;margin-top:0px;">
-                                <span class="bold" style="font-family:'Times New Roman', Times, serif;font-size:16px;">
-                                    <b>Prescriptions</b>
-                                </span>
-                            </p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="border:1px solid #000000;vertical-align:top;width:632.87px;" colspan="2">
-                            <span style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
-                                Prescriptions Source Document: <br>
-                                <a href={{prescriptionsLink}}>
-                                    {{prescriptionsLink}}
-                                </a>
-                            </span>
-                            <ul>
-                                {% for prescription in prescriptions %}
-                                <li>
-                                    <span style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
-                                        <u>{{prescription.prescriptionName[0]}}</u>:
-                                        {{prescription.prescriptionName[1]}}
+                                <p style="line-height:1;margin-bottom:0px;margin-top:0px;">
+                                    <span class="bold" style="font-family:'Times New Roman', Times, serif;font-size:16px;">
+                                        <b>Prescriptions</b>
                                     </span>
-                                </li>
-                                {% endfor %}
-                            </ul>
+                                </p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="border:1px solid #000000;vertical-align:top;width:632.87px;" colspan="2">
+                                {% if classification == "Healthy" %}
+                                    <p style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
+                                        {{ prescriptions }}
+                                    </p>
+                                {% else %}  
+                                    <span style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
+                                        Prescriptions Source Document: <br>
+                                        <a href={{prescriptionsLink}}>
+                                            {{prescriptionsLink}}
+                                        </a>
+                                    </span>
+                                    <ul>
+                                        {% for prescription in prescriptions %}
+                                        <li>
+                                            <span style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
+                                                <u>{{prescription.prescriptionName[0]}}</u>:
+                                                {{prescription.prescriptionName[1]}}
+                                            </span>
+                                        </li>
+                                        {% endfor %}
+                                    </ul>
+                            {% endif %}
                         </td>
                     </tr>
                 </tbody>
@@ -398,30 +404,36 @@
                     <tr>
                         <td style="background-color:#00b0f0;border:1px solid #000000;vertical-align:top;width:632.87px;"
                             colspan="2">
-                            <p style="line-height:1;margin-bottom:0px;margin-top:0px;">
-                                <span class="bold" style="font-family:'Times New Roman', Times, serif;font-size:16px;">
-                                    <b>Lifestyle Changes</b>
-                                </span>
-                            </p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="border:1px solid #000000;vertical-align:top;width:632.87px;" colspan="2">
-                            <span style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
-                                Lifestyle Changes Source Document: <br>
-                                <a href={{lifestyleLink}}>
-                                    {{lifestyleLink}}
-                                </a>
-                            </span>
-                            <ul>
-                                {% for change in lifestyleChanges %}
-                                <li>
-                                    <span style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
-                                        <u>{{change.lifestyleChange[0].strip(".")}}</u>: {{change.lifestyleChange[1]}}
+                                <p style="line-height:1;margin-bottom:0px;margin-top:0px;">
+                                    <span class="bold" style="font-family:'Times New Roman', Times, serif;font-size:16px;">
+                                        <b>Lifestyle Changes</b>
                                     </span>
-                                </li>
-                                {% endfor %}
-                            </ul>
+                                </p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="border:1px solid #000000;vertical-align:top;width:632.87px;" colspan="2">
+                                {% if classification == "Healthy" %}
+                                    <p style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
+                                        {{ lifestyleChanges }}
+                                    </p>
+                                {% else %}
+                                    <span style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
+                                        Lifestyle Changes Source Document: <br>
+                                        <a href={{lifestyleLink}}>
+                                            {{lifestyleLink}}
+                                        </a>
+                                    </span>
+                                    <ul>
+                                        {% for change in lifestyleChanges %}
+                                        <li>
+                                            <span style="font-family:'Times New Roman', Times, serif;font-size:14.67px;">
+                                                <u>{{change.lifestyleChange[0].strip(".")}}</u>: {{change.lifestyleChange[1]}}
+                                            </span>
+                                        </li>
+                                        {% endfor %}
+                                    </ul>
+                            {% endif %}
                         </td>
                     </tr>
                 </tbody>
