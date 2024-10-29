@@ -41,7 +41,6 @@ function DoctorViewPatientPage() {
             };
             const fetchConsultationHistory = async () => {
                 try {
-                    console.log("Fetching consultation history");
                     const response = await axios.get(`/api/doctor/getPatientConsultationHistory`, {
                         headers: {
                             Authorization: `Bearer ${token}`
@@ -79,22 +78,6 @@ function DoctorViewPatientPage() {
                 });
         }
     }, [token, patientId]);
-
-    useEffect(() => {
-        console.log("Patient", patient);
-    }, [patient]);
-
-    useEffect(() => {
-        console.log("Consultations", consultations);
-    }, [consultations]);
-
-    useEffect(() => {
-        console.log("xRays", xRays);
-    }, [xRays]);
-
-    useEffect(() => {
-        console.log("Is loading", isLoading);
-    }, [isLoading]);
 
 
     return isLoading ? (

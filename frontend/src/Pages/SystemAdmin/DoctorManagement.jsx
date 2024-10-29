@@ -45,14 +45,6 @@ function DoctorManagement() {
     fetchDoctors();
   }, [token]);
 
-  useEffect(() => {
-    console.log("List of doctors", listOfDoctors);
-  }, [listOfDoctors]);
-
-  useEffect(() => {
-    console.log("Is loading", isLoading);
-  }, [isLoading]);
-
 
   // list of specializations
   const specializations = [...new Set(listOfDoctors.map(doctor => doctor.specialization))];
@@ -71,8 +63,6 @@ function DoctorManagement() {
       age--;
     }
     
-    console.log("bday: ", dob);
-    console.log("age: ", age);
     return age;
   };
   

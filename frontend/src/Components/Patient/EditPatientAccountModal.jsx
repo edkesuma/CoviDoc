@@ -81,9 +81,7 @@ function EditAccountFormModal({ isOpen, onClose, patientDetails }) {
         }
       })
       .then((response) => {
-        console.log("Patient account updated successfully: ", response.data);
         setEditPatientSuccess(true);
-        // onClose();
       })
       .catch((error) => {
           console.log("Error updating patient account: ", error);

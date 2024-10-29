@@ -57,7 +57,6 @@ function CreateConsultationModal({ patientId, modalOpen, setModalOpen }) {
                 }
             })
             .then((response) => {
-                console.log("Consultation created successfully: ", response.data);
                 setModalOpen(false);
                 navigate(`/doctor/patient/${patientId}/${response.data.consultationId}`);
             })

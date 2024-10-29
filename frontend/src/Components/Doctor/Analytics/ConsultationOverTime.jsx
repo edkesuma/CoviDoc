@@ -15,9 +15,6 @@ function ConsultationsByDateChart({ token }) {
           },
         });
 
-        // Log the response to inspect the data structure
-        console.log("Consultations By Date:", response.data.consultationsByDate);
-
         // Update state with the consultation counts by date
         setConsultationsByDate(response.data.consultationsByDate);
       } catch (error) {
@@ -43,10 +40,6 @@ function ConsultationsByDateChart({ token }) {
 
   // Reorder the counts array to match the sorted dates
   const sortedCounts = sortedDates.map((date) => consultationsByDate[date]);
-
-  // Log sorted dates and counts to inspect
-  console.log("Sorted Dates:", sortedDates);
-  console.log("Sorted Counts:", sortedCounts);
 
   return (
     <ApexCharts

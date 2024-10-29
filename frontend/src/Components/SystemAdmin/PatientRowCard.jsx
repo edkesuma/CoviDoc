@@ -13,13 +13,11 @@ function PatientRowCard({ data }) {
     // handle delete patient account
     const handleDeletePatient = (patient) => {
         setSelectedPatient(patient); // set the selected patient to be deleted
-        console.log(patient);
         setDeletePatientShow(true); // show delete modal
     };
 
     // handle view patient account
     const handleViewPatient = (patient) => {
-        console.log("handle view patient: ", patient)
         setSelectedPatient(patient);
         setViewPatientShow(true);
     };

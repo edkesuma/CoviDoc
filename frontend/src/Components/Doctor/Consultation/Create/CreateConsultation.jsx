@@ -68,7 +68,6 @@ function CreateConsultation({patientId, consultationId}) {
                 }
             })
             .then((response) => {
-                console.log("Consultation Created", response.data);
                 navigate(`/doctor/patient/${patientId}/${consultationId}/newClassification`);
             })
             .catch((error) => {

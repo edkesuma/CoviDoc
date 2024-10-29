@@ -22,7 +22,6 @@ function DeletePatientModal({ show, onClose, data }) {
       data: { patientId: data.patientId }
     })
     .then((response) => {
-      console.log("Patient account deleted successfully: ", response.data);
       setDeletePatientSuccess(true);
       onClose();
     })

@@ -28,11 +28,8 @@ import CreateConsultationPage from "./Pages/Doctor/CreateConsultationPage.jsx";
 import ModelPredictionPage from "./Pages/Doctor/ModelPredictionPage.jsx";
 import LLMResultPage from "./Pages/Doctor/LLMResultPage.jsx";
 import DoctorViewPatientPage from "./Pages/Doctor/DoctorViewPatientPage.jsx";
-import PatientDetailsPage from "./Pages/Doctor/PatientDetailsPage.jsx";
-import ViewConsultationDetailsPage from "./Pages/Doctor/ViewConsultationDetailsPage.jsx";
 import ViewPDFPage from "./Pages/Doctor/ViewPDFPage.jsx";
 import DoctorAccountPage from "./Pages/Doctor/DoctorAccountPage.jsx";
-import DoctorEditAccountModal from "./Components/Doctor/DoctorEditAccountModal.jsx";
 import VisualizationsPage from "./Pages/Doctor/VisualizationsPage.jsx";
 
 // patient pages

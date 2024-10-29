@@ -101,7 +101,6 @@ function ViewUpdateDoctorModal({ show, onClose, data }) {
                 const { success, message, status } = response.data;
 
                 if (success) {
-                    console.log("Doctor account updated successfully: ", response.data);
                     setUpdateDoctorSuccess(true);
                     setIsEditable(false);
                     onClose();

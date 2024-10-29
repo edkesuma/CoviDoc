@@ -28,9 +28,6 @@ function ViewPDF({ viewData }) {
                 Authorization: `Bearer ${token}`
             }
         })
-        .then((response) => {
-            console.log("Updated viewable to patient: ", response.data)
-        })
     }
 
     return (

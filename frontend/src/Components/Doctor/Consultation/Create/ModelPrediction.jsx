@@ -77,7 +77,6 @@ function ModelPrediction({patientId, consultationId}) {
                 }
             })
             .then((response) => {
-                console.log("Consultation Created", response.data);
                 const nextDate = {
                     'gradcam_image_url': XrayImage,
                     'severity_classification': Severity,

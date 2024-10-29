@@ -19,7 +19,6 @@ function Login() {
 
     const redirectToUserHome = (token) => {
         const user = jwtDecode(token);
-        console.log("Decoded user: ", user);
         if (user.role === 'System Admin') {
             return navigate('/systemAdmin/doctorManagement');
         } else if (user.role === 'Doctor') {
@@ -43,7 +42,6 @@ function Login() {
         if (response.data.token) {
             login(response.data.token);
             redirectToUserHome(response.data.token);
-            // console.log("token", response.data.token);
         } else {
             setErrorMessage('Invalid credentials');
         }
