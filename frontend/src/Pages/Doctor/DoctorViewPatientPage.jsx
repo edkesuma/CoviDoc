@@ -133,32 +133,47 @@ function DoctorViewPatientPage() {
 
             <div className="mb-24"/>
 
-            <div className='flex flex-col mx-16'>
-                <div className='flex flex-row'>
-                    <div className='flex w-1/2 justify-center'>
-                        <button onClick={() => setDetail(false)}
-                                className='text-2xl text-gray-600 hover:font-semibold hover:text-cyan-500 bg-transparent border-none cursor-pointer'>
+            <div className="flex flex-col mx-16">
+                <div className="flex flex-row">
+                    <div className="flex w-1/2 justify-center">
+                        <button
+                            onClick={() => {
+                                setDetail(false)}}
+                            className={`text-2xl px-4 py-2 transition duration-200 ${
+                                !detail
+                                    ? 'text-cyan-500 font-semibold border-b-4 border-cyan-500'
+                                    : 'text-gray-600 hover:text-cyan-500'
+                            } bg-transparent border-none cursor-pointer`}
+                        >
                             Consultation Record
                         </button>
                     </div>
-                    <div className='flex w-1/2 justify-center'>
-                        <button onClick={() => setDetail(true)}
-                                className='text-2xl text-gray-600 hover:font-semibold hover:text-cyan-500 bg-transparent border-none cursor-pointer'>
+                    <div className="flex w-1/2 justify-center">
+                        <button
+                            onClick={() => setDetail(true)}
+                            className={`text-2xl px-4 py-2 transition duration-200 ${
+                                detail
+                                    ? 'text-cyan-500 font-semibold border-b-4 border-cyan-500'
+                                    : 'text-gray-600 hover:text-cyan-500'
+                            } bg-transparent border-none cursor-pointer`}
+                        >
                             X-Ray History
                         </button>
                     </div>
                 </div>
-                <div className='mx-20 h-1 bg-gray-400 my-4'/>
+                <div className="mx-20 h-1 bg-gray-200 my-1" />
             </div>
+
             <div>
                 {detail ? (
-                    <div>
+                    <div className="mx-16">
                         <div className="flex flex-row">
                             <div className="mx-20 my-10 font-bold text-3xl">
-                                {patient?.name || "Patient"}'s Consultation Records
+                                {patient?.name || "Patient"}'s X-Ray History
                             </div>
                         </div>
-                        <ViewXrays xRays={xRays}/>
+                        {detail && 
+                            <ViewXrays xRays={xRays} setDetail={setDetail}/>}
                     </div>
                 ) : (
                     <div className="mx-16">
@@ -184,7 +199,8 @@ function DoctorViewPatientPage() {
                                 Create Consultation
                             </Button>
                         </div>
-                        <ViewConsultations consultations={consultations}/>
+                        {!detail && 
+                            <ViewConsultations consultations={consultations}/>}
                     </div>
                 )}
             </div>

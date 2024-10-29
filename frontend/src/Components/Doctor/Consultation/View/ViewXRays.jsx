@@ -1,19 +1,17 @@
-"use client";
 import {Card} from "flowbite-react";
 import React from "react";
 
-function ViewXrays({xRays}) {
-
+function ViewXrays({xRays, setDetail}) {
     function formatDateString(dateString) {
         const [day, month, year] = dateString.split('/');
         return `${year}-${month}-${day}`;
     }
 
     const sortedXrays = [...xRays].sort((a, b) => {
-        if (a.prescriptions != null && b.prescriptions == null) {
+        if (a.prescriptions == null && b.prescriptions != null) {
             return -1;
         }
-        if (a.prescriptions == null && b.prescriptions != null) {
+        if (a.prescriptions != null && b.prescriptions == null) {
             return 1;
         }
         const dateA = new Date(formatDateString(a.consultationDate));
@@ -26,16 +24,25 @@ function ViewXrays({xRays}) {
         let jsonArray = JSON.parse(jsonString);
         let resultArray = jsonArray.map(item => '• ' + item.prescriptionName[0] + '.');
         let resultString = resultArray.join('\n');
-        console.log(resultString);
         return resultString
     }
+
     return (
         <div className="mx-20 space-y-4">
             {sortedXrays.length != 0 ? (
                 sortedXrays.map((xRay, index) => (
                     <Card
                         key={index}
-                        className="hover:bg-gray-100 hover:shadow-md transition duration-300"
+                        className={`hover:shadow-md transition duration-300 ${
+                            xRay.prescriptions == null
+                                ? 'border-2 border-red-500 bg-gray-200 hover:bg-gray-300'
+                                : 'hover:bg-gray-200'
+                        }`}
+                        onClick={() => {
+                            if (xRay.prescriptions == null) {
+                                setDetail(false); // direct to Consultation Record tab
+                            }
+                        }}
                     >
                         <div className='flex flex-col'>
                             {xRay.prescriptions != null ? (
@@ -57,8 +64,9 @@ function ViewXrays({xRays}) {
                                 <div className='w-2/5'>
                                     {xRay.prescriptions == null ? (
                                         <div
-                                            className='flex justify-center items-center border-2 border-cyan-400 rounded-lg px-4 py-4 mx-4 h-64 overflow-y-auto'>
-                                            <p className='text-2xl'>Workflow not completed yet..</p>
+                                            className='flex justify-center items-center border-2 border-cyan-400 rounded-lg px-4 py-4 mx-4 h-64 overflow-y-auto bg-gray-200'>
+                                            <p className='text-xl'>Workflow not completed yet.<br/>
+                                            <span className="text-red-500 font-bold">Click to return to the "Consultation Record" tab.</span></p>
                                         </div>
                                     ) : (
                                         <div>

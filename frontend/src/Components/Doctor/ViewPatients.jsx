@@ -54,7 +54,7 @@ function ViewPatients({patients, token, onUpdate}) {
                     key={patient.patientId}
                     onClick={() => navigate(`/doctor/patient/${patient.patientId}`)}
                     className={`hover:bg-gray-100 transition duration-300 ease-in-out
-                    ${patient.currentState === 'Closed' ? 'bg-gray-200' : ''}
+                    ${patient.currentState === 'Closed' ? 'bg-gray-300 hover:bg-gray-400' : ''}
                     `}
                 >
                     <div className="flex flex-row items-center">

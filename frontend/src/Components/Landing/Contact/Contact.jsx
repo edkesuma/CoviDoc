@@ -19,7 +19,7 @@ function Contact() {
             <div className="p-5"></div>
 
             <div className='flex justify-center'>
-                <div className='w-11/12 flex flex-col md:flex-row items-center mt-5'>
+                <div className='w-11/12 flex flex-col md:flex-row items-center mt-5 justify-center'>
                     <div className='w-96 h-64 flex flex-col items-center'>
                         <FaMapMarkerAlt color='cyan' size='80'/>
                         <br/>
