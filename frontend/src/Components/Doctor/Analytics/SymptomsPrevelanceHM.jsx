@@ -10,7 +10,6 @@ function SymptomPrevalenceHeatmap({ token }) {
   useEffect(() => {
     const fetchSymptomPrevalence = async () => {
       try {
-        // Step 1: Fetch the processed symptom prevalence data from the backend
         const response = await axios.get("/api/doctor/getSymptomPrevalence", {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -19,7 +18,6 @@ function SymptomPrevalenceHeatmap({ token }) {
 
         const { patients, symptomCategories, symptomData } = response.data;
 
-        // Step 2: Store the fetched data in state variables
         setPatients(patients);
         setSymptomCategories(symptomCategories);
         setSymptomData(symptomData);
@@ -31,11 +29,13 @@ function SymptomPrevalenceHeatmap({ token }) {
     fetchSymptomPrevalence();
   }, [token]);
 
-  // Prepare series data for ApexCharts
   const series = symptomCategories.map((symptom, index) => ({
     name: symptom,
     data: symptomData.map((row) => row[index]),
   }));
+
+  const chartWidth = Math.max(patients.length * 70, 400); // Adjusted width for spacing
+  const chartHeight = Math.max(symptomCategories.length * 30, 500); // Adjusted height for spacing
 
   return (
     <div style={{ overflow: "auto", width: "100%", maxHeight: "600px" }}>
@@ -43,6 +43,9 @@ function SymptomPrevalenceHeatmap({ token }) {
         options={{
           chart: {
             type: "heatmap",
+            toolbar: {
+              show: false,
+            },
           },
           plotOptions: {
             heatmap: {
@@ -53,24 +56,47 @@ function SymptomPrevalenceHeatmap({ token }) {
                 ],
               },
               shadeIntensity: 0.5,
-              radius: 0,
-              useFillColorAsStroke: true,
-              distributed: false,
-              opacity: 1,
+              radius: 2, // Rounded corners for cells
+              padding: {
+                top: 20,
+                bottom: 20,
+                left: 20,
+                right: 20,
+              },
+            },
+          },
+          grid: {
+            padding: {
+              top: 10,
+              bottom: 10,
+              left: 20,
+              right: 20,
             },
           },
           title: {
             text: "Symptom Prevalence Heatmap",
+            align: 'center',
           },
           xaxis: {
             categories: patients.map((patient) => patient.name),
             title: {
               text: "Patients",
             },
+            labels: {
+              rotate: -45, // Rotate labels for better spacing
+              style: {
+                fontSize: '12px',
+              },
+            },
           },
           yaxis: {
             title: {
               text: "Symptoms",
+            },
+            labels: {
+              style: {
+                fontSize: '12px',
+              },
             },
           },
           tooltip: {
@@ -83,8 +109,8 @@ function SymptomPrevalenceHeatmap({ token }) {
         }}
         series={series}
         type="heatmap"
-        height={1200}  // Increased height for vertical scroll
-        width={patients.length * 55}   // Increased width for horizontal scroll
+        height={chartHeight}
+        width={chartWidth}
       />
     </div>
   );
