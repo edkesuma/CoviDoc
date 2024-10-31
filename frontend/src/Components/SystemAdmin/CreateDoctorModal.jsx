@@ -186,7 +186,7 @@ function CreateDoctorModal(props) {
                                     />
                                     <Select id="gender" required 
                                         value={gender} onChange={(e) => setGender(e.target.value)}
-                                        className="ml-1.5 w-5/12">
+                                        className="ml-1.5 w-4/5">
                                         <option value="" disabled>Select gender</option> {/* placeholder */}
                                         <option value="Male">Male</option>
                                         <option value="Female">Female</option>

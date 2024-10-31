@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { TextInput, Modal, Datepicker, Select } from "flowbite-react";
-import { FaUser, FaVenusMars, FaBirthdayCake, FaEnvelope, FaPhoneAlt, FaCamera, FaLock } from "react-icons/fa";
+import { FaUser, FaVenusMars, FaBirthdayCake, FaEnvelope, FaPhoneAlt, FaCamera } from "react-icons/fa";
 import { AuthContext } from "../../Components/Authentication/AuthContext"; // Ensure path is correct
 import { format } from "date-fns";
 import axios from "axios";
@@ -116,9 +116,9 @@ function EditAccountFormModal({ isOpen, onClose, patientDetails }) {
 
         <Modal.Body>
           <div className="space-y-4">
-            <div className='flex flex-row'>
+            <div className='flex flex-col md:flex-row'>
               {/* first column */}
-              <div className='flex flex-col w-1/2 space-y-5'>
+              <div className='flex flex-col w-full md:w-1/2 space-y-5'>
                 {/* profile picture */}
                 <div className='flex pl-6 items-start'>
                   <FaCamera
@@ -164,7 +164,7 @@ function EditAccountFormModal({ isOpen, onClose, patientDetails }) {
                     value={gender} 
                     onChange={(e) => setGender(e.target.value)} 
                     required 
-                    className="ml-1.5 w-5/12">
+                    className="ml-1.5 w-4/5">
                     <option value="" disabled>Select gender</option>
                     <option value="Male">Male</option>
                     <option value="Female">Female</option>
@@ -230,7 +230,7 @@ function EditAccountFormModal({ isOpen, onClose, patientDetails }) {
               </div>
 
               {/* second column */}
-              <div className='flex w-1/2 flex-col px-4 space-y-5'>
+              <div className='flex w-full md:w-1/2 flex-col my-4 px-4 space-y-5'>
                 {/* allergies */}
                 <div className="pl-6 items-center w-11/12">
                   <p className="text-[#6EE0FA]">ALLERGIES</p>

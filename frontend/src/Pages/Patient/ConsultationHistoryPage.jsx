@@ -47,7 +47,7 @@ function ConsultationHistoryPage() {
     return (
         <div>
             <ActorNavbar />
-            <div className='mt-12 mx-20 px-6 sm:px-8 md:px-10 lg:px-12 xl:max-w-[rem]'>
+            <div className='mt-12 mx-5 md:mx-20 px-6 sm:px-8 md:px-10 lg:px-12 xl:max-w-[rem]'>
                 <h1 className="text-4xl font-bold text-gray-900">
                     Greetings, &nbsp; <span className='text-cyan-400'>{patientName}</span>
                 </h1>
@@ -55,7 +55,7 @@ function ConsultationHistoryPage() {
 
             <div className='p-5'></div>
 
-            <div className="mx-20 px-6 sm:px-8 md:px-10 lg:px-12">
+            <div className="mx-5 md:mx-20 px-6 sm:px-8 md:px-10 lg:px-12">
                 {isLoading ? (
                     <div className="flex justify-center">
                         <Spinner aria-label="Center-aligned spinner" size="xl" />

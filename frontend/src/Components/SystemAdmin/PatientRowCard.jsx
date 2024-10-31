@@ -43,13 +43,23 @@ function PatientRowCard({ data }) {
                         <div className="w-2/12">
                             <button
                                 type="button"
-                                className="flex items-center justify-center w-3/5 py-1 border border-gray-400 text-base font-bold text-gray-400 rounded-xl hover:bg-red-600 hover:border-red-600 hover:text-white transition duration-300"
+                                className="hidden md:flex items-center justify-center w-3/5 py-1 border border-gray-400 text-base font-bold text-gray-400 rounded-xl hover:bg-red-600 hover:border-red-600 hover:text-white transition duration-300"
                                 onClick={(e) => {
                                     e.stopPropagation();  // stop row click from triggering
                                     handleDeletePatient(patient);
                                 }}
-                                >
-                                <FaRegTrashAlt className="mr-2" />
+                            >
+                                <FaRegTrashAlt className="mr-2"/>
+                                Delete
+                            </button>
+                            <button
+                                type="button"
+                                className="flex md:hidden items-center justify-center w-full py-1 border border-gray-400 text-base font-bold text-gray-400 rounded-xl hover:bg-red-600 hover:border-red-600 hover:text-white transition duration-300"
+                                onClick={(e) => {
+                                    e.stopPropagation();  // stop row click from triggering
+                                    handleDeletePatient(patient);
+                                }}
+                            >
                                 Delete
                             </button>
                         </div>
