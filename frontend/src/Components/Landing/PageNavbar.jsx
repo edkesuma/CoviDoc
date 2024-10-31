@@ -32,7 +32,7 @@ function PageNavbar() {
                     Up</Button>
                 <Navbar.Toggle/>
             </div>
-            <Navbar.Collapse className='z-50'>
+            <Navbar.Collapse className='z-50 bg-gray-200 md:bg-transparent'>
             {Object.keys(landingPageNavigationLinks).map((key, value) => {
 
                     const link = landingPageNavigationLinks[key]

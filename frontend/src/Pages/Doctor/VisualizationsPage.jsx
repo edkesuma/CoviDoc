@@ -44,7 +44,7 @@ function VisualizationsPage() {
                 </div>
 
                 {/* Render the selected chart */}
-                <Card className='mx-20'>
+                <Card className='mx-20 mb-20'>
                     {selectedChart === "Age Distribution" && <AgeDistributionChart token={token} />} {/* done */}
                     {selectedChart === "Classification Confidence" && <ClassificationConfidenceChart token={token} />} {/* done */}
                     {selectedChart === "Consultation over time" && <ConsultationOverTime token={token} />}

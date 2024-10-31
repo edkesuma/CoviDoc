@@ -1,11 +1,9 @@
 import React from 'react';
 import { Card } from "flowbite-react";
-import { useNavigate } from "react-router-dom";
 import PageNavbar from "../../Components/Landing/PageNavbar.jsx";
 import PageFooter from "../../Components/Landing/PageFooter.jsx";
 
 function PricingPage() {
-    const navigate = useNavigate();
 
     return (
         <div>
@@ -28,9 +26,9 @@ function PricingPage() {
 
             <div className='p-8'></div>
 
-            <div className='flex justify-between mx-36 space-x-8'>
+            <div className='flex justify-between mx-20 md:mx-36 space-x-0 md:space-x-8 flex-col md:flex-row'>
                 {/* free plan */}
-                <Card className="w-1/3 hover:border-cyan-100 transition duration-300 hover:shadow-cyan-200 hover:shadow-xl">
+                <Card className="w-full md:w-1/3 my-10 hover:border-cyan-100 transition duration-300 hover:shadow-cyan-200 hover:shadow-xl">
                     <h5 className="mb-4 text-lg font-medium text-gray-500">Free</h5>
                     <div className="flex items-baseline text-gray-900">
                         <span className="text-3xl font-semibold">$</span>
@@ -118,7 +116,7 @@ function PricingPage() {
                 </Card>
 
                 {/* pay-per-use */}
-                <Card className="w-1/3 hover:border-cyan-100 transition duration-300 hover:shadow-cyan-200 hover:shadow-xl">
+                <Card className="w-full md:w-1/3 my-10 hover:border-cyan-100 transition duration-300 hover:shadow-cyan-200 hover:shadow-xl">
                     <h5 className="mb-4 text-lg font-medium text-gray-500">Pay-Per-Use</h5>
                     <div className="flex items-baseline text-gray-900">
                         <span className="text-3xl font-semibold">$</span>
@@ -211,7 +209,7 @@ function PricingPage() {
                 </Card>
 
                 {/* monthly subscription plan */}
-                <Card className="w-1/3 border border-purple-100 shadow-purple-300 shadow-lg transition duration-300 hover:border-purple-200 hover:shadow-purple-500 hover:shadow-xl">
+                <Card className="w-full md:w-1/3 my-10 border border-purple-100 shadow-purple-300 shadow-lg transition duration-300 hover:border-purple-200 hover:shadow-purple-500 hover:shadow-xl">
                     <h5 className="mb-4 text-lg font-medium text-gray-500">Monthly</h5>
                     <div className="flex items-baseline text-gray-900">
                         <span className="text-3xl font-semibold">$</span>

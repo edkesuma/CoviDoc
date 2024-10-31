@@ -11,22 +11,36 @@ function AgeDistributionChart({ token }) {
     "66-80": 0,
     "81-100": 0,
   });
+  const [chartWidth, setChartWidth] = useState(window.innerWidth > 768 ? 700 : 400);
 
   useEffect(() => {
     // Fetch preprocessed age distribution from the backend
-    axios.get('/api/doctor/getAgeDistribution', {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-    .then(response => {
-      const ageGroups = response.data.ageGroups;
-      setAgeGroups(ageGroups);
-    })
-    .catch(error => {
-      console.error("Error fetching age distribution data:", error);
-    });
+    axios
+      .get("/api/doctor/getAgeDistribution", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        const ageGroups = response.data.ageGroups;
+        setAgeGroups(ageGroups);
+      })
+      .catch((error) => {
+        console.error("Error fetching age distribution data:", error);
+      });
   }, [token]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setChartWidth(window.innerWidth > 768 ? 700 : 350);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   const series = Object.values(ageGroups);
   const categories = Object.keys(ageGroups);
@@ -51,10 +65,9 @@ function AgeDistributionChart({ token }) {
         },
       ]}
       type="bar"
-      width="700"
+      width={chartWidth}
     />
   );
 }
 
 export default AgeDistributionChart;
-

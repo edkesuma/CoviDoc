@@ -46,7 +46,7 @@ function ViewPatients({patients, token, onUpdate}) {
                 <div className="w-2/12">Profile</div>
                 <div className="w-4/12">Patient Name</div>
                 <div className="w-4/12">Email</div>
-                <div className="w-2/12 text-center">Current State</div>
+                <div className="w-1/3 text-center">Current State</div>
             </div>
 
             {sortedPatients.map((patient) => (
@@ -69,9 +69,9 @@ function ViewPatients({patients, token, onUpdate}) {
                                 <FaUser color="cyan" className="w-10 h-10"/>
                             )}
                         </div>
-                        <div className="w-4/12 truncate">{patient.name}</div>
-                        <div className="w-4/12 truncate">{patient.email}</div>
-                        <div className="w-2/12 flex justify-center" onClick={(e) => e.stopPropagation()}>
+                        <div className="w-1/3 truncate">{patient.name}</div>
+                        <div className="w-1/3 md:w-1/3 truncate">{patient.email}</div>
+                        <div className="w-1/3 flex justify-center" onClick={(e) => e.stopPropagation()}>
                             <Dropdown label={patient.currentState} color='cyan'>
                                 <Dropdown.Item onClick={() => updatePatientState(patient.patientId, "Open")}>
                                     Open

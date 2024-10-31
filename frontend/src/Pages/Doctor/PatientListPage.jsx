@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Button, Spinner,TextInput } from "flowbite-react";
+import { Spinner,TextInput } from "flowbite-react";
 import { FaSearch, FaFilter } from "react-icons/fa";
 import { AuthContext } from "../../Components/Authentication/AuthContext";
 import axios from "axios";
@@ -92,11 +92,11 @@ function PatientListPage() {
             <ActorNavbar />
 
             {/* title */}
-            <div className="mt-12 mx-20 px-6 sm:px-8 md:px-10 lg:px-12 xl:max-w-[rem]">
+            <div className="mt-12 mx-5 md:mx-20 px-6 sm:px-8 md:px-10 lg:px-12 xl:max-w-[rem]">
                 <h1 className="text-4xl font-bold text-gray-900">List of Patients</h1>
             </div>
 
-            <div className="mt-12 mx-20 px-6 sm:px-8 md:px-10 lg:px-12">
+            <div className="mt-12 mx-5 md:mx-20 px-6 sm:px-8 md:px-10 lg:px-12">
                 <div className="flex items-center">
                     <div className='flex items-center space-x-4 flex-grow'>
                         {/* search bar */}

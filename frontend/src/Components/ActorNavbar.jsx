@@ -43,7 +43,7 @@ function ActorNavbar() {
     }
 
     return (
-        <Navbar fluid rounded className='mx-20 h-24'>
+        <Navbar fluid rounded className='mx-5 md:mx-20 h-24'>
             <Navbar.Brand href="/" className='ml-7'>
                 <img src={Logo} className="h-12" alt="Logo"/>
             </Navbar.Brand>
@@ -79,7 +79,7 @@ function ActorNavbar() {
                 </Dropdown>
                 <Navbar.Toggle/>
             </div>
-            <Navbar.Collapse>
+            <Navbar.Collapse className='z-50 bg-gray-200 md:bg-transparent'>
                 {Object.entries(actorNavigationLinks).map(([role, routes]) => {
                     if (token) {
                         
