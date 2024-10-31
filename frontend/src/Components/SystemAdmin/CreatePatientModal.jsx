@@ -162,7 +162,7 @@ function CreatePatientModal(props) {
                         {/* input */}
                         <div className="flex flex-row">
                             {/* first column */}
-                            <div className='flex flex-col w-1/2 space-y-5'>
+                            <div className='flex flex-col w-1/2 space-y-7'>
                                 {/* full name */}
                                 <div className="flex pl-6 items-center">
                                     <FaUser 
@@ -189,7 +189,7 @@ function CreatePatientModal(props) {
                                     />
                                     <Select id="gender" required 
                                         value={gender} onChange={(e) => setGender(e.target.value)}
-                                        className="ml-1.5 w-5/12">
+                                        className="ml-1.5 w-4/5">
                                         <option value="" disabled>Select gender</option> {/* placeholder */}
                                         <option value="Male">Male</option>
                                         <option value="Female">Female</option>
@@ -249,6 +249,58 @@ function CreatePatientModal(props) {
                                         className="ml-2.5 w-4/5"
                                     />
                                 </div>
+                                {/* password */}
+                                <div className="flex pl-6 items-center">
+                                    <FaLock
+                                        color="#6EE0FA"
+                                        size={32}
+                                        // style={{ paddingRight: '10px' }}
+                                    />
+                                    <TextInput
+                                        id="password"
+                                        value={password}
+                                        placeholder="Enter password"
+                                        onChange={(event) => setPassword(event.target.value)}
+                                        required
+                                        className="ml-2.5 w-4/5"
+                                    />
+                                </div>
+
+                                {/* re-enter password */}
+                                <div className="flex pl-6 items-center">
+                                    <FaLock
+                                        color="#6EE0FA"
+                                        size={32}
+                                    />
+                                    <TextInput
+                                        id="reEnterPassword"
+                                        value={reEnterPassword}
+                                        placeholder="Re-enter password"
+                                        onChange={(event) => setReEnterPassword(event.target.value)}
+                                        required
+                                        className="ml-2.5 w-4/5"
+                                    />
+                                </div>
+                            </div>
+
+                            {/* second column */}
+                            <div className='flex w-1/2 flex-col px-4 space-y-0'>
+                                {/* drag n drop picture */}
+                                <div className='flex items-start'>
+                                    <FaCamera 
+                                        color="#6EE0FA"
+                                        size={40}
+                                        style={{ paddingRight: '10px' }}
+                                    />
+                                    <div className="flex flex-col items-center w-64 h-56">
+                                        <DropImageInput
+                                            name="image"
+                                            file={selectedImage}
+                                            setFile={setSelectedImage}
+                                            show={true}
+                                        />
+                                    </div>
+                                </div>
 
                                 {/* allergies */}
                                 <div className="pl-6 items-center w-11/12">
@@ -273,60 +325,6 @@ function CreatePatientModal(props) {
                                         onChange={(event) => setMedicalHistory(event.target.value)}
                                         required
                                         className="text-sm w-full h-24 p-2 border border-gray-300 bg-gray-50 rounded-md resize-y"
-                                    />
-                                </div>
-
-                            </div>
-
-                            {/* second column */}
-                            <div className='flex w-1/2 flex-col px-4 space-y-5'>
-                                {/* drag n drop picture */}
-                                <div className='flex items-start'>
-                                    <FaCamera 
-                                        color="#6EE0FA"
-                                        size={40}
-                                        style={{ paddingRight: '10px' }}
-                                    />
-                                    <div className="flex flex-col items-center w-64 h-56">
-                                        <DropImageInput
-                                            name="image"
-                                            file={selectedImage}
-                                            setFile={setSelectedImage}
-                                            show={true}
-                                        />
-                                    </div>
-                                </div>
-
-                                {/* password */}
-                                <div className="flex items-center">
-                                    <FaLock 
-                                        color="#6EE0FA"
-                                        size={32}
-                                        // style={{ paddingRight: '10px' }}
-                                    />
-                                    <TextInput
-                                        id="password"
-                                        value={password}
-                                        placeholder="Enter password"
-                                        onChange={(event) => setPassword(event.target.value)}
-                                        required
-                                        className="ml-2.5 w-4/5"
-                                    />
-                                </div>
-
-                                {/* re-enter password */}
-                                <div className="flex items-center">
-                                    <FaLock 
-                                        color="#6EE0FA"
-                                        size={32}
-                                    />
-                                    <TextInput
-                                        id="reEnterPassword"
-                                        value={reEnterPassword}
-                                        placeholder="Re-enter password"
-                                        onChange={(event) => setReEnterPassword(event.target.value)}
-                                        required
-                                        className="ml-2.5 w-4/5"
                                     />
                                 </div>
                             </div>
