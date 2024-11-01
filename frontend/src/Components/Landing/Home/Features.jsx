@@ -20,7 +20,7 @@ function Features() {
                 <div className="text-red-500 hover:text-red-700 transition duration-300">
                     <div className="flex items-center mt-2">
                         <FaBullseye className="w-8 h-8" />
-                        <p className="text-3xl font-bold ml-4">99.48% Accuracy</p>
+                        <p className="text-3xl font-bold ml-4">94.46% Accuracy</p>
                     </div>
                     <p className="text-gray-700 text-lg mt-4">
                         AI algorithms ensure accurate results, reducing diagnostic errors and enhancing patient care.
@@ -30,7 +30,7 @@ function Features() {
                 <div className="text-blue-500 hover:text-blue-700 transition duration-300">
                     <div className="flex items-center">
                         <FaClock className="w-8 h-8" />
-                        <p className="text-3xl font-bold ml-5">Less Than 30s</p>
+                        <p className="text-3xl font-bold ml-5">Less Than 5s</p>
                     </div>
                     <p className="text-gray-700 text-lg mt-4">
                         The platform delivers COVID-19 diagnoses in 30 seconds, supporting timely medical decisions.
