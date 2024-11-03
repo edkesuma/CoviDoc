@@ -4,13 +4,12 @@ import PageFooter from "../../Components/Landing/PageFooter.jsx";
 import videoThumbnail from "../../assets/videoThumbnail.jpg";
 
 function ProductPage() {
-
     return (
         <div>
             <PageNavbar />
             
             <div className='p-5'/>
-            
+
             <div className='mx-20'>
                 <p className='text-lg text-cyan-400'>PRODUCT DEMO</p>
                 <br/>
@@ -23,12 +22,12 @@ function ProductPage() {
 
             <div className='p-5'></div>
 
-            <div className='flex justify-center relative'>
+            <div className='flex justify-center relative px-4'>
                 <a href="https://drive.google.com/file/d/1ufFmPFBzIFBEi-dX3k1UykBNN06wIT2s/view?usp=drive_link" target="_blank" rel="noopener noreferrer">
                     <img 
-                        src={videoThumbnail}  // Replace with the actual path to your image
+                        src={videoThumbnail}
                         alt="Product Demo Video"
-                        style={{ cursor: 'pointer', width: '1024px', height: '610px' }} // Adjust the dimensions as needed
+                        className="cursor-pointer w-full max-w-5xl h-auto"
                         title="Click to watch full video"
                     />
                 </a>
