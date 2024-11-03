@@ -1,13 +1,27 @@
 services:
   api:
     build:
-      context: .
+      context: ./server
       dockerfile: Dockerfile.api
-    image: covidoc-fyp-api
+    image: edkesuma/covidoc-fyp-api
+    env_file:
+      - .env
+    volumes:
+      - type: bind
+        source: ./server/instance
+        target: /app/instance
+    secrets:
+      - gcp_service_account
+    environment:
+      GOOGLE_APPLICATION_CREDENTIALS: /run/secrets/gcp_service_account
   client:
     build:
-      context: .
+      context: ./frontend
       dockerfile: Dockerfile.client
-    image: covidoc-fyp-client
+    image: edkesuma/covidoc-fyp-client
     ports:
-      - "3000:80"
+      - "80:80"
+  
+secrets:
+  gcp_service_account:
+    file: ./server/servicekey_googlecloud.json
