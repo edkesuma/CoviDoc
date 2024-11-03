@@ -28,7 +28,7 @@ function ViewXrays({xRays, setDetail}) {
     }
 
     return (
-        <div className="mx-20 space-y-4">
+        <div className="mx-5 md:mx-20 space-y-4">
             {sortedXrays.length != 0 ? (
                 sortedXrays.map((xRay, index) => (
                     <Card
@@ -52,8 +52,8 @@ function ViewXrays({xRays, setDetail}) {
                                 <p className='text-xl font-bold'>Consultation #{xRay.consultationId} </p>
                             )}
 
-                            <div className='flex flex-row my-4'>
-                                <div className='w-3/5 bg-gray-400 flex flex-row justify-center mx-4'>
+                            <div className='flex flex-col md:flex-row my-4 items-center'>
+                                <div className='w-11/12 md:w-3/5 bg-gray-400 flex flex-row justify-center my-4 mx-4'>
                                     <div className='w-1/2 flex justify-center'>
                                         <img src={xRay.xrayImageUrl} alt='x'/>
                                     </div>
@@ -61,7 +61,7 @@ function ViewXrays({xRays, setDetail}) {
                                         <img src={xRay.highlightedXrayImageUrl} alt='y' className='h-full'/>
                                     </div>
                                 </div>
-                                <div className='w-2/5'>
+                                <div className='w-full md:w-2/5'>
                                     {xRay.prescriptions == null ? (
                                         <div
                                             className='flex justify-center items-center border-2 border-cyan-400 rounded-lg px-4 py-4 mx-4 h-64 overflow-y-auto bg-gray-200'>

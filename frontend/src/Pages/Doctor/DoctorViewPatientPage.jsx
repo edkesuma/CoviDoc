@@ -103,10 +103,10 @@ function DoctorViewPatientPage() {
                 </button>
             </div>
 
-            <div className="mt-12 mx-20 px-6 sm:px-8 md:px-10 lg:px-12">
+            <div className="mt-12 mx-5 md:mx-20 px-6 sm:px-8 md:px-10 lg:px-12">
                 <h1 className="text-4xl font-bold text-gray-900">{patient?.name || "Patient"}'s Account</h1>
             </div>
-            <div className="mt-12 mx-20 px-6 sm:px-8 md:px-10 lg:px-12">
+            <div className="mt-12 mx-5 md:mx-20 px-6 sm:px-8 md:px-10 lg:px-12">
                 {patient ? (
                     <PatientDetail patientDetails={patient} card={true}/>
                 ) : (
@@ -116,7 +116,7 @@ function DoctorViewPatientPage() {
 
             <div className="mb-24"/>
 
-            <div className="flex flex-col mx-16">
+            <div className="flex flex-col mx-5 md:mx-16">
                 <div className="flex flex-row">
                     <div className="flex w-1/2 justify-center">
                         <button
@@ -144,22 +144,27 @@ function DoctorViewPatientPage() {
                         </button>
                     </div>
                 </div>
-                <div className="mx-20 h-1 bg-gray-200 my-1" />
+                <div className="mx-5 md:mx-20 h-1 bg-gray-200 my-1" />
             </div>
 
             <div>
                 {detail ? (
-                    <div className="mx-16">
-                        <div className="flex flex-row">
+                    <div className="md:mx-16">
+                        <div className="flex-row hidden md:flex">
                             <div className="mx-20 my-10 font-bold text-3xl">
                                 {patient?.name || "Patient"}'s X-Ray History
                             </div>
                         </div>
-                        {detail && 
+                        <div className="flex flex-row md:hidden">
+                            <div className="mx-5 my-10 font-bold text-3xl">
+                                X-Ray History
+                            </div>
+                        </div>
+                        {detail &&
                             <ViewXrays xRays={xRays} setDetail={setDetail}/>}
                     </div>
                 ) : (
-                    <div className="mx-16">
+                    <div className="md:mx-16">
                         <div className="md:flex-row hidden md:flex">
                             <div className=" ml-20 my-10 font-bold text-3xl">
                                 {patient?.name || "Patient"}'s Consultation Records
@@ -172,11 +177,11 @@ function DoctorViewPatientPage() {
                             </Button>
                         </div>
                         <div className="flex flex-row md:hidden">
-                            <div className=" ml-20 my-10 font-bold text-3xl">
+                            <div className=" ml-5 my-10 font-bold text-3xl">
                                 Consultation
                             </div>
                             <Button
-                                className="bg-cyan-400 my-10 ml-auto mr-20"
+                                className="bg-cyan-400 my-10 ml-auto mr-5"
                                 onClick={() => setConsultationModalOpen(true)}
                             >
                                 Create Consultation

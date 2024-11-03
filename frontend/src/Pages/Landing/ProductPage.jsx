@@ -1,11 +1,9 @@
 import React from 'react';
-import { useNavigate } from "react-router-dom";
 import PageNavbar from "../../Components/Landing/PageNavbar.jsx";
 import PageFooter from "../../Components/Landing/PageFooter.jsx";
 import videoThumbnail from "../../assets/videoThumbnail.jpg";
 
 function ProductPage() {
-    const navigate = useNavigate();
 
     return (
         <div>

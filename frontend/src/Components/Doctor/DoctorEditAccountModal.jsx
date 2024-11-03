@@ -112,10 +112,10 @@ function DoctorEditAccountModal({ isOpen, onClose, doctorDetails }) {
         </Modal.Header>
 
         <Modal.Body>
-          <div className="space-y-4">
-            <div className='flex flex-row'>
+          <div className="space-y-6">
+            <div className='flex flex-col md:flex-row'>
               {/* first column */}
-              <div className='flex flex-col w-1/2 space-y-5'>
+              <div className='flex flex-col justify-center my-4 w-full md:w-1/2 space-y-5'>
                 {/* profile picture */}
                 <div className='flex pl-6 items-start'>
                   <FaCamera 
@@ -134,7 +134,7 @@ function DoctorEditAccountModal({ isOpen, onClose, doctorDetails }) {
               </div>
 
               {/* second column */}
-              <div className='flex w-1/2 flex-col px-4 justify-center space-y-5'>
+              <div className='flex w-full md:w-1/2 flex-col px-4 justify-center space-y-5'>
                 {/* full name */}
                 <div className="flex pl-6 items-center">
                   <FaUser 
@@ -162,8 +162,8 @@ function DoctorEditAccountModal({ isOpen, onClose, doctorDetails }) {
                   <Select id="gender" 
                     value={gender} 
                     onChange={(e) => setGender(e.target.value)} 
-                    required 
-                    className="ml-1.5 w-5/12">
+                    required
+                    className="ml-1.5 w-4/5">
                     <option value="" disabled>Select gender</option>
                     <option value="Male">Male</option>
                     <option value="Female">Female</option>

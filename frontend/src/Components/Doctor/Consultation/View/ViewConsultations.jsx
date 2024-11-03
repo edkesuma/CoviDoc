@@ -30,7 +30,7 @@ function ViewConsultations({consultations}) {
 
 
     return (
-        <div className="mx-20 space-y-4">
+        <div className="mx-5 md:mx-20 space-y-4">
             <div className='flex flex-row mx-8 font-bold'>
                 <div className="w-1/5">Status</div>
                 <div className="w-3/5 text-left">Consultation ID</div>
@@ -85,7 +85,7 @@ function ViewConsultations({consultations}) {
                                     <div className="hidden md:flex text-red-500 ">
                                         Workflow not completed yet.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Click to continue.</b>
                                     </div>
-                                    <div className="md:hidden text-red-500 ">
+                                    <div className="md:hidden text-center text-red-500 ">
                                         Workflow not completed.
                                     </div>
                                 </div>

@@ -4,6 +4,7 @@ import axios from "axios";
 
 function ConsultationsByDateChart({ token }) {
   const [consultationsByDate, setConsultationsByDate] = useState({}); // To store the number of consultations per date
+  const [chartWidth, setChartWidth] = useState(window.innerWidth > 768 ? 700 : 400);
 
   useEffect(() => {
     const fetchConsultationsByDate = async () => {
@@ -25,6 +26,18 @@ function ConsultationsByDateChart({ token }) {
     fetchConsultationsByDate();
   }, [token]);
 
+  useEffect(() => {
+    const handleResize = () => {
+      setChartWidth(window.innerWidth > 768 ? 700 : 400);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   // Function to convert a "dd-mm-yyyy" date string to a JavaScript Date object
   const convertToDate = (dateString) => {
     const [day, month, year] = dateString.split("-").map(Number);
@@ -33,7 +46,6 @@ function ConsultationsByDateChart({ token }) {
 
   // Extracting the dates and counts
   const dates = Object.keys(consultationsByDate);
-  const counts = Object.values(consultationsByDate);
 
   // Sort the dates in ascending order using convertToDate for correct date comparison
   const sortedDates = dates.sort((a, b) => convertToDate(a) - convertToDate(b));
@@ -61,7 +73,7 @@ function ConsultationsByDateChart({ token }) {
         },
       ]}
       type="line"
-      width="700"
+      width={chartWidth}
     />
   );
 }

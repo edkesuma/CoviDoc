@@ -49,7 +49,7 @@ function PatientAccountPage() {
   return (
     <div>
       <ActorNavbar />
-      <div className="mt-12 mx-20 px-6 sm:px-8 md:px-10 lg:px-12">
+      <div className="mt-12 mx-5 md:mx-20 px-6 sm:px-8 md:px-10 lg:px-12">
         <h1 className="text-3xl font-bold mb-8">Your Account</h1>
 
         {/* spinner when loading */}

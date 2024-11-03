@@ -87,11 +87,11 @@ function PatientManagement({}) {
             <ActorNavbar />
 
             {/* title */}
-            <div className="mt-12 mx-20 px-6 sm:px-8 md:px-10 lg:px-12 xl:max-w-[rem]">
+            <div className="mt-12 mx-5 md:mx-20 px-6 sm:px-8 md:px-10 lg:px-12 xl:max-w-[rem]">
                 <h1 className="text-4xl font-bold text-gray-900">List of Patients</h1>
             </div>
 
-            <div className="mt-12 mx-20 px-6 sm:px-8 md:px-10 lg:px-12">
+            <div className="mt-12 mx-5 md:mx-20 px-6 sm:px-8 md:px-10 lg:px-12">
                 <div className="flex items-center">
                     <div className='flex items-center space-x-4 flex-grow'>
                         {/* search bar */}
@@ -110,7 +110,7 @@ function PatientManagement({}) {
                             className="flex items-center justify-center px-4 py-4 w-auto border border-gray-300 text-lg text-gray-500 rounded-lg hover:border-cyan-400 hover:text-cyan-400 transition duration-300"
                             onClick={() => setFilterPatientShow(true)}
                         >
-                            <FaFilter className="mr-2 w-5 h-5" />
+                            <FaFilter className="mr-2 w-5 h-5"/>
                             Filter
                         </button>
                     </div>
@@ -118,11 +118,19 @@ function PatientManagement({}) {
                     {/* create new patient account */}
                     <button
                         type="button"
-                        className="flex items-center justify-center px-4 py-4 w-auto border border-cyan-400 text-lg font-bold text-cyan-400 rounded-lg hover:bg-cyan-400 hover:text-white transition duration-300"
+                        className="hidden md:flex items-center justify-center px-4 py-4 w-auto border border-cyan-400 text-lg font-bold text-cyan-400 rounded-lg hover:bg-cyan-400 hover:text-white transition duration-300"
                         onClick={() => setCreatePatientShow(true)}
                     >
-                        <FaUserInjured className='mr-2' />
+                        <FaUserInjured className='mr-2'/>
                         Create New Patient
+                    </button>
+                    <button
+                        type="button"
+                        className="flex md:hidden items-center justify-center px-4 py-4 w-auto border border-cyan-400 text-lg font-bold text-cyan-400 rounded-lg hover:bg-cyan-400 hover:text-white transition duration-300"
+                        onClick={() => setCreatePatientShow(true)}
+                    >
+                        <FaUserInjured className='mr-2'/>
+                        New
                     </button>
                 </div>
 
@@ -131,7 +139,7 @@ function PatientManagement({}) {
                 {/* spinner when loading */}
                 {isLoading ? (
                     <div className="flex justify-center">
-                        <Spinner aria-label="Center-aligned spinner" size="xl" />
+                        <Spinner aria-label="Center-aligned spinner" size="xl"/>
                     </div>
                 ) : filteredData.length === 0 ? (
                     <div className="flex justify-center">

@@ -25,7 +25,7 @@ function DoctorRowCard({ data }) {
 
     return (
         <div className="space-y-2">
-            <div className="flex flex-row mx-6 font-bold">
+            <div className="flex w-full flex-row font-bold">
                 <div className="w-3/12">Doctor Name</div>
                 <div className="w-3/12">Specialization</div>
                 <div className="w-4/12">Email</div>
@@ -39,26 +39,36 @@ function DoctorRowCard({ data }) {
                     onClick={() => handleViewDoctor(doctor)}    // open view doctor account on row clicked
                 >
                     <div className="flex flex-row items-center">
-                        <div className="w-3/12 truncate pr-16">{doctor.name}</div>
-                        <div className="w-3/12 truncate pr-16">{doctor.specialization}</div>
-                        <div className="w-4/12 truncate pr-16">{doctor.email}</div>
+                        <div className="w-3/12 truncate ">{doctor.name}</div>
+                        <div className="w-3/12 truncate ">{doctor.specialization}</div>
+                        <div className="w-4/12 truncate ">{doctor.email}</div>
                         <div className="w-2/12">
                             <button
                                 type="button"
-                                className="flex items-center justify-center w-3/5 py-1 border border-gray-400 text-base font-bold text-gray-400 rounded-xl hover:bg-red-600 hover:border-red-600 hover:text-white transition duration-300"
+                                className="hidden md:flex items-center justify-center w-3/5 py-1 border border-gray-400 text-base font-bold text-gray-400 rounded-xl hover:bg-red-600 hover:border-red-600 hover:text-white transition duration-300"
                                 onClick={(e) => {
                                     e.stopPropagation();  // stop row click from triggering
                                     handleDeleteDoctor(doctor);
                                 }}
-                                >
-                                <FaRegTrashAlt className="mr-2" />
+                            >
+                                <FaRegTrashAlt className="mr-2"/>
+                                Delete
+                            </button>
+                            <button
+                                type="button"
+                                className="flex md:hidden items-center justify-center w-full py-1 border border-gray-400 text-base font-bold text-gray-400 rounded-xl hover:bg-red-600 hover:border-red-600 hover:text-white transition duration-300"
+                                onClick={(e) => {
+                                    e.stopPropagation();  // stop row click from triggering
+                                    handleDeleteDoctor(doctor);
+                                }}
+                            >
                                 Delete
                             </button>
                         </div>
                     </div>
                 </Card>
             ))}
-            
+
             {/* handle view doctor */}
             {selectedDoctor && (
                 <ViewUpdateDoctorModal

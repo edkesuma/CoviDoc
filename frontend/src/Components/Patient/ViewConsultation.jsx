@@ -20,11 +20,11 @@ function ViewConsultations({consultations}) {
 
     return (
         <div className="space-y-4">
-            <div className="flex flex-row mx-6 font-bold">
+            <div className="flex ml-4 flex-row font-bold">
                 <div className="w-1/12">Status</div>
-                <div className="w-6/12 text-left">Consultation ID</div>
+                <div className="w-6/12 text-center md:text-left">Consultation ID</div>
                 <div className="w-3/12">Doctor</div>
-                <div className="w-2/12">Date</div>
+                <div className="w-3/12">Date</div>
             </div>
             {sortedConsultations.map((consultation, index) => (
                 <Card
@@ -34,7 +34,7 @@ function ViewConsultations({consultations}) {
                         navigate(`/patient/consultation/${consultation.consultationId}`)
                     }
                 >
-                    <div className="flex flex-row">
+                    <div className="flex flex-row items-center">
                         <div className="w-1/12">
                             {consultation.status === "Healthy" ? (
                                 <AiFillSafetyCertificate className="w-8 h-8 text-green-500"/>
@@ -44,13 +44,13 @@ function ViewConsultations({consultations}) {
                                 <FaBriefcaseMedical color="red" className="w-8 h-8 text-red-500"/>
                             ) : null}
                         </div>
-                        <button className="w-6/12 text-left">
+                        <button className="w-6/12 text-left truncate">
                             Consultation #{consultation.consultationId}
                         </button>
-                        <div className="w-3/12">
+                        <div className="w-3/12 truncate">
                             {consultation.doctorName}
                         </div>
-                        <div className="w-2/12">{consultation.consultationDate}</div>
+                        <div className="w-3/12">{consultation.consultationDate}</div>
                     </div>
                 </Card>
             ))}
