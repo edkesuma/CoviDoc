@@ -1,26 +1,22 @@
 "use client";
 import React, {useContext, useEffect, useState} from "react";
-import {Label, TextInput, Button, Datepicker, Checkbox, Textarea} from "flowbite-react";
+import {useLocation} from 'react-router-dom';
+import {Label, TextInput, Button, Select} from "flowbite-react";
 import {AuthContext} from "../../../Authentication/AuthContext.jsx";
 import {useNavigate} from "react-router-dom";
 import axios from "axios";
 
 function ModelPrediction({patientId, consultationId}) {
-    const [Classification, setClassification] = useState('')
-    const [ClassificationCon, setClassificationCon] = useState('')
-    const [Severity, setSeverity] = useState('')
-    const [SeverityCon, setSeverityCon] = useState('')
+    const [classification, setClassification] = useState('')
+    const [classificationCon, setClassificationCon] = useState('')
+    const [severity, setSeverity] = useState('')
+    const [severityCon, setSeverityCon] = useState('')
     const [XrayImage, setXrayImage] = useState('')
     const [highlightImage, setHighlightImage] = useState('')
-    const [date, setDate] = useState(Date.now())
-    const [temperature, setTemperature] = useState(37)
-    const [O2, setO2] = useState(95)
-    const [ICU, setICU] = useState(false)
-    const [supplemental, setSupplemental] = useState(false)
-    const [intubation, setIntubation] = useState(false)
-    const [note, setNote] = useState('NA')
+    const [change, setChange] = useState(false)
     const {token} = useContext(AuthContext);
     const navigate = useNavigate();
+    const [errorMessage, setErrorMessage] = useState("");
 
     useEffect(() => {
         if (token && consultationId) {
@@ -48,156 +44,121 @@ function ModelPrediction({patientId, consultationId}) {
             getItems()
         }
     }, [token, consultationId]);
-
     const upload = () => {
-        const formatDate = (date) => {
-            const d = new Date(date)
-            const day = d.getDate();
-            const month = d.getMonth() + 1;
-            const year = d.getFullYear();
-            return `${day}/${month}/${year}`;
-        };
+        // validation
+        setErrorMessage("");
+        if (!classification || !classificationCon || !severity || !severityCon) {
+            setErrorMessage("Please fill in all the fields.");
+            return;
+        }
 
         const data =
             {
                 'consultationId': consultationId,
-                'consultationDate': formatDate(date),
-                'temperature': temperature,
-                'o2Saturation': O2,
-                'recentlyInIcu': ICU,
-                'recentlyNeededSupplementalO2': supplemental,
-                'intubationPresent': intubation,
-                'consultationNotes': note
+                'classification': classification,
+                'classificationConfidence': classificationCon,
+                'severity': severity,
+                'severityConfidence': severityCon
             }
         axios
-            .patch(`/api/doctor/updateConsultation`, data, {
+            .patch(`/api/doctor/updateFindings`, data, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     'Content-Type': 'application/json'
                 }
             })
             .then((response) => {
-                const nextDate = {
-                    'gradcam_image_url': XrayImage,
-                    'severity_classification': Severity,
-                    'severity_confidence': SeverityCon,
-                    'type_classification': Classification,
-                    'type_confidence': ClassificationCon,
-                    'xray_image_url': highlightImage,
-                    'consultationDate': formatDate(date),
-                    'temperature': temperature,
-                    'o2Saturation': O2,
-                    'recentlyInIcu': ICU,
-                    'recentlyNeededSupplementalO2': supplemental,
-                    'intubationPresent': intubation,
-                    'consultationNotes': note
-                }
-                navigate(`/doctor/patient/${patientId}/${consultationId}/additionalInfo`,
-                    {state: {formData: nextDate}});
+                navigate(`/doctor/patient/${patientId}/${consultationId}/newClassification`);
             })
             .catch((error) => {
                 console.log("Error creating consultation: ", error);
             });
     }
-
     return (
-        <div className='flex justify-center'>
-            <div className='w-4/5 flex flex-col'>
-                <p className='text-3xl font-bold my-6'>X-Ray Model Predictions</p>
-                <div className='flex flex-col md:flex-row'>
-                    <div className='flex flex-col w-full md:w-1/2 px-4'>
-                        <div className='flex flex-col'>
-                            <p className='text-xl text-cyan-400'>X-RAY IMAGE AND AREAS OF INTEREST</p>
-                            <div className='flex flex-row w-full'>
-                                <div className='flex w-1/2'>
-                                    <img src={XrayImage} alt='x'
-                                         className='pr-4 py-4 max-w-full max-h-full'/>
-                                </div>
-                                <div className='flex w-1/2'>
-                                    <img src={highlightImage} alt='y'
-                                         className='px-4 py-4 max-w-full max-h-full'/>
-                                </div>
-                            </div>
-                        </div>
-                        <div className='flex flex-col mt-6 md:mb-0 mb-12'>
-                            <p className='text-xl text-cyan-400  mt-4'>FINDINGS</p>
-                            <div className='flex flex-col rounded-lg border-2 border-cyan-400 px-4 py-4 mr-5'>
-                                <p>Classification: {Classification}</p>
-                                <p>Classification Confidence: {ClassificationCon + '%'}</p>
-                                <p>Severity: {Severity}</p>
-                                <p>Severity Confidence: {SeverityCon + '%'}</p>
-                            </div>
+        <div className='mt-12 mx-20 px-6 sm:px-8 md:px-10 lg:px-12'>
+            <div className='flex flex-col'>
+                <p className='text-3xl font-bold'>X-Ray Classification Model Results</p>
+                <div className='flex flex-col md:flex-row mt-8'>
+                    <div className='flex flex-col md:items-start items-center w-full md:w-1/3'>
+                        <p className='text-cyan-400 text-xl'>X-RAY IMAGE</p>
+                        <div className='flex py-8'>
+                            <img src={XrayImage} alt='before' className='w-64 h-64 max-w-full max-h-full'></img>
                         </div>
                     </div>
-                    <div className='flex flex-col w-full md:w-1/2'>
-                        <div className='flex flex-col'>
-                            <p className='text-xl text-cyan-400'>CONSULTATION INFORMATION</p>
-                            <div className='flex flex-col rounded-lg border-2 border-cyan-400 space-y-2 pb-4'>
-                                <div className='px-4 pt-2'>
-                                    <Label className='font-bold'>Consultation date</Label>
-                                    <Datepicker
-                                        id="date"
-                                        selected={date}
-                                        onSelectedDateChanged={(date) => setDate(date)}
-                                        defaultDate={new Date()}
-                                        minDate={new Date(1900, 0, 1)}
-                                        maxDate={new Date()}
-                                        autoHide={true}
-                                        showClearButton={false}
-                                        showTodayButton={false}
-                                        weekStart={7}
-                                        required
-                                    />
-                                </div>
-                                <div className='px-4'>
-                                    <Label className='font-bold'>Temperature </Label>
-                                    <TextInput id="classificationCon" required type="number" min="20" max="50"
-                                               value={temperature}
-                                               onChange={(e) => {
-                                                   if (e.target.value >= 20 && e.target.value <= 50) {
-                                                       setTemperature(e.target.value)
-                                                   }
-                                               }}
-                                    />
-                                </div>
-                                <div className='px-4'>
-                                    <Label className='font-bold'>O2 saturation </Label>
-                                    <TextInput id="severity" required type="number" min="20" max="100"
-                                               value={O2}
-                                               onChange={(e) => {
-                                                   if (e.target.value >= 20 && e.target.value <= 100) {
-                                                       setO2(e.target.value)
-                                                   }
-                                               }}
-                                    />
-                                </div>
-                                <div className='px-4 flex justify-between items-center'>
-                                    <Label>Recently been in ICU</Label>
-                                    <Checkbox id="ICU" onChange={(e) => setICU(e.target.checked)}/>
-                                </div>
-                                <div className='px-4 flex justify-between items-center'>
-                                    <Label>Recently in need of supplemental O2</Label>
-                                    <Checkbox id="supplemental" onChange={(e) => setSupplemental(e.target.checked)}/>
-                                </div>
-                                <div className='px-4 flex justify-between items-center'>
-                                    <Label>Intubation present</Label>
-                                    <Checkbox id="intubation" onChange={(e) => setIntubation(e.target.checked)}/>
-                                </div>
-                                <div className='px-4'>
-                                    <Label className='font-bold'>Consultation Notes</Label>
-                                    <Textarea id="notes" value={note}
-                                              required rows={6} onChange={(event) => setNote(event.target.value)}/>
-                                </div>
-
+                    <div className='flex flex-col md:items-start items-center w-full md:w-1/3 mx-4'>
+                        <p className='text-cyan-400 text-xl'>AREAS OF INTEREST</p>
+                        <div className='flex py-8'>
+                            <img src={highlightImage} alt='before' className='w-64 h-64 max-w-full max-h-full'></img>
+                        </div>
+                    </div>
+                    <div className='flex flex-col w-full md:w-1/3 mx-4'>
+                        <p className='text-cyan-400 text-xl'>FINDINGS</p>
+                        <div className='flex flex-col border-2 border-cyan-400 rounded-lg my-4 space-y-4'>
+                            <div className='px-4 pt-3'>
+                                <Label className='font-bold'>Classification: </Label>
+                                <Select id="classification" required value={classification}
+                                        disabled={!change}
+                                        onChange={(e) => setClassification(e.target.value)}
+                                >
+                                    <option value="Healthy">Healthy</option>
+                                    <option value="Covid-19">Covid-19</option>
+                                    <option value="Other Lung Infection">Other Lung Infection</option>
+                                </Select>
+                            </div>
+                            <div className='px-4'>
+                                <Label className='font-bold'>Classification Confidence: </Label>
+                                <TextInput id="classificationCon" required type="number" min="0" max="100"
+                                           readOnly={!change} value={classificationCon}
+                                           onChange={(e) => {
+                                               if (e.target.value >= 0 && e.target.value <= 100) {
+                                                   setClassificationCon(e.target.value)
+                                               }
+                                           }}/>
+                            </div>
+                            <div className='px-4'>
+                                <Label className='font-bold'>Severity: </Label>
+                                <Select id="severity" required value={severity}
+                                        disabled={!change}
+                                        onChange={(e) => setSeverity(e.target.value)}
+                                >
+                                    <option value="NA">NA</option>
+                                    <option value="Mild">Mild</option>
+                                    <option value="Moderate to Severe">Moderate to Severe</option>
+                                </Select>
+                            </div>
+                            <div className='px-4'>
+                                <Label className='font-bold'>Severity Confidence: </Label>
+                                <TextInput id="severityCon" required type="number" min="0" max="100"
+                                           readOnly={!change} value={severityCon}
+                                           onChange={(e) => {
+                                               if (e.target.value >= 0 && e.target.value <= 100) {
+                                                   setSeverityCon(e.target.value)
+                                               }
+                                           }}
+                                />
+                            </div>
+                            <div className='px-4 pb-4 flex justify-center items-center'>
+                                {change ? (
+                                    <Button color='cyan' className='text-cyan-400'
+                                            onClick={() => setChange(false)}>Save</Button>
+                                ) : (
+                                    <Button color='cyan' className='text-cyan-400'
+                                            onClick={() => setChange(true)}>Modify
+                                        Findings</Button>)}
                             </div>
                         </div>
                     </div>
                 </div>
-                <Button color='cyan' type={"submit"} onClick={upload} className='text-cyan-400 my-10'>Generate
-                    Prescriptions and
-                    Lifestyle
-                    Changes</Button>
+                <div className='flex justify-center mt-10'>
+                    <Button color='cyan' type={"submit"} onClick={upload}
+                            className='text-cyan-400 w-3/4'>Continue</Button>
+                </div>
+                {/* error message */}
+                {errorMessage && (
+                    <p className="text-red-500 text-center mt-4">{errorMessage}</p>
+                )}
             </div>
+            <div className="p-5" />
         </div>
     );
 }
