@@ -162,7 +162,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
                     element={
                         <PrivateRoute doctor>
 
-                            <CreateConsultationPage />
+                            <ModelPredictionPage />
                         </PrivateRoute>
                     }
                 />
@@ -170,7 +170,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
                     path="/doctor/patient/:patientId/:consultationId/newClassification"
                     element={
                         <PrivateRoute doctor>
-                            <ModelPredictionPage />
+                            <CreateConsultationPage />
                         </PrivateRoute>
                     }
                 />
