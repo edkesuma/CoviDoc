@@ -518,20 +518,3 @@ class Report(db.Model):
         report.reportUrl = blob.public_url
         db.session.commit()
         return (True, "COVID-19 report generated successfully.")
-    
-    # TODO: FOR KARTHI VIZ
-    @classmethod
-    def getClassificationsOverTimeData(cls) -> dict:
-        """Get the classifications of a patient over time"""
-        # Get all consultations 
-        consultations = Consultation.queryAllConsultations()
-        # Get the classifications of each consultation
-        classifications = []
-        for consultation in consultations:
-            report = cls.queryReport(consultation.reportId)
-            clf = report.classification
-            classifications.append(clf)
-        # parse month from date (set this as the key)
-        # value is found out from number of classifications on that month
-        
-        return {"January": 5, "February": 4}
