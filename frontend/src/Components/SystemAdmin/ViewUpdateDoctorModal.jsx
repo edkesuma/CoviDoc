@@ -190,12 +190,17 @@ function ViewUpdateDoctorModal({ show, onClose, data }) {
         <div>
             <Modal show={show} size="4xl" popup={true} onClose={resetFields}>
                 <Modal.Header>
-                    <p className="text-2xl font-bold text-black px-10 pt-10 break-words">{data.name} <br/> ID: {data.doctorId}</p>
+                    <p className="hidden md:flex text-2xl font-bold text-black px-10 pt-10 break-words">{data.name}
+                        <br/> ID: {data.doctorId}</p>
+                    <p className="md:hidden font-bold text-black px-10 pt-10 break-words">{data.name}
+                        <br/>
+                        <div className='text-sm'>ID : {data.doctorId}</div>
+                    </p>
                 </Modal.Header>
 
                 <Modal.Body className={isEditable ? 'pt-8' : 'pt-0'}>
                     <div className="space-y-4">
-                        {/* pencil icon to edit */}
+                    {/* pencil icon to edit */}
                         {!isEditable && (
                             <div className="flex justify-end">
                                 <button
@@ -210,10 +215,9 @@ function ViewUpdateDoctorModal({ show, onClose, data }) {
                             </div>
                         )}
 
-                        
-                        <div className='flex flex-row'>
+                        <div className='flex flex-col md:flex-row'>
                             {/* first column */}
-                            <div className='flex flex-col w-1/2 space-y-5'>
+                            <div className='flex flex-col w-full md:w-1/2 pb-4 space-y-5'>
                                 {/* full name */}
                                 <div className="flex pl-6 items-center">
                                     <FaUser 
@@ -270,7 +274,7 @@ function ViewUpdateDoctorModal({ show, onClose, data }) {
                             </div>
 
                             {/* second column */}
-                            <div className='flex w-1/2 flex-col px-4 justify-center space-y-5'>
+                            <div className='flex w-full md:w-1/2 flex-col px-4 justify-center space-y-5'>
                                 {/* gender */}
                                 <div className="flex pl-4 items-center">
                                     <FaVenusMars 
@@ -283,7 +287,7 @@ function ViewUpdateDoctorModal({ show, onClose, data }) {
                                             value={gender} 
                                             onChange={(e) => setGender(e.target.value)} 
                                             required 
-                                            className="ml-1.5 w-5/12">
+                                            className="ml-1.5 w-4/5">
                                             <option value="" disabled>Select gender</option>
                                             <option value="Male">Male</option>
                                             <option value="Female">Female</option>

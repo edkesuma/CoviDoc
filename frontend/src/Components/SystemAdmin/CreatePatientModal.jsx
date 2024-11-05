@@ -160,9 +160,9 @@ function CreatePatientModal(props) {
                 <Modal.Body>
                     <div className="space-y-6">
                         {/* input */}
-                        <div className="flex flex-row">
+                        <div className="flex flex-col md:flex-row">
                             {/* first column */}
-                            <div className='flex flex-col w-1/2 space-y-7'>
+                            <div className='flex flex-col w-full md:w-1/2 space-y-7'>
                                 {/* full name */}
                                 <div className="flex pl-6 items-center">
                                     <FaUser 
@@ -284,7 +284,7 @@ function CreatePatientModal(props) {
                             </div>
 
                             {/* second column */}
-                            <div className='flex w-1/2 flex-col px-4 space-y-0'>
+                            <div className='flex w-full md:w-1/2 flex-col px-4 space-y-0'>
                                 {/* drag n drop picture */}
                                 <div className='flex items-start'>
                                     <FaCamera 
@@ -292,7 +292,7 @@ function CreatePatientModal(props) {
                                         size={40}
                                         style={{ paddingRight: '10px' }}
                                     />
-                                    <div className="flex flex-col items-center w-64 h-56">
+                                    <div className="flex flex-col pl-4 items-center w-72 h-56">
                                         <DropImageInput
                                             name="image"
                                             file={selectedImage}

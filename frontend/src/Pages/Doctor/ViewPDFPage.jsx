@@ -44,7 +44,7 @@ function ViewPDFPage() {
         </div>
     ) : (   <div>
             <ActorNavbar/>
-            <div className='mb-10'/>
+            <div className='md:mb-10'/>
             <ViewPDF viewData={viewData}/>
         </div>
     )
