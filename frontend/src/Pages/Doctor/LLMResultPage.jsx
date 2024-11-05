@@ -36,7 +36,6 @@ function LLMResultPage() {
             <ActorNavbar/>
             <Modal show={modalOpen} size="xl" popup>
                 <Modal.Header />
-
                 <Modal.Body>
                     <div className="flex justify-center">
                         <div className="p-6 text-center">

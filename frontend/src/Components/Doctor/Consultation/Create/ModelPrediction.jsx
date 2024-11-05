@@ -78,7 +78,7 @@ function ModelPrediction({patientId, consultationId}) {
         <div className='mt-12 mx-20 px-6 sm:px-8 md:px-10 lg:px-12'>
             <div className='flex flex-col'>
                 <p className='text-3xl font-bold'>X-Ray Classification Model Results</p>
-                <div className='flex flex-col md:flex-row mt-8'>
+                <div className='flex flex-col items-center md:flex-row mt-8'>
                     <div className='flex flex-col md:items-start items-center w-full md:w-1/3'>
                         <p className='text-cyan-400 text-xl'>X-RAY IMAGE</p>
                         <div className='flex py-8'>
