@@ -153,11 +153,4 @@ class Doctor(db.Model):
         except Exception as e:
             print(e)
             return (False, "Failed to delete account")
-        
-
-        # i want to get all the consultations for a doctor
-    @classmethod
-    def queryAllDoctorConsultations(cls, doctorId: str) -> Self:
-        """Query all consultations for a doctor"""
-        return cls.query.filter(cls.doctorId == doctorId).all() # type: ignore
     
