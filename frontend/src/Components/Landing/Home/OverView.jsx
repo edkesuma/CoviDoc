@@ -80,11 +80,11 @@ function OverView() {
     }, [startCounting, countries, today, death]);
 
     return (
-        <div ref={overviewRef} className='flex justify-center mx-20'>
+        <div ref={overviewRef} className='flex justify-center mx-5 md:mx-20 text-center md:text-left'>
             <div className='w-full h-full'>
-                <p className='text-lg text-cyan-400 ml-4'>OVERVIEW</p>
+                <p className='text-lg text-cyan-400'>OVERVIEW</p>
                 <br />
-                <p className="font-bold text-5xl ml-4">COVID-19 at a Glance</p>
+                <p className="font-bold text-3xl md:text-5xl">COVID-19 at a Glance</p>
                 <br />
                 <br />
                 <div className='flex md:flex-row flex-col justify-center items-center'>

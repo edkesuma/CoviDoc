@@ -6,7 +6,7 @@ function SymptomPrevalenceHeatmap({ token }) {
   const [patients, setPatients] = useState([]);
   const [symptomData, setSymptomData] = useState([]);
   const [symptomCategories, setSymptomCategories] = useState([]);
-  const [chartDimensions, setChartDimensions] = useState({ width: 400, height: 500 });
+  const [chartDimensions, setChartDimensions] = useState(window.innerWidth > 768 ? 500 : 300);
 
   useEffect(() => {
     const fetchSymptomPrevalence = async () => {
@@ -32,7 +32,7 @@ function SymptomPrevalenceHeatmap({ token }) {
 
   useEffect(() => {
     const handleResize = () => {
-      const newWidth = Math.max(window.innerWidth * 0.8, 400);
+      const newWidth = Math.max(window.innerWidth * 0.8, 300);
       const newHeight = Math.max(window.innerHeight * 0.6, 500);
       setChartDimensions({ width: newWidth, height: newHeight });
     };
@@ -70,21 +70,21 @@ function SymptomPrevalenceHeatmap({ token }) {
               },
               shadeIntensity: 0.5,
               radius: 2,
-              padding: {
-                top: 20,
-                bottom: 20,
-                left: 20,
-                right: 20,
-              },
-            },
-          },
-          grid: {
-            padding: {
+            padding: window.innerWidth > 768?  {
               top: 10,
               bottom: 10,
               left: 20,
               right: 20,
+            }:{}
             },
+          },
+          grid: {
+            padding: window.innerWidth > 768?  {
+              top: 10,
+              bottom: 10,
+              left: 20,
+              right: 20,
+            }:{}
           },
           title: {
             text: "Symptom Prevalence Heatmap",

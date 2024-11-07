@@ -11,10 +11,10 @@ function PricingPage() {
 
             <div className='p-5'/>
             
-            <div className='mx-20'>
+            <div className='mx-5 md:mx-20 text-center md:text-left'>
                 <p className='text-lg text-cyan-400'>SUBSCRIPTION PRICING</p>
                 <br/>
-                <p className="font-bold text-5xl">Choose Your Plan</p>
+                <p className="font-bold text-3xl md:text-5xl">Choose Your Plan</p>
                 <br/>
                 <p className='text-xl'>
                     Our flexible pricing plans are designed to fit the needs of healthcare 
@@ -24,9 +24,9 @@ function PricingPage() {
                 </p>
             </div>
 
-            <div className='p-8'></div>
+            <div className='p-4 md:p-8'></div>
 
-            <div className='flex justify-between mx-20 md:mx-36 space-x-0 md:space-x-8 flex-col md:flex-row'>
+            <div className='flex justify-between mx-10 md:mx-36 space-x-0 md:space-x-8 flex-col md:flex-row'>
                 {/* free plan */}
                 <Card className="w-full md:w-1/3 my-10 hover:border-cyan-100 transition duration-300 hover:shadow-cyan-200 hover:shadow-xl">
                     <h5 className="mb-4 text-lg font-medium text-gray-500">Free</h5>

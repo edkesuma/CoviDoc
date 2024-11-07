@@ -4,7 +4,7 @@ import axios from "axios";
 
 function ClassificationConfidenceChart({token}) {
     const [confidenceCounts, setConfidenceCounts] = useState({});
-    const [chartWidth, setChartWidth] = useState(window.innerWidth > 768 ? 500 : 400);
+    const [chartWidth, setChartWidth] = useState(window.innerWidth > 768 ? 500 : 300);
 
     useEffect(() => {
         const fetchConfidenceCounts = async () => {
