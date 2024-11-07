@@ -4,12 +4,12 @@ import React from "react";
 
 function AboutUs() {
     return (
-        <div className="flex flex-col md:flex-row mx-20">
+        <div className="flex flex-col md:flex-row mx-5 md:mx-20 text-center md:text-left">
             <div className='flex md:w-3/5 w-full h-full'>
-                <div className='w-4/5 h-4/5'>
+                <div className='flex flex-col items-center md:items-start w-full md:w-4/5 h-4/5'>
                     <p className='text-lg text-cyan-400'>ABOUT US</p>
                     <br/>
-                    <p className="font-bold text-5xl">CoviDoc</p>
+                    <p className="font-bold text-3xl md:text-5xl">CoviDoc</p>
                     <br/>
                     <p className="text-xl">We are dedicated to revolutionizing healthcare with our cutting-edge
                         AI-powered COVID-19 diagnostic platform. </p>

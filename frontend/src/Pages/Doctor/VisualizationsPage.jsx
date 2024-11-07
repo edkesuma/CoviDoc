@@ -25,7 +25,7 @@ function VisualizationsPage() {
             <ActorNavbar />
             <div className='flex flex-col items-center'>
                 {/* Page Title */}
-                <div className='my-10 font-bold text-3xl'>{selectedChart}</div>
+                <div className='my-10 font-bold md:text-3xl'>{selectedChart}</div>
 
                 {/* Drop-down to select chart */}
                 <div className="mb-6">

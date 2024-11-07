@@ -5,10 +5,10 @@ import { FaMapMarkerAlt, FaPhoneAlt, FaEnvelope } from "react-icons/fa";
 function Contact() {
     return (
         <div>
-            <div className='mx-20'>
+            <div className='mx-5 md:mx-20 text-center md:text-left'>
                 <p className='text-lg text-cyan-400'>CONTACT</p>
                 <br/>
-                <p className="font-bold text-5xl">Reach Out to Us</p>
+                <p className="font-bold text-3xl md:text-5xl">Reach Out to Us</p>
                 <br/>
                 <p className="text-xl">
                     Want to get in touch? We’d love to hear from you.<br/>

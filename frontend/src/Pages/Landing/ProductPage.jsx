@@ -10,10 +10,10 @@ function ProductPage() {
             
             <div className='p-5'/>
 
-            <div className='mx-20'>
+            <div className='mx-5 md:mx-20 text-center md:text-start'>
                 <p className='text-lg text-cyan-400'>PRODUCT DEMO</p>
                 <br/>
-                <p className="font-bold text-5xl">Getting Started</p>
+                <p className="font-bold text-3xl md:text-5xl">Getting Started</p>
                 <br/>
                 <p className='text-xl'>
                     Here’s a quick demo of CoviDoc to help you explore all its features and see how it works in action.
@@ -35,10 +35,10 @@ function ProductPage() {
 
             <div className='p-8'></div>
 
-            <div className='mx-20'>
+            <div className='mx-5 md:mx-20 text-center md:text-start'>
                 <p className='text-lg text-cyan-400'>GOOGLE DRIVE</p>
                 <br/>
-                <p className="font-bold text-5xl">Project Link</p>
+                <p className="font-bold text-3xl md:text-5xl">Project Link</p>
                 <br/>
                 <p className='text-xl'>
                     For detailed documentation and resources, please click&nbsp;

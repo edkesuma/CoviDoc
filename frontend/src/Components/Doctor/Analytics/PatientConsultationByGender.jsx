@@ -7,7 +7,7 @@ function GenderDistributionChart({ token }) {
     Male: 0,
     Female: 0,
   });
-  const [chartWidth, setChartWidth] = useState(window.innerWidth > 768 ? 500 : 400);
+  const [chartWidth, setChartWidth] = useState(window.innerWidth > 768 ? 500 : 300);
 
   useEffect(() => {
     // Fetch the gender distribution data from the backend API

@@ -4,7 +4,7 @@ import axios from "axios";
 
 function ConsultationsByDateChart({ token }) {
   const [consultationsByDate, setConsultationsByDate] = useState({}); // To store the number of consultations per date
-  const [chartWidth, setChartWidth] = useState(window.innerWidth > 768 ? 700 : 400);
+  const [chartWidth, setChartWidth] = useState(window.innerWidth > 768 ? 700 : 300);
 
   useEffect(() => {
     const fetchConsultationsByDate = async () => {

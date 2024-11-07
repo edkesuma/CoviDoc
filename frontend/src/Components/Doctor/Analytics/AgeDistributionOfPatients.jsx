@@ -11,7 +11,7 @@ function AgeDistributionChart({ token }) {
     "66-80": 0,
     "81-100": 0,
   });
-  const [chartWidth, setChartWidth] = useState(window.innerWidth > 768 ? 700 : 400);
+  const [chartWidth, setChartWidth] = useState(window.innerWidth > 768 ? 700 : 300);
 
   useEffect(() => {
     // Fetch preprocessed age distribution from the backend
