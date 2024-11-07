@@ -23,12 +23,12 @@ function PageNavbar() {
 
     return (
         <Navbar fluid rounded className='w-full h-24'>
-            <Navbar.Brand href="/" className='ml-14'>
+            <Navbar.Brand href="/" className='ml-5 md:ml-14'>
                 <img src={Logo} className="h-12" alt="Logo"/>
             </Navbar.Brand>
             <div className="flex md:order-2">
                 <Button pill size="lg" onClick={handleLogin} className="px-3 mr-4 bg-cyan-500">Login</Button>
-                <Button pill size="lg" color="cyan" onClick={handleSignUp} className="mr-10 text-cyan-400">Sign
+                <Button pill size="lg" color="cyan" onClick={handleSignUp} className="mr-5 md:mr-10 text-cyan-400">Sign
                     Up</Button>
                 <Navbar.Toggle/>
             </div>
