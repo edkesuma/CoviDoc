@@ -9,7 +9,7 @@ function PageFooter() {
             <div className="w-11/12 mx-auto py-10">
                 <div className="grid w-full grid-cols-1 md:grid-cols-3 gap-8 px-6 py-8">
                     <div className='flex flex-col'>
-                        <div className='flex flex-row'>
+                        <div className='flex flex-row justify-center md:justify-start'>
                             <img src={Logo} className='h-16' alt="Logo"/>
                             <p className='text-white text-4xl font-bold ml-2 mt-3'>CoviDoc</p>
                         </div>
