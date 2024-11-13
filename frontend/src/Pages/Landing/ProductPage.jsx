@@ -23,14 +23,17 @@ function ProductPage() {
             <div className='p-5'></div>
 
             <div className='flex justify-center relative px-4'>
-                <a href="https://drive.google.com/file/d/1ufFmPFBzIFBEi-dX3k1UykBNN06wIT2s/view?usp=drive_link" target="_blank" rel="noopener noreferrer">
-                    <img 
-                        src={videoThumbnail}
-                        alt="Product Demo Video"
-                        className="cursor-pointer w-full max-w-5xl h-auto"
-                        title="Click to watch full video"
-                    />
-                </a>
+                <div className='mx-5 md:mx-20 relative w-full' style={{ paddingBottom: '56.25%' /* 16:9 aspect ratio */ }}>
+                    <iframe
+                        className='absolute top-0 left-0 w-full h-full'
+                        src="https://www.youtube.com/embed/vGhVzZAfFIY?si=IgJQWXiDtI5wlXRi"
+                        title="YouTube video player"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        referrerpolicy="strict-origin-when-cross-origin"
+                        allowfullscreen
+                    ></iframe>
+                </div>
             </div>
 
             <div className='p-8'></div>

@@ -33,7 +33,7 @@ function Features() {
                         <p className="text-3xl font-bold ml-5">Less Than 5s</p>
                     </div>
                     <p className="text-gray-700 text-lg mt-4">
-                        The platform delivers COVID-19 diagnoses in 30 seconds, supporting timely medical decisions.
+                        The platform delivers COVID-19 diagnoses in 5 seconds, supporting timely medical decisions.
                     </p>
                 </div>
 
