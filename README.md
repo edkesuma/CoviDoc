@@ -16,7 +16,7 @@ CoviDoc is an AI-powered medical assistant that classifies lung diseases and sev
 
 
 ## Main Features
-![App Screenshot](https://i.postimg.cc/d1G8wK1y/image.png)
+![App Screenshot](https://i.postimg.cc/3wVwDQy3/image.png)
 
 ![App Screenshot](https://i.postimg.cc/YCVgFSLF/image.png)
 
