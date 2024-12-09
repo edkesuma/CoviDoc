@@ -7,7 +7,7 @@ CoviDoc is an AI-powered medical assistant that classifies lung diseases and sev
 ![Workflow](https://i.postimg.cc/9QdGT2VF/covidoc-workflow.png)
 
 ## Development Tools
-- Frontend: React with ViteJS, Tailwind CSS, Flowbite React
+- Frontend: ReactJS with Vite, Tailwind CSS, Flowbite React
 - Backend: Flask
 - Database: SQLlite, SQLAlchemy, ChromaDB
 - AI: Pytorch Lightning, WandB, LangChain, Gemini API, GradCam
